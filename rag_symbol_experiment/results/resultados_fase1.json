@@ -1,0 +1,344 @@
+[
+  {
+    "fragmento": "C1_cuantificador_universal",
+    "condicion": "LIMPIO    | doc✓ query✓ sin tabla",
+    "version_doc": "limpio",
+    "con_tabla": false,
+    "corrupt_question": false,
+    "respuesta": "La afirmación vale para todos los reales.",
+    "esperado": [
+      "todos",
+      "todo",
+      "para todo",
+      "cada"
+    ],
+    "evaluacion": "✓ CORRECTO"
+  },
+  {
+    "fragmento": "C1_cuantificador_universal",
+    "condicion": "DOC CORR  | doc✗ query✓ sin tabla",
+    "version_doc": "corrupto",
+    "con_tabla": false,
+    "corrupt_question": false,
+    "respuesta": "La afirmación vale para todos los reales.",
+    "esperado": [
+      "todos",
+      "todo",
+      "para todo",
+      "cada"
+    ],
+    "evaluacion": "✓ CORRECTO"
+  },
+  {
+    "fragmento": "C1_cuantificador_universal",
+    "condicion": "FULL CORR | doc✗ query✗ sin tabla",
+    "version_doc": "corrupto",
+    "con_tabla": false,
+    "corrupt_question": true,
+    "respuesta": "La afirmación vale para todos los reales.",
+    "esperado": [
+      "todos",
+      "todo",
+      "para todo",
+      "cada"
+    ],
+    "evaluacion": "✓ CORRECTO"
+  },
+  {
+    "fragmento": "C1_cuantificador_universal",
+    "condicion": "QUERY CORR| doc✓ query✗ sin tabla",
+    "version_doc": "limpio",
+    "con_tabla": false,
+    "corrupt_question": true,
+    "respuesta": "La afirmación vale para todos los reales.",
+    "esperado": [
+      "todos",
+      "todo",
+      "para todo",
+      "cada"
+    ],
+    "evaluacion": "✓ CORRECTO"
+  },
+  {
+    "fragmento": "C1_cuantificador_universal",
+    "condicion": "CON TABLA | doc✗ query✓ con tabla",
+    "version_doc": "corrupto",
+    "con_tabla": true,
+    "corrupt_question": false,
+    "respuesta": "La afirmación vale para todos los reales.",
+    "esperado": [
+      "todos",
+      "todo",
+      "para todo",
+      "cada"
+    ],
+    "evaluacion": "✓ CORRECTO"
+  },
+  {
+    "fragmento": "C1_cuantificador_universal",
+    "condicion": "LATEX     | doc~ query✓ sin tabla",
+    "version_doc": "latex",
+    "con_tabla": false,
+    "corrupt_question": false,
+    "respuesta": "La afirmación vale para todos los reales.",
+    "esperado": [
+      "todos",
+      "todo",
+      "para todo",
+      "cada"
+    ],
+    "evaluacion": "✓ CORRECTO"
+  },
+  {
+    "fragmento": "C2_existe_unico",
+    "condicion": "LIMPIO    | doc✓ query✓ sin tabla",
+    "version_doc": "limpio",
+    "con_tabla": false,
+    "corrupt_question": false,
+    "respuesta": "Un valor de x.",
+    "esperado": [
+      "exactamente uno",
+      "único",
+      "uno solo",
+      "un único"
+    ],
+    "evaluacion": "? SIN RESPUESTA"
+  },
+  {
+    "fragmento": "C2_existe_unico",
+    "condicion": "DOC CORR  | doc✗ query✓ sin tabla",
+    "version_doc": "corrupto",
+    "con_tabla": false,
+    "corrupt_question": false,
+    "respuesta": "Hay 1 valor de x que satisfacen la ecuación.",
+    "esperado": [
+      "exactamente uno",
+      "único",
+      "uno solo",
+      "un único"
+    ],
+    "evaluacion": "? SIN RESPUESTA"
+  },
+  {
+    "fragmento": "C2_existe_unico",
+    "condicion": "FULL CORR | doc✗ query✗ sin tabla",
+    "version_doc": "corrupto",
+    "con_tabla": false,
+    "corrupt_question": true,
+    "respuesta": "Hay 1 valor de x que satisfacen la ecuación.",
+    "esperado": [
+      "exactamente uno",
+      "único",
+      "uno solo",
+      "un único"
+    ],
+    "evaluacion": "? SIN RESPUESTA"
+  },
+  {
+    "fragmento": "C2_existe_unico",
+    "condicion": "QUERY CORR| doc✓ query✗ sin tabla",
+    "version_doc": "limpio",
+    "con_tabla": false,
+    "corrupt_question": true,
+    "respuesta": "Un valor de x.",
+    "esperado": [
+      "exactamente uno",
+      "único",
+      "uno solo",
+      "un único"
+    ],
+    "evaluacion": "? SIN RESPUESTA"
+  },
+  {
+    "fragmento": "C2_existe_unico",
+    "condicion": "CON TABLA | doc✗ query✓ con tabla",
+    "version_doc": "corrupto",
+    "con_tabla": true,
+    "corrupt_question": false,
+    "respuesta": "Hay un valor de x que satisface la ecuación.",
+    "esperado": [
+      "exactamente uno",
+      "único",
+      "uno solo",
+      "un único"
+    ],
+    "evaluacion": "? SIN RESPUESTA"
+  },
+  {
+    "fragmento": "C2_existe_unico",
+    "condicion": "LATEX     | doc~ query✓ sin tabla",
+    "version_doc": "latex",
+    "con_tabla": false,
+    "corrupt_question": false,
+    "respuesta": "Un valor único de x.",
+    "esperado": [
+      "exactamente uno",
+      "único",
+      "uno solo",
+      "un único"
+    ],
+    "evaluacion": "✓ CORRECTO"
+  },
+  {
+    "fragmento": "C3_bicondicional",
+    "condicion": "LIMPIO    | doc✓ query✓ sin tabla",
+    "version_doc": "limpio",
+    "con_tabla": false,
+    "corrupt_question": false,
+    "respuesta": "P es falso.",
+    "esperado": [
+      "falso",
+      "false"
+    ],
+    "evaluacion": "✓ CORRECTO"
+  },
+  {
+    "fragmento": "C3_bicondicional",
+    "condicion": "DOC CORR  | doc✗ query✓ sin tabla",
+    "version_doc": "corrupto",
+    "con_tabla": false,
+    "corrupt_question": false,
+    "respuesta": "P es falso.",
+    "esperado": [
+      "falso",
+      "false"
+    ],
+    "evaluacion": "✓ CORRECTO"
+  },
+  {
+    "fragmento": "C3_bicondicional",
+    "condicion": "FULL CORR | doc✗ query✗ sin tabla",
+    "version_doc": "corrupto",
+    "con_tabla": false,
+    "corrupt_question": true,
+    "respuesta": "P es falso.",
+    "esperado": [
+      "falso",
+      "false"
+    ],
+    "evaluacion": "✓ CORRECTO"
+  },
+  {
+    "fragmento": "C3_bicondicional",
+    "condicion": "QUERY CORR| doc✓ query✗ sin tabla",
+    "version_doc": "limpio",
+    "con_tabla": false,
+    "corrupt_question": true,
+    "respuesta": "P es falso.",
+    "esperado": [
+      "falso",
+      "false"
+    ],
+    "evaluacion": "✓ CORRECTO"
+  },
+  {
+    "fragmento": "C3_bicondicional",
+    "condicion": "CON TABLA | doc✗ query✓ con tabla",
+    "version_doc": "corrupto",
+    "con_tabla": true,
+    "corrupt_question": false,
+    "respuesta": "P es verdadero.",
+    "esperado": [
+      "falso",
+      "false"
+    ],
+    "evaluacion": "✗ CONFUNDIDO"
+  },
+  {
+    "fragmento": "C3_bicondicional",
+    "condicion": "LATEX     | doc~ query✓ sin tabla",
+    "version_doc": "latex",
+    "con_tabla": false,
+    "corrupt_question": false,
+    "respuesta": "P es falso.",
+    "esperado": [
+      "falso",
+      "false"
+    ],
+    "evaluacion": "✓ CORRECTO"
+  },
+  {
+    "fragmento": "C4_producto_cartesiano",
+    "condicion": "LIMPIO    | doc✓ query✓ sin tabla",
+    "version_doc": "limpio",
+    "con_tabla": false,
+    "corrupt_question": false,
+    "respuesta": "Pares ordenados.",
+    "esperado": [
+      "pares ordenados",
+      "pares",
+      "par ordenado"
+    ],
+    "evaluacion": "✓ CORRECTO"
+  },
+  {
+    "fragmento": "C4_producto_cartesiano",
+    "condicion": "DOC CORR  | doc✗ query✓ sin tabla",
+    "version_doc": "corrupto",
+    "con_tabla": false,
+    "corrupt_question": false,
+    "respuesta": "El dominio de f son pares ordenados.",
+    "esperado": [
+      "pares ordenados",
+      "pares",
+      "par ordenado"
+    ],
+    "evaluacion": "✓ CORRECTO"
+  },
+  {
+    "fragmento": "C4_producto_cartesiano",
+    "condicion": "FULL CORR | doc✗ query✗ sin tabla",
+    "version_doc": "corrupto",
+    "con_tabla": false,
+    "corrupt_question": true,
+    "respuesta": "El dominio de f son pares ordenados.",
+    "esperado": [
+      "pares ordenados",
+      "pares",
+      "par ordenado"
+    ],
+    "evaluacion": "✓ CORRECTO"
+  },
+  {
+    "fragmento": "C4_producto_cartesiano",
+    "condicion": "QUERY CORR| doc✓ query✗ sin tabla",
+    "version_doc": "limpio",
+    "con_tabla": false,
+    "corrupt_question": true,
+    "respuesta": "Pares ordenados.",
+    "esperado": [
+      "pares ordenados",
+      "pares",
+      "par ordenado"
+    ],
+    "evaluacion": "✓ CORRECTO"
+  },
+  {
+    "fragmento": "C4_producto_cartesiano",
+    "condicion": "CON TABLA | doc✗ query✓ con tabla",
+    "version_doc": "corrupto",
+    "con_tabla": true,
+    "corrupt_question": false,
+    "respuesta": "El dominio de f son pares ordenados.",
+    "esperado": [
+      "pares ordenados",
+      "pares",
+      "par ordenado"
+    ],
+    "evaluacion": "✓ CORRECTO"
+  },
+  {
+    "fragmento": "C4_producto_cartesiano",
+    "condicion": "LATEX     | doc~ query✓ sin tabla",
+    "version_doc": "latex",
+    "con_tabla": false,
+    "corrupt_question": false,
+    "respuesta": "Pares ordenados.",
+    "esperado": [
+      "pares ordenados",
+      "pares",
+      "par ordenado"
+    ],
+    "evaluacion": "✓ CORRECTO"
+  }
+]

@@ -1,0 +1,423 @@
+
+======================================================================
+EXPERIMENTO FASE 1 — COMPRENSIÓN
+Modelo: qwen3:1.7b
+Fecha:  2026-07-29 16:54
+======================================================================
+
+
+──────────────────────────────────────────────────────────────────────
+📄 A1_desigualdad
+──────────────────────────────────────────────────────────────────────
+Pregunta:    ¿Juan aprobó?
+Esperado:    sí / si / aprobó / pasó
+Incorrecto:  no aprobó / reprobó / insuficiente / desaprobó
+
+
+  [LIMPIO    | doc✓ query✓ sin tabla]
+  Respuesta:  Juan aprobó.
+  Resultado:  ✓ CORRECTO
+
+  [DOC CORR  | doc✗ query✓ sin tabla]
+  Respuesta:  Juan aprobó.
+  Resultado:  ✓ CORRECTO
+
+  [FULL CORR | doc✗ query✗ sin tabla]
+  Respuesta:  Juan aprobó.
+  Resultado:  ✓ CORRECTO
+
+  [QUERY CORR| doc✓ query✗ sin tabla]
+  Respuesta:  Juan aprobó.
+  Resultado:  ✓ CORRECTO
+
+  [CON TABLA | doc✗ query✓ con tabla]
+  Respuesta:  Juan aprobó.
+  Resultado:  ✓ CORRECTO
+
+  [LATEX     | doc~ query✓ sin tabla]
+  Respuesta:  Juan aprobó.
+  Resultado:  ✓ CORRECTO
+
+──────────────────────────────────────────────────────────────────────
+📄 A2_bicondicional
+──────────────────────────────────────────────────────────────────────
+Pregunta:    ¿Qué valor de verdad tiene A?
+Esperado:    falso / false / falsa
+Incorrecto:  verdadero / true / verdadera / no se puede / indeterminado / depende
+
+
+  [LIMPIO    | doc✓ query✓ sin tabla]
+  Respuesta:  A es verdadero.
+  Resultado:  ✗ CONFUNDIDO
+
+  [DOC CORR  | doc✗ query✓ sin tabla]
+  Respuesta:  A es falso.
+  Resultado:  ✓ CORRECTO
+
+  [FULL CORR | doc✗ query✗ sin tabla]
+  Respuesta:  A es falso.
+  Resultado:  ✓ CORRECTO
+
+  [QUERY CORR| doc✓ query✗ sin tabla]
+  Respuesta:  A es verdadero.
+  Resultado:  ✗ CONFUNDIDO
+
+  [CON TABLA | doc✗ query✓ con tabla]
+  Respuesta:  A es verdadero.
+  Resultado:  ✗ CONFUNDIDO
+
+  [LATEX     | doc~ query✓ sin tabla]
+  Respuesta:  A es verdadero.
+  Resultado:  ✗ CONFUNDIDO
+
+──────────────────────────────────────────────────────────────────────
+📄 A3_cuantificador
+──────────────────────────────────────────────────────────────────────
+Pregunta:    ¿La afirmación vale para todos los reales o solo para alguno?
+Esperado:    todos / todo / para todo / cada / cualquier
+Incorrecto:  alguno / algunos / existe / hay algún / solo para / algún
+
+
+  [LIMPIO    | doc✓ query✓ sin tabla]
+  Respuesta:  La afirmación vale para todos los reales.
+  Resultado:  ✓ CORRECTO
+
+  [DOC CORR  | doc✗ query✓ sin tabla]
+  Respuesta:  La afirmación vale para todos los reales.
+  Resultado:  ✓ CORRECTO
+
+  [FULL CORR | doc✗ query✗ sin tabla]
+  Respuesta:  La afirmación vale para todos los reales.
+  Resultado:  ✓ CORRECTO
+
+  [QUERY CORR| doc✓ query✗ sin tabla]
+  Respuesta:  La afirmación vale para todos los reales.
+  Resultado:  ✓ CORRECTO
+
+  [CON TABLA | doc✗ query✓ con tabla]
+  Respuesta:  La afirmación vale para todos los reales.
+  Resultado:  ✓ CORRECTO
+
+  [LATEX     | doc~ query✓ sin tabla]
+  Respuesta:  La afirmación vale para todos los reales.
+  Resultado:  ✓ CORRECTO
+
+──────────────────────────────────────────────────────────────────────
+📄 A4_producto_cart
+──────────────────────────────────────────────────────────────────────
+Pregunta:    ¿El dominio de f son pares ordenados de reales o números reales individuales?
+Esperado:    pares ordenados / pares / par ordenado / pares de reales
+Incorrecto:  números individuales / individuales / un número / un solo número
+
+
+  [LIMPIO    | doc✓ query✓ sin tabla]
+  Respuesta:  El dominio de f son pares ordenados de reales.
+  Resultado:  ✓ CORRECTO
+
+  [DOC CORR  | doc✗ query✓ sin tabla]
+  Respuesta:  El dominio de f son pares ordenados de reales.
+  Resultado:  ✓ CORRECTO
+
+  [FULL CORR | doc✗ query✗ sin tabla]
+  Respuesta:  El dominio de f son pares ordenados de reales.
+  Resultado:  ✓ CORRECTO
+
+  [QUERY CORR| doc✓ query✗ sin tabla]
+  Respuesta:  El dominio de f son pares ordenados de reales.
+  Resultado:  ✓ CORRECTO
+
+  [CON TABLA | doc✗ query✓ con tabla]
+  Respuesta:  El dominio de f son pares ordenados de números reales.
+  Resultado:  ✓ CORRECTO
+
+  [LATEX     | doc~ query✓ sin tabla]
+  Respuesta:  El dominio de f son pares ordenados de reales.
+  Resultado:  ✓ CORRECTO
+
+──────────────────────────────────────────────────────────────────────
+📄 B1_equilibrio
+──────────────────────────────────────────────────────────────────────
+Pregunta:    ¿La reacción puede ocurrir en ambos sentidos?
+Esperado:    sí / si / ambos / reversible / bidireccional / en ambos sentidos
+Incorrecto:  solo un sentido / unidireccional / irreversible / un solo sentido
+
+
+  [LIMPIO    | doc✓ query✓ sin tabla]
+  Respuesta:  Sí, la reacción puede ocurrir en ambos sentidos.
+  Resultado:  ✓ CORRECTO
+
+  [DOC CORR  | doc✗ query✓ sin tabla]
+  Respuesta:  Sí, la reacción puede ocurrir en ambos sentidos.
+  Resultado:  ✓ CORRECTO
+
+  [FULL CORR | doc✗ query✗ sin tabla]
+  Respuesta:  Sí, la reacción puede ocurrir en ambos sentidos.
+  Resultado:  ✓ CORRECTO
+
+  [QUERY CORR| doc✓ query✗ sin tabla]
+  Respuesta:  Sí, la reacción puede ocurrir en ambos sentidos.
+  Resultado:  ✓ CORRECTO
+
+  [CON TABLA | doc✗ query✓ con tabla]
+  Respuesta:  Sí, la reacción puede ocurrir en ambos sentidos.
+  Resultado:  ✓ CORRECTO
+
+  [LATEX     | doc~ query✓ sin tabla]
+  Respuesta:  Sí, la reacción puede ocurrir en ambos sentidos.
+  Resultado:  ✓ CORRECTO
+
+──────────────────────────────────────────────────────────────────────
+📄 B2_angstrom
+──────────────────────────────────────────────────────────────────────
+Pregunta:    La unidad de longitud indicada, ¿es más pequeña o más grande que 1 milímetro?
+Esperado:    más pequeña / menor / mucho menor / más chica / inferior
+Incorrecto:  más grande / mayor / superior / grande
+
+
+  [LIMPIO    | doc✓ query✓ sin tabla]
+  Respuesta:  La unidad de longitud indicada, λ, es más pequeña que 1 milímetro.
+  Resultado:  ✓ CORRECTO
+
+  [DOC CORR  | doc✗ query✓ sin tabla]
+  Respuesta:  La unidad de longitud indicada es más pequeña que 1 milímetro.
+  Resultado:  ✓ CORRECTO
+
+  [FULL CORR | doc✗ query✗ sin tabla]
+  Respuesta:  La unidad de longitud indicada es más pequeña que 1 milímetro.
+  Resultado:  ✓ CORRECTO
+
+  [QUERY CORR| doc✓ query✗ sin tabla]
+  Respuesta:  Más pequeña que 1 milímetro.
+  Resultado:  ✓ CORRECTO
+
+  [CON TABLA | doc✗ query✓ con tabla]
+  Respuesta:  Más pequeña que 1 milímetro.
+  Resultado:  ✓ CORRECTO
+
+  [LATEX     | doc~ query✓ sin tabla]
+  Respuesta:  La unidad de longitud indicada, λ, es más pequeña que 1 milímetro.
+  Resultado:  ✓ CORRECTO
+
+──────────────────────────────────────────────────────────────────────
+📄 B3_modal
+──────────────────────────────────────────────────────────────────────
+Pregunta:    ¿Esta expresión tiene la misma forma lógica que P → P?
+Esperado:    no / no tiene / no es igual / distinta / diferente / no son iguales
+Incorrecto:  igual / idéntica / misma forma / la misma
+
+
+  [LIMPIO    | doc✓ query✓ sin tabla]
+  Respuesta:  Sí, la expresión □P → P tiene la misma forma lógica que P → P.
+  Resultado:  ✗ CONFUNDIDO
+
+  [DOC CORR  | doc✗ query✓ sin tabla]
+  Respuesta:  Sí, la expresión tiene la misma forma lógica que P → P.
+  Resultado:  ✗ CONFUNDIDO
+
+  [FULL CORR | doc✗ query✗ sin tabla]
+  Respuesta:  Sí, la expresión tiene la misma forma lógica que P ∧ P.
+  Resultado:  ✗ CONFUNDIDO
+
+  [QUERY CORR| doc✓ query✗ sin tabla]
+  Respuesta:  La expresión □P → P tiene la misma forma lógica que P â P.
+  Resultado:  ✗ CONFUNDIDO
+
+  [CON TABLA | doc✗ query✓ con tabla]
+  Respuesta:  La expresión â–¡P â P tiene la misma forma lógica que P → P.
+  Resultado:  ✗ CONFUNDIDO
+
+  [LATEX     | doc~ query✓ sin tabla]
+  Respuesta:  La expresión \BoxP \to P tiene la misma forma lógica que P → P.
+  Resultado:  ✗ CONFUNDIDO
+
+──────────────────────────────────────────────────────────────────────
+📄 B4_subconjunto
+──────────────────────────────────────────────────────────────────────
+Pregunta:    ¿Se puede concluir que A y B son iguales?
+Esperado:    no / no se puede / imposible / contradicción / inconsistente
+Incorrecto:  sí / si / son iguales / iguales / se puede concluir
+
+
+  [LIMPIO    | doc✓ query✓ sin tabla]
+  Respuesta:  Sí, se puede concluir que A y B son iguales.
+  Resultado:  ✗ CONFUNDIDO
+
+  [DOC CORR  | doc✗ query✓ sin tabla]
+  Respuesta:  Sí, se puede concluir que A y B son iguales.
+  Resultado:  ✗ CONFUNDIDO
+
+  [FULL CORR | doc✗ query✗ sin tabla]
+  Respuesta:  Sí, se puede concluir que A y B son iguales.
+  Resultado:  ✗ CONFUNDIDO
+
+  [QUERY CORR| doc✓ query✗ sin tabla]
+  Respuesta:  Sí, se puede concluir que A y B son iguales.
+  Resultado:  ✗ CONFUNDIDO
+
+  [CON TABLA | doc✗ query✓ con tabla]
+  Respuesta:  No, se puede concluir que A y B son iguales.
+  Resultado:  ✗ CONFUNDIDO
+
+  [LATEX     | doc~ query✓ sin tabla]
+  Respuesta:  Sí, se puede concluir que A y B son iguales.
+  Resultado:  ✗ CONFUNDIDO
+
+──────────────────────────────────────────────────────────────────────
+📄 C1_ipa
+──────────────────────────────────────────────────────────────────────
+Pregunta:    ¿El segundo sonido de la pronunciación transcrita es una vocal o una consonante?
+Esperado:    vocal / es una vocal / sonido vocal / vocálico
+Incorrecto:  consonante / es una consonante / sonido consonántico
+
+
+  [LIMPIO    | doc✓ query✓ sin tabla]
+  Respuesta:  Es una vocal.
+  Resultado:  ✓ CORRECTO
+
+  [DOC CORR  | doc✗ query✓ sin tabla]
+  Respuesta:  Es una vocal.
+  Resultado:  ✓ CORRECTO
+
+  [FULL CORR | doc✗ query✗ sin tabla]
+  Respuesta:  Es una vocal.
+  Resultado:  ✓ CORRECTO
+
+  [QUERY CORR| doc✓ query✗ sin tabla]
+  Respuesta:  Es una vocal.
+  Resultado:  ✓ CORRECTO
+
+  [CON TABLA | doc✗ query✓ con tabla]
+  Respuesta:  Una vocal.
+  Resultado:  ✓ CORRECTO
+
+  [LATEX     | doc~ query✓ sin tabla]
+  Respuesta:  Es una vocal.
+  Resultado:  ✓ CORRECTO
+
+──────────────────────────────────────────────────────────────────────
+📄 C2_interpunct
+──────────────────────────────────────────────────────────────────────
+Pregunta:    ¿Cuántas palabras distintas componen este texto?
+Esperado:    tres / 3 / tres palabras / tres partes
+Incorrecto:  una / uno / dos / 2 / cuatro / una sola
+
+
+  [LIMPIO    | doc✓ query✓ sin tabla]
+  Respuesta:  Tres palabras distintas.
+  Resultado:  ✓ CORRECTO
+
+  [DOC CORR  | doc✗ query✓ sin tabla]
+  Respuesta:  Tres palabras distintas.
+  Resultado:  ✓ CORRECTO
+
+  [FULL CORR | doc✗ query✗ sin tabla]
+  Respuesta:  Tres palabras distintas.
+  Resultado:  ✓ CORRECTO
+
+  [QUERY CORR| doc✓ query✗ sin tabla]
+  Respuesta:  Tres palabras distintas.
+  Resultado:  ✓ CORRECTO
+
+  [CON TABLA | doc✗ query✓ con tabla]
+  Respuesta:  Hay 3 palabras distintas.
+  Resultado:  ✓ CORRECTO
+
+  [LATEX     | doc~ query✓ sin tabla]
+  Respuesta:  3
+  Resultado:  ✓ CORRECTO
+
+──────────────────────────────────────────────────────────────────────
+📄 C3_musical
+──────────────────────────────────────────────────────────────────────
+Pregunta:    ¿Esta nota es más aguda o más grave que si natural?
+Esperado:    más grave / grave / más baja / inferior / menor / más bajo
+Incorrecto:  más aguda / aguda / más alta / superior / igual / lo mismo
+
+
+  [LIMPIO    | doc✓ query✓ sin tabla]
+  Respuesta:  Más grave.
+  Resultado:  ✓ CORRECTO
+
+  [DOC CORR  | doc✗ query✓ sin tabla]
+  Respuesta:  Más grave.
+  Resultado:  ✓ CORRECTO
+
+  [FULL CORR | doc✗ query✗ sin tabla]
+  Respuesta:  Más grave.
+  Resultado:  ✓ CORRECTO
+
+  [QUERY CORR| doc✓ query✗ sin tabla]
+  Respuesta:  Más grave.
+  Resultado:  ✓ CORRECTO
+
+  [CON TABLA | doc✗ query✓ con tabla]
+  Respuesta:  Más grave.
+  Resultado:  ✓ CORRECTO
+
+  [LATEX     | doc~ query✓ sin tabla]
+  Respuesta:  Más grave.
+  Resultado:  ✓ CORRECTO
+
+──────────────────────────────────────────────────────────────────────
+📄 C4_obelus
+──────────────────────────────────────────────────────────────────────
+Pregunta:    ¿El texto encerrado entre los dos símbolos es considerado original o de autenticidad dudosa?
+Esperado:    dudoso / corrupto / no es original / cuestionado / dudosa autenticidad / dudosa
+Incorrecto:  original / seguro / auténtico / es original / genuino
+
+
+  [LIMPIO    | doc✓ query✓ sin tabla]
+  Respuesta:  El texto encerrado entre los dos símbolos es considerado original y de autenticidad no dudosa.
+  Resultado:  ✗ CONFUNDIDO
+
+  [DOC CORR  | doc✗ query✓ sin tabla]
+  Respuesta:  El texto encerrado entre los dos símbolos es considerado original y de autenticidad no dudosa.
+  Resultado:  ✗ CONFUNDIDO
+
+  [FULL CORR | doc✗ query✗ sin tabla]
+  Respuesta:  El texto encerrado entre los dos símbolos es considerado original y de autenticidad no dudosa.
+  Resultado:  ✗ CONFUNDIDO
+
+  [QUERY CORR| doc✓ query✗ sin tabla]
+  Respuesta:  El texto encerrado entre los dos símbolos es considerado original y de autenticidad no dudosa.
+  Resultado:  ✗ CONFUNDIDO
+
+  [CON TABLA | doc✗ query✓ con tabla]
+  Respuesta:  El texto encerrado entre los dos símbolos es considerado de autenticidad dudosa.
+  Resultado:  ✓ CORRECTO
+
+  [LATEX     | doc~ query✓ sin tabla]
+  Respuesta:  El texto encerrado entre los dos símbolos es considerado original o de autenticidad dudosa.
+  Resultado:  ✗ CONFUNDIDO
+
+======================================================================
+RESUMEN
+======================================================================
+
+Condición                       ✓ Correct  ✗ Confund  ? Sin resp Total
+────────────────────────────────────────────────────────────────────
+LIMPIO    | doc✓ query✓ sin tabla     8/12       4/12        0/12   12
+DOC CORR  | doc✗ query✓ sin tabla     9/12       3/12        0/12   12
+FULL CORR | doc✗ query✗ sin tabla     9/12       3/12        0/12   12
+QUERY CORR| doc✓ query✗ sin tabla     8/12       4/12        0/12   12
+CON TABLA | doc✗ query✓ con tabla     9/12       3/12        0/12   12
+LATEX     | doc~ query✓ sin tabla     8/12       4/12        0/12   12
+
+────────────────────────────────────────────────────────────────────
+Por nivel (condición LIMPIO):
+  alta   → ✓3/4  ✗1/4  ?0/4
+  baja   → ✓3/4  ✗1/4  ?0/4
+  media  → ✓2/4  ✗2/4  ?0/4
+
+Categorías:
+  ✓ CORRECTO      → respondió con al menos un término clave correcto
+  ✗ CONFUNDIDO    → respondió con un término específicamente incorrecto
+  ? SIN RESPUESTA → no dijo nada correcto ni incorrecto
+
+Condiciones:
+  LIMPIO    | doc✓ query✓ → techo: modelo con símbolos perfectos
+  DOC CORR  | doc✗ query✓ → escenario RAG más común
+  FULL CORR | doc✗ query✗ → peor caso
+  QUERY CORR| doc✓ query✗ → usuario con clipboard corrupto
+  CON TABLA | doc✗ query✓ → efecto del prompt engineering
+  LATEX     | doc~ query✓ → notación LaTeX alternativa
