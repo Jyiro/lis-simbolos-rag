@@ -1,0 +1,159 @@
+
+======================================================================
+EXPERIMENTO FASE 1 — COMPRENSIÓN
+Modelo: qwen3:1.7b
+Fecha:  2026-07-28 16:48
+======================================================================
+
+
+──────────────────────────────────────────────────────────────────────
+📄 C1_cuantificador_universal
+──────────────────────────────────────────────────────────────────────
+Pregunta:    ¿La afirmación vale para todos los reales o solo para alguno?
+Esperado:    todos / todo / para todo / cada
+Incorrecto:  alguno / algunos / existe / hay algún / solo para
+
+
+  [LIMPIO    | doc✓ query✓ sin tabla]
+  Respuesta:  La afirmación vale para todos los reales.
+  Resultado:  ✓ CORRECTO
+
+  [DOC CORR  | doc✗ query✓ sin tabla]
+  Respuesta:  La afirmación vale para todos los reales.
+  Resultado:  ✓ CORRECTO
+
+  [FULL CORR | doc✗ query✗ sin tabla]
+  Respuesta:  La afirmación vale para todos los reales.
+  Resultado:  ✓ CORRECTO
+
+  [QUERY CORR| doc✓ query✗ sin tabla]
+  Respuesta:  La afirmación vale para todos los reales.
+  Resultado:  ✓ CORRECTO
+
+  [CON TABLA | doc✗ query✓ con tabla]
+  Respuesta:  La afirmación vale para todos los reales.
+  Resultado:  ✓ CORRECTO
+
+  [LATEX     | doc~ query✓ sin tabla]
+  Respuesta:  La afirmación vale para todos los reales.
+  Resultado:  ✓ CORRECTO
+
+──────────────────────────────────────────────────────────────────────
+📄 C2_existe_unico
+──────────────────────────────────────────────────────────────────────
+Pregunta:    Según el texto, ¿cuántos valores de x satisfacen la ecuación?
+Esperado:    exactamente uno / único / uno solo / un único
+Incorrecto:  infinitos / varios / todos / ninguno / dos / múltiples
+
+
+  [LIMPIO    | doc✓ query✓ sin tabla]
+  Respuesta:  Un valor de x.
+  Resultado:  ? SIN RESPUESTA
+
+  [DOC CORR  | doc✗ query✓ sin tabla]
+  Respuesta:  Hay 1 valor de x que satisfacen la ecuación.
+  Resultado:  ? SIN RESPUESTA
+
+  [FULL CORR | doc✗ query✗ sin tabla]
+  Respuesta:  Hay 1 valor de x que satisfacen la ecuación.
+  Resultado:  ? SIN RESPUESTA
+
+  [QUERY CORR| doc✓ query✗ sin tabla]
+  Respuesta:  Un valor de x.
+  Resultado:  ? SIN RESPUESTA
+
+  [CON TABLA | doc✗ query✓ con tabla]
+  Respuesta:  Hay un valor de x que satisface la ecuación.
+  Resultado:  ? SIN RESPUESTA
+
+  [LATEX     | doc~ query✓ sin tabla]
+  Respuesta:  Un valor único de x.
+  Resultado:  ✓ CORRECTO
+
+──────────────────────────────────────────────────────────────────────
+📄 C3_bicondicional
+──────────────────────────────────────────────────────────────────────
+Pregunta:    ¿Qué valor de verdad tiene P?
+Esperado:    falso / false
+Incorrecto:  verdadero / true / no se puede / depende / indeterminado
+
+
+  [LIMPIO    | doc✓ query✓ sin tabla]
+  Respuesta:  P es falso.
+  Resultado:  ✓ CORRECTO
+
+  [DOC CORR  | doc✗ query✓ sin tabla]
+  Respuesta:  P es falso.
+  Resultado:  ✓ CORRECTO
+
+  [FULL CORR | doc✗ query✗ sin tabla]
+  Respuesta:  P es falso.
+  Resultado:  ✓ CORRECTO
+
+  [QUERY CORR| doc✓ query✗ sin tabla]
+  Respuesta:  P es falso.
+  Resultado:  ✓ CORRECTO
+
+  [CON TABLA | doc✗ query✓ con tabla]
+  Respuesta:  P es verdadero.
+  Resultado:  ✗ CONFUNDIDO
+
+  [LATEX     | doc~ query✓ sin tabla]
+  Respuesta:  P es falso.
+  Resultado:  ✓ CORRECTO
+
+──────────────────────────────────────────────────────────────────────
+📄 C4_producto_cartesiano
+──────────────────────────────────────────────────────────────────────
+Pregunta:    ¿El dominio de f son pares ordenados o números individuales?
+Esperado:    pares ordenados / pares / par ordenado
+Incorrecto:  números individuales / individuales / un número / un solo número
+
+
+  [LIMPIO    | doc✓ query✓ sin tabla]
+  Respuesta:  Pares ordenados.
+  Resultado:  ✓ CORRECTO
+
+  [DOC CORR  | doc✗ query✓ sin tabla]
+  Respuesta:  El dominio de f son pares ordenados.
+  Resultado:  ✓ CORRECTO
+
+  [FULL CORR | doc✗ query✗ sin tabla]
+  Respuesta:  El dominio de f son pares ordenados.
+  Resultado:  ✓ CORRECTO
+
+  [QUERY CORR| doc✓ query✗ sin tabla]
+  Respuesta:  Pares ordenados.
+  Resultado:  ✓ CORRECTO
+
+  [CON TABLA | doc✗ query✓ con tabla]
+  Respuesta:  El dominio de f son pares ordenados.
+  Resultado:  ✓ CORRECTO
+
+  [LATEX     | doc~ query✓ sin tabla]
+  Respuesta:  Pares ordenados.
+  Resultado:  ✓ CORRECTO
+
+======================================================================
+RESUMEN
+======================================================================
+
+Condición                       ✓ Correct  ✗ Confund  ? Sin resp Total
+────────────────────────────────────────────────────────────────────
+LIMPIO    | doc✓ query✓ sin tabla     3/4        0/4         1/4    4
+DOC CORR  | doc✗ query✓ sin tabla     3/4        0/4         1/4    4
+FULL CORR | doc✗ query✗ sin tabla     3/4        0/4         1/4    4
+QUERY CORR| doc✓ query✗ sin tabla     3/4        0/4         1/4    4
+CON TABLA | doc✗ query✓ con tabla     2/4        1/4         1/4    4
+LATEX     | doc~ query✓ sin tabla     4/4        0/4         0/4    4
+
+Categorías:
+  ✓ CORRECTO     → respondió con al menos un término clave correcto
+  ✗ CONFUNDIDO   → respondió con un término específicamente incorrecto (peor caso)
+  ? SIN RESPUESTA → no dijo nada correcto ni incorrecto (el modelo no interpretó el símbolo)
+
+Interpretación de condiciones:
+  LIMPIO sin tabla   → techo: qué puede el modelo con símbolos perfectos
+  CORRUPTO sin tabla → piso: qué pasa sin ninguna ayuda
+  CORRUPTO con tabla → efecto de la tabla de contexto en el prompt
+  LATEX sin tabla    → ¿LaTeX en línea es más o menos interpretable que Unicode corrupto?
