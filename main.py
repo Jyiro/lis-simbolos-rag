@@ -41,6 +41,7 @@ from backends import get_backend, list_backends
 from prompt_strategies import list_strategies
 from experiment import correr_experimento
 from echo_experiment import correr_echo, save_echo_results
+from rebuild_experiment import correr_rebuild, save_rebuild_results
 from report import save_all
 
 
@@ -92,14 +93,25 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--modo",
-        choices=["experimento", "echo"],
+        choices=["experimento", "echo", "rebuild", "smoke"],
         default="experimento",
         help=(
             "Modo de ejecución: "
             "'experimento' (default) corre el experimento principal (7 fragmentos × 8 condiciones). "
             "'echo' corre el experimento de fidelidad de caracteres: verifica si el modelo "
-            "reproduce las cadenas corruptas sin normalizarlas."
+            "reproduce las cadenas corruptas sin normalizarlas. "
+            "'rebuild' corre el experimento de reconstrucción: pasa frases con múltiples "
+            "puntos de corrupción y una tabla de decodificación para que el modelo reconstruya "
+            "el texto original. "
+            "'smoke' hace una petición súper corta para verificar conectividad (útil para Ngrok/Kaggle)."
         ),
+    )
+    parser.add_argument(
+        "--tabla-completa",
+        action="store_true",
+        default=False,
+        help="(modo rebuild) Pasar la tabla de decodificación COMPLETA al LLM "
+             "en lugar de solo los símbolos presentes en la frase.",
     )
     parser.add_argument(
         "--tui",
@@ -228,6 +240,22 @@ def main():
         app.run()
         return
 
+    if args.modo == "smoke":
+        print(f"\n💨 Iniciando Smoke Test contra {args.backend} ({args.modelo})...")
+        prompt = "Hola, responde exclusivamente con la palabra 'Conectado'."
+        print(f"Prompt: '{prompt}'")
+        print("Respuesta: ", end="", flush=True)
+        try:
+            resp = backend.query(
+                user_prompt=prompt,
+                system_prompt=None,
+                on_token=lambda t: print(t, end="", flush=True)
+            )
+            print(f"\n\n✅ Smoke Test exitoso en {resp.timing_ms:.0f} ms.")
+        except Exception as e:
+            print(f"\n❌ Error durante el Smoke Test: {e}")
+        return
+
     if args.modo == "echo":
         run_id = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{args.modelo}_{args.backend}_echo"
 
@@ -246,6 +274,29 @@ def main():
 
         print(f"\n{'='*72}")
         print(f"✅ Resultados de eco guardados en results_echo/{run_id}/")
+        print(f"   JSON:     {json_path}")
+        print(f"   TXT:      {txt_path}")
+        print(f"   Markdown: {md_path}")
+
+    elif args.modo == "rebuild":
+        run_id = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{args.modelo}_{args.backend}_rebuild"
+
+        results = correr_rebuild(
+            backend=backend,
+            modelo_id=args.modelo,
+            run_id=run_id,
+            tabla_completa=args.tabla_completa,
+        )
+
+        json_path, txt_path, md_path = save_rebuild_results(
+            results=results,
+            run_id=run_id,
+            modelo_id=args.modelo,
+            backend_name=args.backend,
+        )
+
+        print(f"\n{'='*72}")
+        print(f"✅ Resultados de reconstrucción guardados en results_rebuild/{run_id}/")
         print(f"   JSON:     {json_path}")
         print(f"   TXT:      {txt_path}")
         print(f"   Markdown: {md_path}")

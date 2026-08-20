@@ -65,6 +65,15 @@ Necesitás un backend LLM corriendo localmente (ej: `llama-server` u Ollama) par
 # Experimento de fidelidad de caracteres (modo echo, audita normalización silenciosa)
 ~/.venv-ml/bin/python3 main.py --modo echo
 ~/.venv-ml/bin/python3 main.py --modo echo --modelo gemma-4b
+
+# Experimento de reconstrucción (modo rebuild)
+# El LLM recibe frases con múltiples corrupciones + tabla de decodificación
+~/.venv-ml/bin/python3 main.py --modo rebuild                    # tabla mínima (solo símbolos presentes)
+~/.venv-ml/bin/python3 main.py --modo rebuild --tabla-completa   # tabla completa (todo el CORRUPT_MAP)
+~/.venv-ml/bin/python3 main.py --modo rebuild --modelo gemma-4b
+
+# Smoke test (Verificar conexión rápida con el LLM, útil si estás usando ngrok)
+~/.venv-ml/bin/python3 main.py --modo smoke
 ```
 
 ### 3. Ver resultados
@@ -76,9 +85,14 @@ results/<run_id>/
 └── report.md      ← markdown con análisis y scores de similitud contrastiva
 
 results_echo/<run_id>/
-├── echo_results.json   ← datos completos con comparación de bytes
-├── echo_summary.txt    ← tabla rápida de resultados
-└── echo_report.md      ← reporte con análisis y hexdump auditable
+├── echo_results.json   ← datos completos con comparación de bytes y Levenshtein
+├── echo_summary.txt    ← tabla rápida con distancias y clasificación
+└── echo_report.md      ← reporte con auditoría hexadecimal byte a byte
+
+results_rebuild/<run_id>/
+├── rebuild_results.json   ← reconstrucciones completas con CER por fragmento
+├── rebuild_summary.txt    ← tabla rápida: fragmento, símbolos, distancia y CER
+└── rebuild_report.md      ← markdown con comparación original vs. reconstruido
 ```
 
 ---
@@ -93,6 +107,23 @@ results_echo/<run_id>/
 
 ---
 
+## Arranque rápido — Nube (Kaggle + Ngrok)
+
+Si tu computadora no tiene suficiente VRAM, podés levantar el LLM en **Kaggle** aprovechando sus 2 GPUs T4 (30GB VRAM) y conectarte remotamente desde este repositorio local usando `ngrok`. 
+
+1. Seguí las instrucciones del archivo **`kaggle_guide.md`** incluido en este repositorio para levantar el LLM allá.
+2. Ngrok te dará una URL (ej: `https://1a2b-3c4d.ngrok-free.app`).
+3. En tu terminal local, configurá la variable de entorno y corré el código normalmente:
+
+```bash
+export LLAMA_CPP_URL="https://1a2b-3c4d.ngrok-free.app"
+~/.venv-ml/bin/python3 main.py --modo smoke
+~/.venv-ml/bin/python3 main.py --modo experimento
+```
+*(El archivo `backends/llama_cpp.py` tomará la variable automáticamente en lugar de buscar en localhost).*
+
+---
+
 ## Hallazgos Metodológicos Clave
 
 El proyecto implementa dos marcos de evaluación robustos para auditar LLMs:
@@ -102,7 +133,13 @@ Verifica si el LLM "sanitiza" el texto corrupto (Mojibake) antes de procesarlo, 
 - Utiliza **Distancia de Levenshtein** y **Auditoría Hexadecimal**.
 - **Descubrimiento (La Curva en U):** Modelos pequeños (2B) copian fielmente la basura porque carecen de inferencia. Modelos medianos (4B) detectan el error tipográfico e intentan "autocorregirlo" (Distancia > 0), desobedeciendo la instrucción de copiar literalmente. Modelos grandes (9B) detectan el error pero tienen el "alignment" necesario para obedecer al usuario y mantener fidelidad absoluta.
 
-### 2. Evaluación Semántica Continua
+### 2. Test de Reconstrucción (Decodificación Activa)
+A diferencia del ECHO que prueba obediencia pasiva, el Rebuild evalúa comprensión activa: el LLM recibe frases con **múltiples puntos de corrupción simultáneos** (hasta 7 símbolos diferentes en una sola frase) y una tabla de decodificación, y debe reconstruir el texto original.
+- Métricas: **CER (Character Error Rate)** y **Levenshtein** respecto al texto limpio original.
+- Flag `--tabla-completa` para comparar si más contexto ayuda o satura al modelo.
+- Evalúa si el modelo puede operar como un "decodificador activo" cuando se le proveen las reglas de traducción.
+
+### 3. Evaluación Semántica Continua
 Las palabras clave (`✓` / `✗`) son binarias y frágiles. Se implementó un pipeline con `sentence-transformers` (`paraphrase-multilingual-MiniLM-L12-v2`):
 - **Max Cosine Similarity:** Se compara la respuesta del LLM contra múltiples referencias válidas, tomando la mayor similitud para absorber parafraseos.
 - **Score Contrastivo:** Se resta la similitud de una respuesta "terca" o alucinada. Un score negativo cuantifica empíricamente la **Terquedad Semántica** (cuando el LLM desobedece el RAG y prioriza sus pesos paramétricos erróneos).

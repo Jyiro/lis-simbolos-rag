@@ -29,7 +29,7 @@ class LlamaCppBackend:
     """Adapter para llama-server (llama.cpp)."""
 
     NAME = "llama_cpp"
-    DEFAULT_BASE_URL = "http://localhost:8080"
+    DEFAULT_BASE_URL = "https://debrief-wife-bully.ngrok-free.dev"
 
     def __init__(
         self,
@@ -40,7 +40,12 @@ class LlamaCppBackend:
         timeout: int = 300,
         thinking_mode: bool = False,
     ) -> None:
-        self.base_url      = base_url.rstrip("/")
+        import os
+        env_url = os.environ.get("LLAMA_CPP_URL")
+        if env_url:
+            self.base_url = env_url.rstrip("/")
+        else:
+            self.base_url = base_url.rstrip("/")
         self.model_id      = model_id
         self.temperature   = temperature
         self.max_tokens    = max_tokens
