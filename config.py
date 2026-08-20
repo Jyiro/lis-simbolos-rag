@@ -67,6 +67,34 @@ MODEL_REGISTRY: dict[str, ModelConfig] = {
         available   = True,
         notes       = "Gemma 4B Instruct QAT — llama.cpp",
     ),
+    "phi-4-mini": ModelConfig(
+        id          = "phi-4-mini",
+        gguf_name   = "microsoft_Phi-4-mini-instruct-Q4_K_M",
+        ollama_name = "phi4:mini",
+        available   = True,
+        notes       = "Phi-4 Mini Instruct Q4 — llama.cpp",
+    ),
+    "phi-4": ModelConfig(
+        id          = "phi-4",
+        gguf_name   = "phi-4-Q4_K_M",
+        ollama_name = "phi4",
+        available   = True,
+        notes       = "Phi-4 Q4 — llama.cpp",
+    ),
+    "llama-3.2-3b": ModelConfig(
+        id          = "llama-3.2-3b",
+        gguf_name   = "llama-3.2-3b-instruct-q4_k_m",
+        ollama_name = "llama3.2",
+        available   = True,
+        notes       = "Llama 3.2 3B Instruct Q4 — llama.cpp",
+    ),
+    "llama-3.1-8b": ModelConfig(
+        id          = "llama-3.1-8b",
+        gguf_name   = "Meta-Llama-3.1-8B-Instruct-Q4_K_M",
+        ollama_name = "llama3.1",
+        available   = True,
+        notes       = "Llama 3.1 8B Instruct Q4 — llama.cpp",
+    ),
 }
 
 

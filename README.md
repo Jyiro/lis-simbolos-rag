@@ -151,9 +151,13 @@ Las palabras clave (`✓` / `✗`) son binarias y frágiles. Se implementó un p
 | ID | GGUF | Ollama | Estado |
 |----|------|--------|--------|
 | `qwen3.5-2b` | `Qwen3.5-2B-Q4_K_M.gguf` | `qwen3.5:2b` | ✅ |
+| `qwen3.5-4b` | `qwen3.5-4b-instruct-Q4_K_M.gguf` | `qwen3.5:4b` | ✅ |
+| `qwen3.5-9b` | `Qwen3.5-9B-Q4_K_M.gguf` | `qwen3.5:8b` | ✅ |
 | `gemma-4b` | `gemma-4-E4B-it-qat-UD-Q4_K_XL.gguf` | `gemma3:4b` | ✅ |
-| `qwen3-4b` | `Qwen3-4B-Q4_K_M.gguf` | `qwen3:4b` | 🔲 stub |
-| `qwen3-7b` | `Qwen3-7B-Q4_K_M.gguf` | `qwen3:7b` | 🔲 stub |
+| `phi-4-mini` | `microsoft_Phi-4-mini-instruct-Q4_K_M.gguf`| `phi4:mini` | ✅ |
+| `phi-4` | `phi-4-Q4_K_M.gguf` | `phi4` | ✅ |
+| `llama-3.2-3b`| `llama-3.2-3b-instruct-q4_k_m.gguf` | `llama3.2` | ✅ |
+| `llama-3.1-8b`| `Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf` | `llama3.1` | ✅ |
 
 > Cuando descargues un stub: actualizá `gguf_name` y `available=True` en `config.py`, y el nombre en `serve.sh`.
 
