@@ -1,0 +1,152 @@
+========================================================================
+EXPERIMENTO FASE 1 — COMPRENSIÓN + INSTRUCTION HIERARCHY
+Modelo:    qwen3.5-2b
+Backend:   llama_cpp
+Run ID:    20260806_155911_qwen3.5-2b_llama_cpp_nothink
+Timestamp: 2026-08-06T15:59:11.486605
+========================================================================
+
+────────────────────────────────────────────────────────────────────────
+RESUMEN POR CONDICIÓN
+
+Condición                            ✓ Correct  ✗ Confund  ? Sin resp  Total
+────────────────────────────────────────────────────────────────────────
+LIMPIO    | sin tabla                   4/7        2/7         1/7     7
+DOC CORR  | sin tabla                   2/7        4/7         1/7     7
+LATEX     | sin tabla                   6/7        1/7         0/7     7
+CON TABLA | plain                       5/7        2/7         0/7     7
+I1-A      | énfasis simple              6/7        1/7         0/7     7
+I1-B      | override semántico          6/7        1/7         0/7     7
+I1-C      | rol simulado en user        6/7        1/7         0/7     7
+I1-D      | system message real         6/7        1/7         0/7     7
+
+Por nivel de frecuencia (condición LIMPIO):
+  alta   → ✓1/1  ✗0/1  ?0/1
+  baja   → ✓2/3  ✗0/3  ?1/3
+  media  → ✓1/3  ✗2/3  ?0/3
+
+Instruction Hierarchy — Resumen:
+  Tabla plana — sin énfasis                     ✓5/7  ✗2/7  ?0/7
+  I1-A — Énfasis simple (IMPORTANTE)            ✓6/7  ✗1/7  ?0/7
+  I1-B — Override semántico explícito           ✓6/7  ✗1/7  ?0/7
+  I1-C — Rol de sistema simulado en user message ✓6/7  ✗1/7  ?0/7
+  I1-D — System message real (máxima prioridad) ✓6/7  ✗1/7  ?0/7
+
+Categorías:
+  ✓ CORRECTO      → respondió con al menos un término clave correcto
+  ✗ CONFUNDIDO    → respondió con un término específicamente incorrecto
+  ? SIN RESPUESTA → no dijo nada correcto ni incorrecto
+
+Condiciones:
+  LIMPIO    | sin tabla  → techo: modelo con símbolos perfectos
+  DOC CORR  | sin tabla  → escenario RAG más común
+  FULL CORR | doc✗ query✗ → peor caso total
+  QUERY CORR| doc✓ query✗ → usuario con clipboard corrupto
+  LATEX     | sin tabla  → notación LaTeX alternativa
+  CON TABLA | plain      → tabla sin énfasis (baseline con tabla)
+  I1-A      | énfasis simple    → "IMPORTANTE: usá el documento"
+  I1-B      | override semántico → "las definiciones reemplazan tu conocimiento"
+  I1-C      | rol simulado      → "[SISTEMA]" en user message
+  I1-D      | system message    → system role real (máxima prioridad)
+
+
+────────────────────────────────────────────────────────────────────────
+DETALLE POR FRAGMENTO
+
+────────────────────────────────────────
+📄 A4_producto_cart  [alta]  Matemática
+   Símbolo: ×
+   Doc limpio:   Sea f: ℝ × ℝ → ℝ
+   Doc corrupto: Sea f: â Ã â â â
+  [✓] LIMPIO    | sin tabla               → "El dominio de f es el conjunto de todos los pares ordenados de reales."
+  [✗] DOC CORR  | sin tabla               → "El dominio de f es el conjunto de números reales individuales."
+  [✓] LATEX     | sin tabla               → "El dominio de f es el conjunto de todos los pares ordenados de reales."
+  [✗] CON TABLA | plain                   → "El dominio de $f$ es el conjunto de todos los números reales individuales."
+  [✓] I1-A      | énfasis simple          → "El dominio de f es el conjunto de todos los pares ordenados de números reales."
+  [✓] I1-B      | override semántico      → "El dominio de f es el conjunto de todos los pares ordenados de números reales."
+  [✗] I1-C      | rol simulado en user    → "El dominio de f es el conjunto de todos los números reales individuales."
+  [✓] I1-D      | system message real     → "El dominio de f es el conjunto de todos los pares ordenados de números reales."
+
+────────────────────────────────────────
+📄 B2_angstrom  [media]  Física
+   Símbolo: Å
+   Doc limpio:   λ = 550 Å
+   Doc corrupto: λ = 550 Ã…
+  [✓] LIMPIO    | sin tabla               → "La unidad es más pequeña que 1 milímetro."
+  [✓] DOC CORR  | sin tabla               → "Sí, la unidad de longitud indicada es más pequeña que 1 milímetro."
+  [✓] LATEX     | sin tabla               → "La unidad de longitud indicada es más pequeña que 1 milímetro."
+  [✓] CON TABLA | plain                   → "La unidad de longitud indicada es más pequeña que 1 milímetro."
+  [✓] I1-A      | énfasis simple          → "Sí, la unidad de longitud indicada es más pequeña que 1 milímetro."
+  [✓] I1-B      | override semántico      → "La unidad de longitud indicada es más pequeña que 1 milímetro."
+  [✓] I1-C      | rol simulado en user    → "Sí, es más pequeña que 1 milímetro."
+  [✓] I1-D      | system message real     → "La unidad es más pequeña que 1 milímetro."
+
+────────────────────────────────────────
+📄 B3_modal  [media]  Lógica Modal
+   Símbolo: □
+   Doc limpio:   □P → P
+   Doc corrupto: â–¡P â P
+  [✗] LIMPIO    | sin tabla               → "Sí, la expresión tiene la misma forma lógica que P → P."
+  [✓] DOC CORR  | sin tabla               → "No, porque la expresión original es una negación de la implicación, no una impli"
+  [✓] LATEX     | sin tabla               → "No, porque el antecedente de la primera proposición es una fórmula lógica, no un"
+  [✓] CON TABLA | plain                   → "No, porque la expresión anterior es una fórmula lógica válida, mientras que la s"
+  [✓] I1-A      | énfasis simple          → "No, porque la expresión dada es una tautología vacía (una proposición vacía) mie"
+  [✓] I1-B      | override semántico      → "No, porque el símbolo 'â–¡' representa un operador modal de necesidad, no una im"
+  [✓] I1-C      | rol simulado en user    → "No, porque la expresión dada es una tautología vacía (una proposición que es sie"
+  [✓] I1-D      | system message real     → "No, porque la expresión â–¡P â P no es una proposición lógica válida en el docum"
+
+────────────────────────────────────────
+📄 B4_subconjunto  [media]  Matemática / Teoría de conjuntos
+   Símbolo: ⊂
+   Doc limpio:   A ⊂ B y B ⊂ A
+   Doc corrupto: A âŠ‚ B y B âŠ‚ A
+  [✗] LIMPIO    | sin tabla               → "No, no se puede concluir que A y B son iguales porque la relación de inclusión n"
+  [✗] DOC CORR  | sin tabla               → "No, porque A y B son iguales solo si A es igual a B y B es igual a A, no por el "
+  [✗] LATEX     | sin tabla               → "Sí, A y B son iguales."
+  [✗] CON TABLA | plain                   → "No, porque A y B son iguales solo si además se cumple A = B."
+  [✗] I1-A      | énfasis simple          → "No, porque A y B son subconjuntos estrictos de uno y otro, por lo que no son igu"
+  [✗] I1-B      | override semántico      → "No, porque la definición del documento establece que A y B son subconjuntos estr"
+  [✓] I1-C      | rol simulado en user    → "No, porque la relación de subconjunto estricto implica que los conjuntos son dif"
+  [✗] I1-D      | system message real     → "No, porque A y B son iguales solo si A es igual a B y B es igual a A, lo cual no"
+
+────────────────────────────────────────
+📄 C2_interpunct  [baja]  Historia / Epigrafía
+   Símbolo: ·
+   Doc limpio:   SEXTUS·RUFINUS·MAXIMUS
+   Doc corrupto: SEXTUSÂ·RUFINUSÂ·MAXIMUS
+  [?] LIMPIO    | sin tabla               → "El texto contiene 10 palabras distintas."
+  [?] DOC CORR  | sin tabla               → "6 palabras distintas."
+  [✓] LATEX     | sin tabla               → "Tres palabras distintas componen este texto."
+  [✓] CON TABLA | plain                   → "El texto contiene 3 palabras distintas."
+  [✓] I1-A      | énfasis simple          → "El texto contiene 3 palabras distintas: Sextus, Rufinus y Maximus."
+  [✓] I1-B      | override semántico      → "El texto contiene 3 palabras distintas."
+  [✓] I1-C      | rol simulado en user    → "3 palabras distintas."
+  [✓] I1-D      | system message real     → "El texto contiene 3 palabras distintas."
+
+────────────────────────────────────────
+📄 C3_musical  [baja]  Música
+   Símbolo: ♭
+   Doc limpio:   La escala comienza en si♭
+   Doc corrupto: La escala comienza en siâ™­
+  [✓] LIMPIO    | sin tabla               → "Si♭ es más grave que si natural."
+  [✗] DOC CORR  | sin tabla               → "Sí, es más aguda."
+  [✓] LATEX     | sin tabla               → "Si\flat es más grave que si natural."
+  [✓] CON TABLA | plain                   → "Sí, es más grave que si natural."
+  [✓] I1-A      | énfasis simple          → "La nota es más grave que si natural."
+  [✓] I1-B      | override semántico      → "La nota es más grave que si natural."
+  [✓] I1-C      | rol simulado en user    → "Más grave."
+  [✓] I1-D      | system message real     → "La nota es más grave que si natural."
+
+────────────────────────────────────────
+📄 C4_obelus  [baja]  Filología / Crítica textual
+   Símbolo: †
+   Doc limpio:   omnia †vincit† amor
+   Doc corrupto: omnia â vincitâ  amor
+  [✓] LIMPIO    | sin tabla               → "Sí, el texto es de autenticidad dudosa."
+  [✗] DOC CORR  | sin tabla               → "Sí, es original."
+  [✓] LATEX     | sin tabla               → "El texto es de autenticidad dudosa."
+  [✓] CON TABLA | plain                   → "Sí, el texto entre los símbolos es considerado corrupto o de autenticidad dudosa"
+  [✓] I1-A      | énfasis simple          → "Sí, el texto es considerado de autenticidad dudosa."
+  [✓] I1-B      | override semántico      → "El texto es de autenticidad dudosa."
+  [✓] I1-C      | rol simulado en user    → "El texto es de autenticidad dudosa."
+  [✓] I1-D      | system message real     → "El texto está marcado con un obelo (†), lo que indica que es considerado de aute"

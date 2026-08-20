@@ -1,4 +1,4 @@
-"""Corpus experimental — 12 fragmentos en tres niveles de frecuencia estimada.
+"""Corpus experimental — 7 fragmentos en tres roles experimentales.
 
 Diseño de cada fragmento:
   - El símbolo es la única pista semántica para responder la pregunta.
@@ -6,59 +6,30 @@ Diseño de cada fragmento:
   - La respuesta incorrecta "inteligente" sin el símbolo es predecible.
   - La pregunta no menciona el símbolo.
 
-Hipótesis experimental (descriptiva, observable):
-  Alta frecuencia  → CONFUNDIDO bajo corrupción (el modelo tiene rep. interna activable)
-  Baja frecuencia  → SIN RESPUESTA bajo corrupción (y posiblemente también en LIMPIO)
+Roles en el experimento de Instruction Hierarchy:
+  Terquedad semántica  → B3_modal, B4_subconjunto
+    El modelo conoce el símbolo y lo confunde con una variante más común.
+    Falla incluso con tabla. ¿Puede el system message (I1-D) romperlo?
+
+  Efecto principal (control positivo) → A4_producto_cart, B2_angstrom, C3_musical, C4_obelus
+    La corrupción causa confusión, la tabla la recupera.
+    Sirve para verificar que las condiciones I1 no empeoran lo que ya funciona.
+
+  Control de baja frecuencia → C2_interpunct
+    Símbolo oscuro — el modelo sigue instrucciones sin resistencia.
+    Permite comparar "obediencia perfecta" con los casos de terquedad.
+
+Fragmentos eliminados respecto al corpus original (v1.1, 12 fragmentos):
+  A1_desigualdad  → contexto lingüístico rescata siempre, sin efecto observable
+  A2_bicondicional → 1.7b falla incluso limpio (límite del modelo, no del símbolo)
+  A3_cuantificador → contexto lingüístico rescata siempre (x²≥0 es tautología obvia)
+  B1_equilibrio    → reacción Fe/Ce: el modelo deduce reversibilidad por química general
+  C1_ipa           → corrupción no afecta al modelo (tokenización fortuita robusta)
 """
 
 FRAGMENTOS = [
 
-    # ── Alta frecuencia ───────────────────────────────────────────────────
-    {
-        "id": "A1_desigualdad",
-        "domain": "Matemática",
-        "level": "alta",
-        "critical_symbol": "≥",
-        "document": "Aprobado si nota ≥ 6. Juan obtuvo 6.",
-        "question": "¿Juan aprobó?",
-        "context_definition": (
-            "≥ significa 'mayor o igual que': el umbral incluye el valor exacto, "
-            "un puntaje igual al mínimo requerido también aprueba."
-        ),
-        "expected": ["sí", "si", "aprobó", "pasó"],
-        "forbidden": ["no aprobó", "reprobó", "insuficiente", "desaprobó"],
-    },
-
-    {
-        "id": "A2_bicondicional",
-        "domain": "Lógica",
-        "level": "alta",
-        "critical_symbol": "⟺",
-        "document": "A ⟺ B. B es falso.",
-        "question": "¿Qué valor de verdad tiene A?",
-        "context_definition": (
-            "⟺ es el bicondicional lógico: A ⟺ B significa que A y B tienen "
-            "siempre el mismo valor de verdad."
-        ),
-        "expected": ["falso", "false", "falsa"],
-        "forbidden": ["verdadero", "true", "verdadera", "no se puede", "indeterminado", "depende"],
-    },
-
-    {
-        "id": "A3_cuantificador",
-        "domain": "Matemática",
-        "level": "alta",
-        "critical_symbol": "∀",
-        "document": "∀x ∈ ℝ : x² ≥ 0",
-        "question": "¿La afirmación vale para todos los reales o solo para alguno?",
-        "context_definition": (
-            "∀ significa 'para todo': la afirmación se sostiene para cada elemento "
-            "del conjunto, sin excepción."
-        ),
-        "expected": ["todos", "todo", "para todo", "cada", "cualquier"],
-        "forbidden": ["alguno", "algunos", "existe", "hay algún", "solo para", "algún"],
-    },
-
+    # ── Alta frecuencia ───────────────────────────────────────────────────────
     {
         "id": "A4_producto_cart",
         "domain": "Matemática",
@@ -70,27 +41,17 @@ FRAGMENTOS = [
             "× entre conjuntos denota el producto cartesiano: ℝ × ℝ es el conjunto "
             "de todos los pares ordenados de números reales."
         ),
+        "reference_answers": [
+            "El dominio son pares ordenados de reales.",
+            "El dominio de f son pares (x, y) con x e y en ℝ, no reales individuales.",
+            "f toma como entrada pares de números reales, no valores individuales.",
+        ],
+        "wrong_reference": "El dominio son números reales individuales, no pares.",
         "expected": ["pares ordenados", "pares", "par ordenado", "pares de reales"],
         "forbidden": ["números individuales", "individuales", "un número", "un solo número"],
     },
 
-    # ── Media frecuencia ──────────────────────────────────────────────────
-    {
-        "id": "B1_equilibrio",
-        "domain": "Química",
-        "level": "media",
-        "critical_symbol": "⇌",
-        # Reacción redox real pero no famosa — evita conocimiento memorizado
-        "document": "Fe²⁺ + Ce⁴⁺ ⇌ Fe³⁺ + Ce³⁺",
-        "question": "¿La reacción puede ocurrir en ambos sentidos?",
-        "context_definition": (
-            "⇌ indica una reacción química reversible: puede ocurrir tanto en el "
-            "sentido directo (reactivos → productos) como en el inverso."
-        ),
-        "expected": ["sí", "si", "ambos", "reversible", "bidireccional", "en ambos sentidos"],
-        "forbidden": ["solo un sentido", "unidireccional", "irreversible", "un solo sentido"],
-    },
-
+    # ── Media frecuencia ──────────────────────────────────────────────────────
     {
         "id": "B2_angstrom",
         "domain": "Física",
@@ -102,6 +63,12 @@ FRAGMENTOS = [
             "Å es el ångström: unidad de longitud equivalente a 10⁻¹⁰ metros "
             "(0,0000001 mm), usada para longitudes de onda de luz visible."
         ),
+        "reference_answers": [
+            "Es mucho más pequeña que un milímetro.",
+            "El ångström es mucho menor que 1 mm; equivale a 10⁻¹⁰ metros.",
+            "La unidad es más chica que un milímetro, es una unidad subatómica de longitud.",
+        ],
+        "wrong_reference": "La unidad es más grande que un milímetro.",
         "expected": ["más pequeña", "menor", "mucho menor", "más chica", "inferior"],
         "forbidden": ["más grande", "mayor", "superior", "grande"],
     },
@@ -117,6 +84,12 @@ FRAGMENTOS = [
             "□ es el operador modal de necesidad: □P se lee 'P es necesariamente "
             "verdadero', que es una afirmación más fuerte que P solo."
         ),
+        "reference_answers": [
+            "No, no tienen la misma forma lógica. □P introduce el operador modal de necesidad, que es más fuerte que P simple.",
+            "No son iguales: □P → P dice que lo necesariamente verdadero implica lo verdadero, lo cual es distinto de P → P.",
+            "No. La forma lógica es diferente porque □ agrega una capa modal que P → P no tiene.",
+        ],
+        "wrong_reference": "Sí, tienen la misma forma lógica, es equivalente a P → P.",
         "expected": ["no", "no tiene", "no es igual", "distinta", "diferente", "no son iguales"],
         "forbidden": ["igual", "idéntica", "misma forma", "la misma"],
     },
@@ -125,8 +98,8 @@ FRAGMENTOS = [
         "id": "B4_subconjunto",
         "domain": "Matemática / Teoría de conjuntos",
         "level": "media",
-        # ∃! reemplazado: cualquier ecuación con solución única el modelo la resuelve
-        # ⊂ (subconjunto estricto) vs ⊆ tiene bifurcación real: A⊂B y B⊂C no implica A=C
+        # ⊂ (subconjunto estricto): A⊂B y B⊂A es imposible (contradicción)
+        # El modelo conoce A⊆B ∧ B⊆A → A=B (antisimetría) y confunde ⊂ con ⊆
         "critical_symbol": "⊂",
         "document": "A ⊂ B y B ⊂ A",
         "question": "¿Se puede concluir que A y B son iguales?",
@@ -134,42 +107,36 @@ FRAGMENTOS = [
             "⊂ denota subconjunto estricto: A ⊂ B significa que A está contenido "
             "en B pero A ≠ B. Es diferente de ⊆ que permite la igualdad."
         ),
-        # Sin ⊂: el modelo conoce que A⊆B y B⊆A implica A=B (antisimetría) → dice "sí"
-        # Con ⊂ estricto: A⊂B requiere A≠B, pero si A⊂B y B⊂A simultáneamente
-        # es imposible (contradicción) → la premisa es inconsistente → no se puede concluir
+        # Con ⊂ estricto: A⊂B y B⊂A simultáneamente es imposible → premisa inconsistente
+        "reference_answers": [
+            "No, no se puede concluir que son iguales. Con subconjunto estricto, A⊂B y B⊂A es una contradicción.",
+            "No. La premisa es inconsistente: ⊂ estricto prohíbe la igualdad, por lo que A⊂B y B⊂A no pueden ser simultáneamente verdaderos.",
+            "Es imposible concluir la igualdad; de hecho la premisa misma es una contradicción con subconjunto estricto.",
+        ],
+        "wrong_reference": "Sí, se puede concluir que A y B son iguales por antisimetría.",
         "expected": ["no", "no se puede", "imposible", "contradicción", "inconsistente"],
         "forbidden": ["sí", "si", "son iguales", "iguales", "se puede concluir"],
     },
 
-    # ── Baja frecuencia ───────────────────────────────────────────────────
-    {
-        "id": "C1_ipa",
-        "domain": "Lingüística / Fonética",
-        "level": "baja",
-        "critical_symbol": "æ",
-        "document": "La pronunciación es /bæd/",
-        "question": "¿El segundo sonido de la pronunciación transcrita es una vocal o una consonante?",
-        "context_definition": (
-            "æ (ash) es una vocal del Alfabeto Fonético Internacional (AFI): "
-            "representa el sonido vocálico de palabras como 'bad' o 'cat' en inglés."
-        ),
-        "expected": ["vocal", "es una vocal", "sonido vocal", "vocálico"],
-        "forbidden": ["consonante", "es una consonante", "sonido consonántico"],
-    },
-
+    # ── Baja frecuencia ───────────────────────────────────────────────────────
     {
         "id": "C2_interpunct",
         "domain": "Historia / Epigrafía",
         "level": "baja",
         "critical_symbol": "·",
-        # Cicerón reemplazado — demasiado famoso, el modelo sabe que son 3 nombres
-        # Sextus Rufinus Maximus: nombre romano real pero sin notoriedad suficiente
+        # Nombre romano real pero sin notoriedad: el modelo no puede inferir por conocimiento
         "document": "SEXTUS·RUFINUS·MAXIMUS",
         "question": "¿Cuántas palabras distintas componen este texto?",
         "context_definition": (
             "· (interpunct o punto mediano) es el separador de palabras del latín "
             "clásico: divide el texto en unidades léxicas independientes."
         ),
+        "reference_answers": [
+            "El texto tiene tres palabras: SEXTUS, RUFINUS y MAXIMUS.",
+            "Son tres palabras distintas separadas por el interpunct.",
+            "Tres palabras. El punto mediano actúa como separador de palabras en latín clásico.",
+        ],
+        "wrong_reference": "El texto es una sola palabra.",
         "expected": ["tres", "3", "tres palabras", "tres partes"],
         "forbidden": ["una", "uno", "dos", "2", "cuatro", "una sola"],
     },
@@ -185,6 +152,12 @@ FRAGMENTOS = [
             "♭ (bemol) baja la nota un semitono: si♭ es medio tono más grave "
             "(más bajo en frecuencia) que si natural."
         ),
+        "reference_answers": [
+            "Si♭ es más grave que si natural.",
+            "Es más baja en frecuencia: el bemol baja la nota un semitono.",
+            "Más grave. El bemol indica que la nota baja medio tono respecto al si natural.",
+        ],
+        "wrong_reference": "Si♭ es más aguda que si natural porque el bemol sube la nota.",
         "expected": ["más grave", "grave", "más baja", "inferior", "menor", "más bajo"],
         "forbidden": ["más aguda", "aguda", "más alta", "superior", "igual", "lo mismo"],
     },
@@ -200,6 +173,12 @@ FRAGMENTOS = [
             "† (obelo) es una marca editorial en textos clásicos: indica que el "
             "texto así delimitado es considerado corrupto o de autenticidad dudosa."
         ),
+        "reference_answers": [
+            "Es de autenticidad dudosa. El obelo marca texto corrupto o cuestionado.",
+            "El texto encerrado es considerado corrupto o de dudosa autenticidad por los editores.",
+            "No es original; el símbolo † indica que ese fragmento es de procedencia incierta.",
+        ],
+        "wrong_reference": "El texto encerrado es auténtico y original.",
         "expected": ["dudoso", "corrupto", "no es original", "cuestionado", "dudosa autenticidad", "dudosa"],
         "forbidden": ["original", "seguro", "auténtico", "es original", "genuino"],
     },

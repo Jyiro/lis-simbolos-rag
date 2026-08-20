@@ -1,0 +1,47 @@
+========================================================================
+EXPERIMENTO FASE 1 — COMPRENSIÓN + INSTRUCTION HIERARCHY
+Modelo:    qwen3.5-2b
+Backend:   llama_cpp
+Run ID:    20260813_145907_qwen3.5-2b_llama_cpp_nothink
+Timestamp: 2026-08-13T14:59:07.636673
+========================================================================
+
+────────────────────────────────────────────────────────────────────────
+RESUMEN POR CONDICIÓN
+
+Condición                        ✓ Cor   ✗ Con   ? Sin  Total │ SemScore  Contrast
+────────────────────────────────────────────────────────────────────────────────────
+CON TABLA | plain                 1/1     0/1     0/1       1 │      ---       ---
+
+Por nivel de frecuencia (condición LIMPIO):
+
+Instruction Hierarchy — Resumen:
+  Tabla plana — sin énfasis                     ✓1/1  ✗0/1  ?0/1  │ sem=---
+
+Categorías:
+  ✓ CORRECTO      → respondió con al menos un término clave correcto
+  ✗ CONFUNDIDO    → respondió con un término específicamente incorrecto
+  ? SIN RESPUESTA → no dijo nada correcto ni incorrecto
+
+Condiciones:
+  LIMPIO    | sin tabla  → techo: modelo con símbolos perfectos
+  DOC CORR  | sin tabla  → escenario RAG más común
+  FULL CORR | doc✗ query✗ → peor caso total
+  QUERY CORR| doc✓ query✗ → usuario con clipboard corrupto
+  LATEX     | sin tabla  → notación LaTeX alternativa
+  CON TABLA | plain      → tabla sin énfasis (baseline con tabla)
+  I1-A      | énfasis simple    → "IMPORTANTE: usá el documento"
+  I1-B      | override semántico → "las definiciones reemplazan tu conocimiento"
+  I1-C      | rol simulado      → "[SISTEMA]" en user message
+  I1-D      | system message    → system role real (máxima prioridad)
+
+
+────────────────────────────────────────────────────────────────────────
+DETALLE POR FRAGMENTO
+
+────────────────────────────────────────
+📄 A4_producto_cart  [alta]  Matemática
+   Símbolo: ×
+   Doc limpio:   Sea f: ℝ × ℝ → ℝ
+   Doc corrupto: Sea f: â Ã â â â
+  [✓] CON TABLA | plain                   → "El dominio de la función f es el conjunto de todos los pares ordenados de número"

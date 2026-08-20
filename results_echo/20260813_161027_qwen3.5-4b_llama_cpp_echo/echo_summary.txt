@@ -1,0 +1,11 @@
+REPORTE ECHO TEST - 20260813_161027_qwen3.5-4b_llama_cpp_echo
+=====================================================================================
+SYM   CORRUPT    EVAL            DIST  RECIBIDO                      
+-------------------------------------------------------------------------------------
+·     Â·         FIEL            0     SEXTUSÂ·RUFINUSÂ·MAXIMUS      
+Å     Ã…         NORMALIZADO     2     λ = 550 Å                     
+×     Ã          FIEL            0     Sea f: ℝ Ã ℝ → ℝ              
+†     â          FIEL            0     omnia â vincitâ  amor         
+⊂     âŠ‚        FIEL            0     A âŠ‚ B y B âŠ‚ A             
+□     â–¡        FIEL            0     â–¡P → P                      
+♭     â™­        FIEL            0     La escala comienza en siâ™­   

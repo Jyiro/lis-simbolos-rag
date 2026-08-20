@@ -1,0 +1,56 @@
+{
+  "run": {
+    "run_id": "20260813_151138_qwen3.5-2b_llama_cpp_nothink",
+    "model_id": "qwen3.5-2b",
+    "backend": "llama_cpp",
+    "timestamp": "2026-08-13T15:11:38.536637",
+    "total_results": 1
+  },
+  "results": [
+    {
+      "run_id": "20260813_151138_qwen3.5-2b_llama_cpp_nothink",
+      "model_id": "qwen3.5-2b",
+      "backend_name": "llama_cpp",
+      "timestamp": "2026-08-13T15:11:38.536637",
+      "fragment_id": "A4_producto_cart",
+      "fragment_level": "alta",
+      "fragment_domain": "Matemática",
+      "critical_symbol": "×",
+      "condition_label": "CON TABLA | plain",
+      "doc_version": "corrupto",
+      "strategy_id": "table_plain",
+      "strategy_label": "Tabla plana — sin énfasis",
+      "corrupt_query": false,
+      "doc_limpio": "Sea f: ℝ × ℝ → ℝ",
+      "doc_corrupto": "Sea f: â Ã â â â",
+      "doc_latex": "Sea f: \\mathbb{R} \\times \\mathbb{R} \\to \\mathbb{R}",
+      "prompt_user": "Tabla de notación para este documento:\n- '×' (también puede aparecer como 'Ã' o '\\times')\n  × entre conjuntos denota el producto cartesiano: ℝ × ℝ es el conjunto de todos los pares ordenados de números reales.\n\nTexto:\nSea f: â Ã â â â\n\nPregunta: ¿El dominio de f son pares ordenados de reales o números reales individuales?\nRespondé en una oración corta y directa. No expliques, solo respondé.",
+      "prompt_system": null,
+      "question_used": "¿El dominio de f son pares ordenados de reales o números reales individuales?",
+      "response": "El dominio de la función f es el conjunto de todos los pares ordenados de números reales.",
+      "thinking_text": "",
+      "timing_ms": 5870.7490019987745,
+      "eval_result": "✓ CORRECTO",
+      "eval_matched_expected": [
+        "pares ordenados",
+        "pares"
+      ],
+      "eval_matched_forbidden": [],
+      "eval_expected_terms": [
+        "pares ordenados",
+        "pares",
+        "par ordenado",
+        "pares de reales"
+      ],
+      "eval_forbidden_terms": [
+        "números individuales",
+        "individuales",
+        "un número",
+        "un solo número"
+      ],
+      "semantic_score": 0.7596,
+      "semantic_contrast": 0.1854,
+      "best_reference": "f toma como entrada pares de números reales, no valores individuales."
+    }
+  ]
+}

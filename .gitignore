@@ -220,3 +220,4 @@ __marimo__/
 # Experimento RAG — resultados voluminosos
 # Los JSON de cada run pesan varios MB; solo se versiona el .txt de resumen
 results/*.json
+results_echo/*.json
