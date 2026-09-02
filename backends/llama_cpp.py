@@ -51,6 +51,10 @@ class LlamaCppBackend:
         self.max_tokens    = max_tokens
         self.timeout       = timeout
         self.thinking_mode = thinking_mode
+        self.headers       = {
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json",
+        }
 
     # ── Interfaz pública ──────────────────────────────────────────────────────
 
@@ -119,6 +123,7 @@ class LlamaCppBackend:
         resp = requests.post(
             f"{self.base_url}/v1/chat/completions",
             json=payload,
+            headers=self.headers,
             timeout=self.timeout,
         )
         resp.raise_for_status()
@@ -150,6 +155,7 @@ class LlamaCppBackend:
         with requests.post(
             f"{self.base_url}/v1/chat/completions",
             json=payload,
+            headers=self.headers,
             stream=True,
             timeout=self.timeout,
         ) as resp:
@@ -193,14 +199,22 @@ class LlamaCppBackend:
 
     def health_check(self) -> bool:
         try:
-            r = requests.get(f"{self.base_url}/health", timeout=5)
+            r = requests.get(
+                f"{self.base_url}/v1/models",
+                headers=self.headers,
+                timeout=5
+            )
             return r.status_code == 200
         except Exception:
             return False
 
     def info(self) -> dict:
         try:
-            r = requests.get(f"{self.base_url}/v1/models", timeout=5)
+            r = requests.get(
+                f"{self.base_url}/v1/models",
+                headers=self.headers,
+                timeout=5
+            )
             models = r.json().get("data", []) if r.ok else []
         except Exception:
             models = []

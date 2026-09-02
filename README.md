@@ -107,6 +107,46 @@ results_rebuild/<run_id>/
 
 ---
 
+## RAGFlow (Fase 3 — Pipeline completo)
+
+Para correr experimentos con el pipeline RAG real (interfaz gráfica):
+
+### 0. Instalar Ollama (si no lo tenés)
+
+```bash
+# Arch/CachyOS/Manjaro — instalar via script oficial (el paquete AUR puede estar desactualizado)
+curl -fsSL https://ollama.com/install.sh | sh
+
+# Verificar instalación
+ollama --version
+```
+
+> Ollama se instala como servicio del sistema y arranca automáticamente en `http://localhost:11434`.
+
+### 1. Levantar el servidor de embedding local
+
+```bash
+ollama pull nomic-embed-text   # solo la primera vez (~274 MB)
+
+# Si RAGFlow corre en Docker, Ollama debe escuchar en todas las interfaces:
+OLLAMA_HOST=0.0.0.0 ollama serve   # en una terminal separada (si ollama no está como servicio)
+```
+
+> Si `ollama serve` dice "address already in use", el servicio ya está corriendo — no hace falta correr ese comando.
+
+### 2. Levantar el Chat LLM (Kaggle via Ngrok)
+
+```bash
+# Separar en dos celdas de Kaggle:
+# Celda 1 (Ngrok): corre UNA vez para obtener la URL pública fija
+# Celda 2 (LLM): !python -m llama_cpp.server --model {MODEL} --host 0.0.0.0 --port 8000 --n_gpu_layers -1 --n_ctx 8192 --embedding
+```
+
+### 3. Iniciar RAGFlow y configurar providers
+Ver el archivo [`ragflow_setup.md`](ragflow_setup.md) para la configuración paso a paso de los providers y subida de los PDFs del corpus experimental.
+
+---
+
 ## Arranque rápido — Nube (Kaggle + Ngrok)
 
 Si tu computadora no tiene suficiente VRAM, podés levantar el LLM en **Kaggle** aprovechando sus 2 GPUs T4 (30GB VRAM) y conectarte remotamente desde este repositorio local usando `ngrok`. 
@@ -248,3 +288,9 @@ lis-interpretacion-simbolos-rag/
 2. Importarla y agregarla a la lista en `prompt_strategies/__init__.py`.
 
 No hace falta tocar ningún otro archivo.
+
+## Siguientes pasos
+
+- Explicar brevemente el área / tópico para ver si varían los resultados.
+- Explicaciones técnicas de diferencias entre las familias de modelos, benchmarks de qué tanto siguen instrucciones.
+- Mantener un ojo para la regresión de los modelos: detección de problemas en los chunks.

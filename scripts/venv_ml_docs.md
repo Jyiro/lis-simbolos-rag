@@ -133,6 +133,12 @@ source ~/.venv-ml/bin/activate
 
 **Total descarga:** ~3.5 GB
 
+### Modelos Ollama (para RAGFlow)
+
+| Modelo | Tamaño | Uso | Comando |
+|---|---|---|---|
+| `nomic-embed-text` | ~274 MB | Embedding para RAGFlow (Fase 3) | `ollama pull nomic-embed-text` |
+
 ### Descripción de cada modelo
 
 #### `paraphrase-multilingual-MiniLM-L12-v2` ⭐

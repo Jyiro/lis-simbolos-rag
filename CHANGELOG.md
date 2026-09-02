@@ -2,6 +2,36 @@
 
 Formato: `[AGREGADO]` `[MODIFICADO]` `[ELIMINADO]` `[DECISIÓN]`
 
+## v2.3 — 2026-08-27 (Integración RAGFlow)
+
+### [AGREGADO] RAGFlow — Fase 3 del pipeline
+- **Dataset:** Selección de 4 PDFs académicos con alta densidad de símbolos críticos (recortados inteligentemente en `dataset-ragflow/corpus-ragflow/` para optimizar carga).
+- **Setup Híbrido:** Se documentó y resolvió la arquitectura dividida: LLM en Kaggle (via Ngrok) y modelo de Embedding (`nomic-embed-text`) ejecutado localmente con Ollama para mayor performance.
+- **Troubleshooting:** Se descubrió y mitigó el problema del "bloqueo de túnel" en Ngrok al separar el lanzador del túnel del lanzador de modelo en celdas de Kaggle distintas.
+- **Evidencia Empírica de Falla:** Se detectó el Punto de Falla 1 real en el sistema — el parser de RAGFlow elimina (truncamiento) los símbolos Unicode (como `□` y `◇`) antes de llegar al embedding. Esto valida completamente la necesidad del estudio.
+- Documentación completa en `ragflow_setup.md`.
+
+## v2.2 — 2026-08-20 (Sesión Actual)
+
+### Contexto
+Estabilización del entorno de ejecución remoto vía Kaggle + Ngrok y ejecución masiva del experimento "Rebuild" para auditar modelos de nueva generación en tareas de decodificación estricta.
+
+### [AGREGADO] Ampliación del Model Registry a 8 modelos
+- Se agregaron a `config.py` y `README.md` perfiles completos para Llama-3.1-8b, Llama-3.2-3b, Phi-4, Phi-4-mini y Gemma-4b, complementando la familia Qwen.
+
+### [MODIFICADO] `backends/llama_cpp.py` — Bypass de Ngrok y estándar OpenAI
+- Se inyectó el header `ngrok-skip-browser-warning: true` globalmente en todas las peticiones HTTP para evitar que Ngrok intercepte y bloquee los Health Checks con su landing page HTML.
+- Los endpoints de ping pasaron de `/health` a `/v1/models` para alinearse con la compatibilidad de la API de OpenAI expuesta por `llama-server`.
+
+### [MODIFICADO] `kaggle_guide.md` — Optimización de Instalación
+- Se corrigió el flujo de despliegue en Kaggle. En vez de compilar desde cero, se documentó el uso explícito de *wheels* precompilados para CUDA 12.1 (`cu121`) de `llama-cpp-python`, evitando fallos de compilación y *memory locks*.
+
+### [DECISIÓN] Análisis Exhaustivo Rebuild (CER vs Levenshtein)
+- Se consolidó la ejecución del experimento sobre los 8 modelos. Se creó un análisis profundo demostrando que modelos <4B parámetros sufren *Over-Alignment* (alucinando conversacionalmente o inyectando LaTeX) o truncamientos severos al enfrentar matemáticas en un segundo idioma (ES).
+- Se documentó metodológicamente por qué contrastar **CER vs Distancia de Levenshtein** es clave para separar un colapso atencional de una simple alucinación de relleno.
+
+---
+
 ## v2.1 — 2026-08-11
 
 ### [AGREGADO] Modo `--modo echo` para validación de fidelidad de caracteres (Mojibake)

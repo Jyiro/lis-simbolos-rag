@@ -17,7 +17,7 @@ RESULTS_DIR = "results"
 ECHO_RESULTS_DIR = "results_echo"
 
 # ── URLs de servidores ────────────────────────────────────────────────────────
-LLAMA_CPP_URL = "http://localhost:8080"   # llama-server (esta laptop)
+LLAMA_CPP_URL = "https://debrief-wife-bully.ngrok-free.dev"   # Ngrok (Kaggle) o local
 OLLAMA_URL    = "http://localhost:11434"  # Ollama (PC de escritorio)
 MODELS_DIR    = "/home/jonas/llama.cpp/models"  # directorio de GGUFs
 

@@ -1,0 +1,129 @@
+REPORTE RECONSTRUCCIÓN — 20260820_165337_qwen3.5-9b_llama_cpp_rebuild
+==========================================================================================
+Modelo:  qwen3.5-9b   |   Backend: llama_cpp
+Total exactos: 10/14   |   CER global: 0.010   |   CER es: 0.011   |   CER en: 0.010
+==========================================================================================
+LANG  ID                     SÍMBOLOS                     EVAL        DIST    CER
+------------------------------------------------------------------------------------------
+ES    R1_logica_modal        □ →                          PERFECTO       0  0.000
+ES    R2_calculo_integral    ∀ ∈ ℝ ≥ ×                    CASI           1  0.021
+ES    R3_conjuntos           ⊂ ∀ ∈ →                      PERFECTO       0  0.000
+ES    R4_fisica_optica       Å ≥                          PERFECTO       0  0.000
+ES    R5_quimica             ⇌ ∃! ×                       PERFECTO       0  0.000
+ES    R6_logica_pred         ∀ ∈ ℝ ∃! → ↔ ≥               PARCIAL        2  0.053
+ES    R7_musica_filologia    ♭ · †                        PERFECTO       0  0.000
+EN    R1_modal_logic         □ →                          PERFECTO       0  0.000
+EN    R2_calculus            ∀ ∈ ℝ ≥ ×                    CASI           2  0.044
+EN    R3_set_theory          ⊂ ∀ ∈ →                      PERFECTO       0  0.000
+EN    R4_optics              Å ≥                          PERFECTO       0  0.000
+EN    R5_chemistry           ⇌ ∃! ×                       PERFECTO       0  0.000
+EN    R6_predicate_logic     ∀ ∈ ℝ ∃! → ↔ ≥               CASI           1  0.024
+EN    R7_music_philology     ♭ · †                        PERFECTO       0  0.000
+
+──────────────────────────────────────────────────────────────────────────────────────────
+DETALLE — ESPAÑOL
+──────────────────────────────────────────────────────────────────────────────────────────
+
+[R1_logica_modal] Lógica Modal
+  Símbolos: □ →
+  Original: Si □P → P y □Q → Q, entonces □(P → Q) → (□P → □Q)
+  Corrupto: Si â–¡P â P y â–¡Q â Q, entonces â–¡(P â Q) â (â–¡P â â–¡Q)
+  LLM dijo: Si □P → P y □Q → Q, entonces □(P → Q) → (□P → □Q)
+  Resultado: PERFECTO — Reconstrucción exacta del texto original.
+
+[R2_calculo_integral] Cálculo
+  Símbolos: ∀ ∈ ℝ ≥ ×
+  Original: ∀x ∈ ℝ: si f(x) ≥ 0, entonces f × g es continua
+  Corrupto: âx â â: si f(x) â¥ 0, entonces f Ã g es continua
+  LLM dijo: ∀x ∈ ∀: si f(x) ≥ 0, entonces f × g es continua
+  Resultado: CASI — Reconstrucción casi perfecta (CER: 0.02, dist: 1).
+
+[R3_conjuntos] Teoría de Conjuntos
+  Símbolos: ⊂ ∀ ∈ →
+  Original: A ⊂ B si y solo si ∀x: x ∈ A → x ∈ B
+  Corrupto: A âŠ‚ B si y solo si âx: x â A â x â B
+  LLM dijo: A ⊂ B si y solo si ∀x: x ∈ A → x ∈ B
+  Resultado: PERFECTO — Reconstrucción exacta del texto original.
+
+[R4_fisica_optica] Física / Óptica
+  Símbolos: Å ≥
+  Original: La longitud de onda λ = 550 Å satisface λ ≥ λ_min donde λ_min = 400 Å
+  Corrupto: La longitud de onda λ = 550 Ã… satisface λ â¥ λ_min donde λ_min = 400 Ã…
+  LLM dijo: La longitud de onda λ = 550 Å satisface λ ≥ λ_min donde λ_min = 400 Å
+  Resultado: PERFECTO — Reconstrucción exacta del texto original.
+
+[R5_quimica] Química
+  Símbolos: ⇌ ∃! ×
+  Original: La reacción A + B ⇌ C es reversible si ∃! equilibrio donde A × B = C
+  Corrupto: La reacción A + B â‡Œ C es reversible si â! equilibrio donde A Ã B = C
+  LLM dijo: La reacción A + B ⇌ C es reversible si ∃! equilibrio donde A × B = C
+  Resultado: PERFECTO — Reconstrucción exacta del texto original.
+
+[R6_logica_pred] Lógica de Predicados
+  Símbolos: ∀ ∈ ℝ ∃! → ↔ ≥
+  Original: ∀x ∈ ℝ: ∃! y tal que x → y y y ↔ x ≥ 0
+  Corrupto: âx â â: â! y tal que x â y y y âÃ x â¥ 0
+  LLM dijo: ∀x ∈ ℝ: ∃! y tal que x → y y ↔ x ≥ 0
+  Resultado: PARCIAL — Reconstrucción parcial — algunos símbolos fallaron (CER: 0.05, dist: 2).
+
+[R7_musica_filologia] Música / Filología
+  Símbolos: ♭ · †
+  Original: La escala comienza en si♭ · omnia †vincit† amor
+  Corrupto: La escala comienza en siâ™­ Â· omnia â vincitâ  amor
+  LLM dijo: La escala comienza en si♭ · omnia †vincit† amor
+  Resultado: PERFECTO — Reconstrucción exacta del texto original.
+
+
+──────────────────────────────────────────────────────────────────────────────────────────
+DETALLE — ENGLISH
+──────────────────────────────────────────────────────────────────────────────────────────
+
+[R1_modal_logic] Modal Logic
+  Símbolos: □ →
+  Original: If □P → P and □Q → Q, then □(P → Q) → (□P → □Q)
+  Corrupto: If â–¡P â P and â–¡Q â Q, then â–¡(P â Q) â (â–¡P â â–¡Q)
+  LLM dijo: If □P → P and □Q → Q, then □(P → Q) → (□P → □Q)
+  Resultado: PERFECTO — Reconstrucción exacta del texto original.
+
+[R2_calculus] Calculus
+  Símbolos: ∀ ∈ ℝ ≥ ×
+  Original: ∀x ∈ ℝ: if f(x) ≥ 0, then f × g is continuous
+  Corrupto: âx â â: if f(x) â¥ 0, then f Ã g is continuous
+  LLM dijo: ∀x ∀ ∈: if f(x) ≥ 0, then f × g is continuous
+  Resultado: CASI — Reconstrucción casi perfecta (CER: 0.04, dist: 2).
+
+[R3_set_theory] Set Theory
+  Símbolos: ⊂ ∀ ∈ →
+  Original: A ⊂ B if and only if ∀x: x ∈ A → x ∈ B
+  Corrupto: A âŠ‚ B if and only if âx: x â A â x â B
+  LLM dijo: A ⊂ B if and only if ∀x: x ∈ A → x ∈ B
+  Resultado: PERFECTO — Reconstrucción exacta del texto original.
+
+[R4_optics] Physics / Optics
+  Símbolos: Å ≥
+  Original: The wavelength λ = 550 Å satisfies λ ≥ λ_min where λ_min = 400 Å
+  Corrupto: The wavelength λ = 550 Ã… satisfies λ â¥ λ_min where λ_min = 400 Ã…
+  LLM dijo: The wavelength λ = 550 Å satisfies λ ≥ λ_min where λ_min = 400 Å
+  Resultado: PERFECTO — Reconstrucción exacta del texto original.
+
+[R5_chemistry] Chemistry
+  Símbolos: ⇌ ∃! ×
+  Original: The reaction A + B ⇌ C is reversible if ∃! equilibrium where A × B = C
+  Corrupto: The reaction A + B â‡Œ C is reversible if â! equilibrium where A Ã B = C
+  LLM dijo: The reaction A + B ⇌ C is reversible if ∃! equilibrium where A × B = C
+  Resultado: PERFECTO — Reconstrucción exacta del texto original.
+
+[R6_predicate_logic] Predicate Logic
+  Símbolos: ∀ ∈ ℝ ∃! → ↔ ≥
+  Original: ∀x ∈ ℝ: ∃! y such that x → y and y ↔ x ≥ 0
+  Corrupto: âx â â: â! y such that x â y and y âÃ x â¥ 0
+  LLM dijo: ∀x ∈ ∀: ∃! y such that x → y and y ↔ x ≥ 0
+  Resultado: CASI — Reconstrucción casi perfecta (CER: 0.02, dist: 1).
+
+[R7_music_philology] Music / Philology
+  Símbolos: ♭ · †
+  Original: The scale starts on B♭ · omnia †vincit† amor
+  Corrupto: The scale starts on Bâ™­ Â· omnia â vincitâ  amor
+  LLM dijo: The scale starts on B♭ · omnia †vincit† amor
+  Resultado: PERFECTO — Reconstrucción exacta del texto original.
+

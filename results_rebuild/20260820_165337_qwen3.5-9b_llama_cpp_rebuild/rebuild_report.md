@@ -2,13 +2,13 @@
 
 | Campo | Valor |
 |---|---|
-| Modelo | `qwen3.5-2b` |
+| Modelo | `qwen3.5-9b` |
 | Backend | `llama_cpp` |
-| Run ID | `20260820_144805_qwen3.5-2b_llama_cpp_rebuild` |
-| Total exactos | 5/14 |
-| CER promedio global | 0.098 |
-| CER promedio ES | 0.081 |
-| CER promedio EN | 0.116 |
+| Run ID | `20260820_165337_qwen3.5-9b_llama_cpp_rebuild` |
+| Total exactos | 10/14 |
+| CER promedio global | 0.010 |
+| CER promedio ES | 0.011 |
+| CER promedio EN | 0.010 |
 
 ---
 
@@ -16,26 +16,26 @@
 
 | Lang | Fragmento | Dominio | Símbolos | Resultado | Dist | CER |
 |:---:|---|---|---|:---:|---:|---:|
-| 🇪🇸 | `R1_logica_modal` | Lógica Modal | `□` `→` | 🟠 **PARCIAL** | 10 | 0.204 |
-| 🇪🇸 | `R2_calculo_integral` | Cálculo | `∀` `∈` `ℝ` `≥` `×` | ✅ **PERFECTO** | 0 | 0.000 |
-| 🇪🇸 | `R3_conjuntos` | Teoría de Conjuntos | `⊂` `∀` `∈` `→` | 🟠 **PARCIAL** | 5 | 0.139 |
+| 🇪🇸 | `R1_logica_modal` | Lógica Modal | `□` `→` | ✅ **PERFECTO** | 0 | 0.000 |
+| 🇪🇸 | `R2_calculo_integral` | Cálculo | `∀` `∈` `ℝ` `≥` `×` | 🟡 **CASI** | 1 | 0.021 |
+| 🇪🇸 | `R3_conjuntos` | Teoría de Conjuntos | `⊂` `∀` `∈` `→` | ✅ **PERFECTO** | 0 | 0.000 |
 | 🇪🇸 | `R4_fisica_optica` | Física / Óptica | `Å` `≥` | ✅ **PERFECTO** | 0 | 0.000 |
 | 🇪🇸 | `R5_quimica` | Química | `⇌` `∃!` `×` | ✅ **PERFECTO** | 0 | 0.000 |
-| 🇪🇸 | `R6_logica_pred` | Lógica de Predicados | `∀` `∈` `ℝ` `∃!` `→` `↔` `≥` | 🟠 **PARCIAL** | 2 | 0.051 |
-| 🇪🇸 | `R7_musica_filologia` | Música / Filología | `♭` `·` `†` | 🟠 **PARCIAL** | 8 | 0.170 |
-| 🇬🇧 | `R1_modal_logic` | Modal Logic | `□` `→` | 🟠 **PARCIAL** | 10 | 0.213 |
-| 🇬🇧 | `R2_calculus` | Calculus | `∀` `∈` `ℝ` `≥` `×` | 🟠 **PARCIAL** | 3 | 0.067 |
-| 🇬🇧 | `R3_set_theory` | Set Theory | `⊂` `∀` `∈` `→` | 🟡 **CASI** | 1 | 0.026 |
-| 🇬🇧 | `R4_optics` | Physics / Optics | `Å` `≥` | ❌ **FALLIDO** | 47 | 0.443 |
+| 🇪🇸 | `R6_logica_pred` | Lógica de Predicados | `∀` `∈` `ℝ` `∃!` `→` `↔` `≥` | 🟠 **PARCIAL** | 2 | 0.053 |
+| 🇪🇸 | `R7_musica_filologia` | Música / Filología | `♭` `·` `†` | ✅ **PERFECTO** | 0 | 0.000 |
+| 🇬🇧 | `R1_modal_logic` | Modal Logic | `□` `→` | ✅ **PERFECTO** | 0 | 0.000 |
+| 🇬🇧 | `R2_calculus` | Calculus | `∀` `∈` `ℝ` `≥` `×` | 🟡 **CASI** | 2 | 0.044 |
+| 🇬🇧 | `R3_set_theory` | Set Theory | `⊂` `∀` `∈` `→` | ✅ **PERFECTO** | 0 | 0.000 |
+| 🇬🇧 | `R4_optics` | Physics / Optics | `Å` `≥` | ✅ **PERFECTO** | 0 | 0.000 |
 | 🇬🇧 | `R5_chemistry` | Chemistry | `⇌` `∃!` `×` | ✅ **PERFECTO** | 0 | 0.000 |
-| 🇬🇧 | `R6_predicate_logic` | Predicate Logic | `∀` `∈` `ℝ` `∃!` `→` `↔` `≥` | ✅ **PERFECTO** | 0 | 0.000 |
-| 🇬🇧 | `R7_music_philology` | Music / Philology | `♭` `·` `†` | 🟠 **PARCIAL** | 3 | 0.065 |
+| 🇬🇧 | `R6_predicate_logic` | Predicate Logic | `∀` `∈` `ℝ` `∃!` `→` `↔` `≥` | 🟡 **CASI** | 1 | 0.024 |
+| 🇬🇧 | `R7_music_philology` | Music / Philology | `♭` `·` `†` | ✅ **PERFECTO** | 0 | 0.000 |
 
 ---
 
 ## Detalle — Español 🇪🇸
 
-### 🟠 `R1_logica_modal` — Lógica Modal
+### ✅ `R1_logica_modal` — Lógica Modal
 
 **Símbolos probados:** `□` `→`
 
@@ -43,11 +43,11 @@
 |---|---|
 | **Original** | `Si □P → P y □Q → Q, entonces □(P → Q) → (□P → □Q)` |
 | **Corrupto** | `Si â–¡P â P y â–¡Q â Q, entonces â–¡(P â Q) â (â–¡P â â–¡Q)` |
-| **LLM reconstruyó** | `Si →P →P y →Q →Q, entonces →(P →Q) →(→P →→Q)` |
+| **LLM reconstruyó** | `Si □P → P y □Q → Q, entonces □(P → Q) → (□P → □Q)` |
 
-> **PARCIAL** — Reconstrucción parcial — algunos símbolos fallaron (CER: 0.20, dist: 10).
+> **PERFECTO** — Reconstrucción exacta del texto original.
 
-### ✅ `R2_calculo_integral` — Cálculo
+### 🟡 `R2_calculo_integral` — Cálculo
 
 **Símbolos probados:** `∀` `∈` `ℝ` `≥` `×`
 
@@ -55,11 +55,11 @@
 |---|---|
 | **Original** | `∀x ∈ ℝ: si f(x) ≥ 0, entonces f × g es continua` |
 | **Corrupto** | `âx â â: si f(x) â¥ 0, entonces f Ã g es continua` |
-| **LLM reconstruyó** | `∀x ∈ ℝ: si f(x) ≥ 0, entonces f × g es continua` |
+| **LLM reconstruyó** | `∀x ∈ ∀: si f(x) ≥ 0, entonces f × g es continua` |
 
-> **PERFECTO** — Reconstrucción exacta del texto original.
+> **CASI** — Reconstrucción casi perfecta (CER: 0.02, dist: 1).
 
-### 🟠 `R3_conjuntos` — Teoría de Conjuntos
+### ✅ `R3_conjuntos` — Teoría de Conjuntos
 
 **Símbolos probados:** `⊂` `∀` `∈` `→`
 
@@ -67,9 +67,9 @@
 |---|---|
 | **Original** | `A ⊂ B si y solo si ∀x: x ∈ A → x ∈ B` |
 | **Corrupto** | `A âŠ‚ B si y solo si âx: x â A â x â B` |
-| **LLM reconstruyó** | `A ⊂ B si y solo si ∀x: x ∈ A ∩ B` |
+| **LLM reconstruyó** | `A ⊂ B si y solo si ∀x: x ∈ A → x ∈ B` |
 
-> **PARCIAL** — Reconstrucción parcial — algunos símbolos fallaron (CER: 0.14, dist: 5).
+> **PERFECTO** — Reconstrucción exacta del texto original.
 
 ### ✅ `R4_fisica_optica` — Física / Óptica
 
@@ -103,11 +103,11 @@
 |---|---|
 | **Original** | `∀x ∈ ℝ: ∃! y tal que x → y y y ↔ x ≥ 0` |
 | **Corrupto** | `âx â â: â! y tal que x â y y y âÃ x â¥ 0` |
-| **LLM reconstruyó** | `∀x ∈ ℝ: ∃! y tal que x → y y y → ∃x ≥ 0` |
+| **LLM reconstruyó** | `∀x ∈ ℝ: ∃! y tal que x → y y ↔ x ≥ 0` |
 
 > **PARCIAL** — Reconstrucción parcial — algunos símbolos fallaron (CER: 0.05, dist: 2).
 
-### 🟠 `R7_musica_filologia` — Música / Filología
+### ✅ `R7_musica_filologia` — Música / Filología
 
 **Símbolos probados:** `♭` `·` `†`
 
@@ -115,16 +115,16 @@
 |---|---|
 | **Original** | `La escala comienza en si♭ · omnia †vincit† amor` |
 | **Corrupto** | `La escala comienza en siâ™­ Â· omnia â vincitâ  amor` |
-| **LLM reconstruyó** | `La escala comienza en si♭ Â· omnia † amor` |
+| **LLM reconstruyó** | `La escala comienza en si♭ · omnia †vincit† amor` |
 
-> **PARCIAL** — Reconstrucción parcial — algunos símbolos fallaron (CER: 0.17, dist: 8).
+> **PERFECTO** — Reconstrucción exacta del texto original.
 
 
 ---
 
 ## Detalle — English 🇬🇧
 
-### 🟠 `R1_modal_logic` — Modal Logic
+### ✅ `R1_modal_logic` — Modal Logic
 
 **Símbolos probados:** `□` `→`
 
@@ -132,11 +132,11 @@
 |---|---|
 | **Original** | `If □P → P and □Q → Q, then □(P → Q) → (□P → □Q)` |
 | **Corrupto** | `If â–¡P â P and â–¡Q â Q, then â–¡(P â Q) â (â–¡P â â–¡Q)` |
-| **LLM reconstruyó** | `If P â P and Q â Q, then (P â Q) â (P â Q)` |
+| **LLM reconstruyó** | `If □P → P and □Q → Q, then □(P → Q) → (□P → □Q)` |
 
-> **PARCIAL** — Reconstrucción parcial — algunos símbolos fallaron (CER: 0.21, dist: 10).
+> **PERFECTO** — Reconstrucción exacta del texto original.
 
-### 🟠 `R2_calculus` — Calculus
+### 🟡 `R2_calculus` — Calculus
 
 **Símbolos probados:** `∀` `∈` `ℝ` `≥` `×`
 
@@ -144,11 +144,11 @@
 |---|---|
 | **Original** | `∀x ∈ ℝ: if f(x) ≥ 0, then f × g is continuous` |
 | **Corrupto** | `âx â â: if f(x) â¥ 0, then f Ã g is continuous` |
-| **LLM reconstruyó** | `∀x ∀x: if f(x) ≥ 0, then f × g is continuous` |
+| **LLM reconstruyó** | `∀x ∀ ∈: if f(x) ≥ 0, then f × g is continuous` |
 
-> **PARCIAL** — Reconstrucción parcial — algunos símbolos fallaron (CER: 0.07, dist: 3).
+> **CASI** — Reconstrucción casi perfecta (CER: 0.04, dist: 2).
 
-### 🟡 `R3_set_theory` — Set Theory
+### ✅ `R3_set_theory` — Set Theory
 
 **Símbolos probados:** `⊂` `∀` `∈` `→`
 
@@ -156,11 +156,11 @@
 |---|---|
 | **Original** | `A ⊂ B if and only if ∀x: x ∈ A → x ∈ B` |
 | **Corrupto** | `A âŠ‚ B if and only if âx: x â A â x â B` |
-| **LLM reconstruyó** | `A ⊂ B if and only if ∀x: x ∈ A ∘ x ∈ B` |
+| **LLM reconstruyó** | `A ⊂ B if and only if ∀x: x ∈ A → x ∈ B` |
 
-> **CASI** — Reconstrucción casi perfecta (CER: 0.03, dist: 1).
+> **PERFECTO** — Reconstrucción exacta del texto original.
 
-### ❌ `R4_optics` — Physics / Optics
+### ✅ `R4_optics` — Physics / Optics
 
 **Símbolos probados:** `Å` `≥`
 
@@ -168,9 +168,9 @@
 |---|---|
 | **Original** | `The wavelength λ = 550 Å satisfies λ ≥ λ_min where λ_min = 400 Å` |
 | **Corrupto** | `The wavelength λ = 550 Ã… satisfies λ â¥ λ_min where λ_min = 400 Ã…` |
-| **LLM reconstruyó** | `The wavelength $\lambda$ = 550 Å satisfies $\lambda$ $\ge$ $\lambda_{\min}$ where $\lambda_{\min}$ = 400 Å` |
+| **LLM reconstruyó** | `The wavelength λ = 550 Å satisfies λ ≥ λ_min where λ_min = 400 Å` |
 
-> **FALLIDO** — Reconstrucción fallida (CER: 0.44, dist: 47).
+> **PERFECTO** — Reconstrucción exacta del texto original.
 
 ### ✅ `R5_chemistry` — Chemistry
 
@@ -184,7 +184,7 @@
 
 > **PERFECTO** — Reconstrucción exacta del texto original.
 
-### ✅ `R6_predicate_logic` — Predicate Logic
+### 🟡 `R6_predicate_logic` — Predicate Logic
 
 **Símbolos probados:** `∀` `∈` `ℝ` `∃!` `→` `↔` `≥`
 
@@ -192,11 +192,11 @@
 |---|---|
 | **Original** | `∀x ∈ ℝ: ∃! y such that x → y and y ↔ x ≥ 0` |
 | **Corrupto** | `âx â â: â! y such that x â y and y âÃ x â¥ 0` |
-| **LLM reconstruyó** | `∀x ∈ ℝ: ∃! y such that x → y and y ↔ x ≥ 0` |
+| **LLM reconstruyó** | `∀x ∈ ∀: ∃! y such that x → y and y ↔ x ≥ 0` |
 
-> **PERFECTO** — Reconstrucción exacta del texto original.
+> **CASI** — Reconstrucción casi perfecta (CER: 0.02, dist: 1).
 
-### 🟠 `R7_music_philology` — Music / Philology
+### ✅ `R7_music_philology` — Music / Philology
 
 **Símbolos probados:** `♭` `·` `†`
 
@@ -204,7 +204,7 @@
 |---|---|
 | **Original** | `The scale starts on B♭ · omnia †vincit† amor` |
 | **Corrupto** | `The scale starts on Bâ™­ Â· omnia â vincitâ  amor` |
-| **LLM reconstruyó** | `The scale starts on B♭ Â· omnia † vincitâ amor` |
+| **LLM reconstruyó** | `The scale starts on B♭ · omnia †vincit† amor` |
 
-> **PARCIAL** — Reconstrucción parcial — algunos símbolos fallaron (CER: 0.07, dist: 3).
+> **PERFECTO** — Reconstrucción exacta del texto original.
 
