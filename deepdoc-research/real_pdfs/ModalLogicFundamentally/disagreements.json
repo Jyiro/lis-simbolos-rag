@@ -1,0 +1,25 @@
+{
+  "MODELS": {
+    "pdfplumber": [],
+    "pymupdf": [
+      {
+        "line_no": 179,
+        "snippet": "We assume familiarity with how a class C of lattices with a unary operation\n¬ provides algebraic semantics for L and a consequence relation ⊨C ⊆L × L.\nStandard techniques of algebraic logic then yield the following (see [42])."
+      },
+      {
+        "line_no": 183,
+        "snippet": "class WPL of bounded lattices equipped with a weak pseudocomplementation:\nfor all ϕ, ψ ∈L, ϕ ⊢F ψ iﬀϕ ⊨WPL ψ.\n2.3"
+      }
+    ],
+    "pypdf": [
+      {
+        "line_no": 158,
+        "snippet": "We assume familiarity with how a class C of lattices with a unary operation\n¬ provides algebraic semantics for L and a consequence relation ⊨ C ⊆ L × L .\nStandard techniques of algebraic logic then yield the following (see [4 2])."
+      },
+      {
+        "line_no": 162,
+        "snippet": "class WPL of bounded lattices equipped with a weak pseudocomplementa tion:\nfor all ϕ,ψ ∈ L, ϕ ⊢Fψ iﬀ ϕ ⊨ WPL ψ.\n2.3 Relational semantics"
+      }
+    ]
+  }
+}

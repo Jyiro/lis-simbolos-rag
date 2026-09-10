@@ -1,0 +1,524 @@
+[PAGE 1]
+======================================================== 
+Character Preservation Benchmark — Mathematics 
+Document ID: 01_matematica 
+Domain: Mathematics 
+Language: es 
+Version: 1.0 
+Description: Documento sintético de benchmark para evaluación de parsers PDF 
+             en el contexto de arquitecturas RAG (Retrieval-Augmented Generation). 
+             Este documento NO es un texto académico real. Contiene casos de prueba 
+             controlados para estudiar la preservación de caracteres especiales. 
+Date: 2024-01-01 
+======================================================== 
+ 
+ 
+SECCIÓN 1 — TEXTO DE CONTROL 
+───────────────────────────────────────────────────────── 
+ 
+Las matemáticas constituyen una disciplina fundamental para la ciencia y la 
+ingeniería. A través de sus símbolos y notaciones, permiten expresar relaciones 
+abstractas con precisión y economía. Una función matemática establece una 
+correspondencia entre elementos de un conjunto dominio y elementos de un conjunto 
+codominio. 
+ 
+El análisis matemático estudia funciones, límites, derivadas e integrales. La 
+geometría estudia formas, tamaños y propiedades del espacio. El álgebra se ocupa 
+de estructuras algebraicas como grupos, anillos y cuerpos. La teoría de números 
+investiga las propiedades de los números enteros. 
+ 
+Los números reales incluyen a los racionales e irracionales. Los números complejos 
+extienden a los reales mediante la unidad imaginaria. Las matrices permiten 
+representar sistemas de ecuaciones lineales y transformaciones lineales. Los 
+
+[PAGE 2]
+vectores permiten representar magnitudes con dirección y sentido. 
+ 
+Este texto no contiene caracteres especiales y sirve como línea de base para 
+determinar si el parser funciona correctamente con texto convencional en español. 
+ 
+ 
+SECCIÓN 2 — CARACTERES AISLADOS 
+───────────────────────────────────────────────────────── 
+ 
+2.1 Símbolos de cálculo 
+ 
+Símbolo | Nombre              | Unicode 
+--------|---------------------|-------- 
+∫       | Integral            | U+222B 
+∬       | Integral doble      | U+222C 
+∭       | Integral triple     | U+222D 
+∮       | Integral de contorno| U+222E 
+∑       | Sumatoria           | U+2211 
+∏       | Productoria         | U+220F 
+√       | Raíz cuadrada       | U+221A 
+∛       | Raíz cúbica         | U+221B 
+∂       | Derivada parcial    | U+2202 
+∇       | Nabla               | U+2207 
+∞       | Infinito            | U+221E 
+lim     | Límite              | (texto) 
+ 
+2.2 Operadores de comparación y relación 
+ 
+Símbolo | Nombre                   | Unicode 
+--------|--------------------------|-------- 
+≤       | Menor o igual            | U+2264 
+
+[PAGE 3]
+≥       | Mayor o igual            | U+2265 
+≠       | Distinto de              | U+2260 
+≈       | Aproximadamente igual    | U+2248 
+≡       | Idéntico / Congruente    | U+2261 
+∝       | Proporcional a           | U+221D 
+≪       | Mucho menor que          | U+226A 
+≫       | Mucho mayor que          | U+226B 
+ 
+2.3 Operadores aritméticos extendidos 
+ 
+Símbolo | Nombre                   | Unicode 
+--------|--------------------------|-------- 
+±       | Más-menos                | U+00B1 
+×       | Multiplicación           | U+00D7 
+÷       | División                 | U+00F7 
+∗       | Asterisco operador       | U+2217 
+·       | Punto medio (producto)   | U+00B7 
+ 
+2.4 Conjuntos numéricos (letras de doble trazo) 
+ 
+Símbolo | Nombre                   | Unicode 
+--------|--------------------------|-------- 
+ℝ       | Números reales           | U+211D 
+ℤ       | Números enteros          | U+2124 
+ℕ       | Números naturales        | U+2115 
+ℚ       | Números racionales       | U+211A 
+ℂ       | Números complejos        | U+2102 
+ℙ       | Números primos           | U+2119 
+ 
+2.5 Símbolos de teoría de conjuntos 
+ 
+
+[PAGE 4]
+Símbolo | Nombre                   | Unicode 
+--------|--------------------------|-------- 
+∈       | Pertenece a              | U+2208 
+∉       | No pertenece a           | U+2209 
+⊂       | Subconjunto propio       | U+2282 
+⊆       | Subconjunto              | U+2286 
+⊃       | Superconjunto propio     | U+2283 
+⊇       | Superconjunto            | U+2287 
+∅       | Conjunto vacío           | U+2205 
+∩       | Intersección             | U+2229 
+∪       | Unión                    | U+222A 
+ 
+2.6 Letras griegas (minúsculas) 
+ 
+Símbolo | Nombre  | Unicode 
+--------|---------|-------- 
+α       | alfa    | U+03B1 
+β       | beta    | U+03B2 
+γ       | gamma   | U+03B3 
+δ       | delta   | U+03B4 
+ε       | épsilon | U+03B5 
+ζ       | zeta    | U+03B6 
+η       | eta     | U+03B7 
+θ       | theta   | U+03B8 
+ι       | iota    | U+03B9 
+κ       | kappa   | U+03BA 
+λ       | lambda  | U+03BB 
+μ       | mu      | U+03BC 
+ν       | nu      | U+03BD 
+ξ       | xi      | U+03BE 
+π       | pi      | U+03C0 
+
+[PAGE 5]
+ρ       | rho     | U+03C1 
+σ       | sigma   | U+03C3 
+τ       | tau     | U+03C4 
+φ       | phi     | U+03C6 
+χ       | chi     | U+03C7 
+ψ       | psi     | U+03C8 
+ω       | omega   | U+03C9 
+ 
+2.7 Letras griegas (mayúsculas) 
+ 
+Símbolo | Nombre  | Unicode 
+--------|---------|-------- 
+Γ       | Gamma   | U+0393 
+Δ       | Delta   | U+0394 
+Θ       | Theta   | U+0398 
+Λ       | Lambda  | U+039B 
+Π       | Pi      | U+03A0 
+Σ       | Sigma   | U+03A3 
+Φ       | Phi     | U+03A6 
+Ψ       | Psi     | U+03A8 
+Ω       | Omega   | U+03A9 
+ 
+2.8 Superíndices Unicode 
+ 
+Símbolo | Descripción 
+--------|------------------ 
+⁰       | Superíndice 0 (U+2070) 
+¹       | Superíndice 1 (U+00B9) 
+²       | Superíndice 2 (U+00B2) 
+³       | Superíndice 3 (U+00B3) 
+⁴       | Superíndice 4 (U+2074) 
+
+[PAGE 6]
+⁵       | Superíndice 5 (U+2075) 
+⁶       | Superíndice 6 (U+2076) 
+⁷       | Superíndice 7 (U+2077) 
+⁸       | Superíndice 8 (U+2078) 
+⁹       | Superíndice 9 (U+2079) 
+ⁿ       | Superíndice n (U+207F) 
+ˣ       | Superíndice x (U+02E3) 
+ 
+2.9 Subíndices Unicode 
+ 
+Símbolo | Descripción 
+--------|------------------ 
+₀       | Subíndice 0 (U+2080) 
+₁       | Subíndice 1 (U+2081) 
+₂       | Subíndice 2 (U+2082) 
+₃       | Subíndice 3 (U+2083) 
+₄       | Subíndice 4 (U+2084) 
+₅       | Subíndice 5 (U+2085) 
+₆       | Subíndice 6 (U+2086) 
+₇       | Subíndice 7 (U+2087) 
+₈       | Subíndice 8 (U+2088) 
+₉       | Subíndice 9 (U+2089) 
+ₙ       | Subíndice n (U+2099) 
+ₓ       | Subíndice x (U+2093) 
+ 
+ 
+SECCIÓN 3 — CARACTERES DENTRO DE TEXTO 
+───────────────────────────────────────────────────────── 
+ 
+3.1 Integral 
+ 
+
+[PAGE 7]
+La integral ∫ es uno de los conceptos fundamentales del cálculo. La expresión 
+∫f(x)dx representa la integral indefinida de f respecto a x. Cuando aplicamos 
+la integral ∫ sobre un intervalo específico obtenemos la integral definida. 
+ 
+La notación ∫₀¹ f(x) dx indica integración desde 0 hasta 1. La integral ∫ de 
+una constante c sobre el intervalo [a,b] es igual a c·(b−a). 
+ 
+3.2 Sumatoria 
+ 
+El símbolo ∑ representa una sumatoria. La expresión ∑ᵢ aᵢ denota la suma de 
+los elementos aᵢ. Cuando escribimos ∑ₙ₌₁^∞ 1/n² obtenemos la serie de Basel, 
+cuyo valor es π²/6. 
+ 
+La sumatoria ∑ aparece frecuentemente en estadística, combinatoria y análisis. 
+ 
+3.3 Derivada parcial 
+ 
+La derivada parcial ∂f/∂x mide la variación de f respecto a x manteniendo 
+las demás variables constantes. El operador ∂ indica derivación parcial. 
+ 
+Cuando f depende de x e y, calculamos ∂f/∂x y ∂f/∂y por separado. El operador 
+∇ (nabla) combina las derivadas parciales: ∇f = (∂f/∂x, ∂f/∂y, ∂f/∂z). 
+ 
+3.4 Relaciones de orden 
+ 
+Si a ≤ b decimos que a es menor o igual que b. Si a ≥ b decimos que a es mayor 
+o igual que b. Cuando a ≠ b los valores son distintos. Si a ≈ b los valores son 
+aproximadamente iguales. 
+ 
+Para números muy distintos en magnitud escribimos a ≪ b (a mucho menor que b) o 
+bien a ≫ b (a mucho mayor que b). 
+
+[PAGE 8]
+ 
+3.5 Conjuntos numéricos en contexto 
+ 
+El número π pertenece a ℝ pero no pertenece a ℚ. Los números racionales ℚ son 
+un subconjunto de los reales ℝ: ℚ ⊂ ℝ. Los enteros ℤ satisfacen ℤ ⊂ ℚ. 
+Los naturales ℕ satisfacen ℕ ⊂ ℤ. El conjunto ℂ contiene a ℝ como subconjunto. 
+ 
+3.6 Letras griegas en contexto 
+ 
+El número π ≈ 3.14159 es irracional. La letra α se usa frecuentemente para 
+ángulos. El parámetro λ aparece en distribuciones de probabilidad. La letra σ 
+denota la desviación estándar. El símbolo ε representa un valor arbitrariamente 
+pequeño en demostraciones de límites. La letra θ se usa para ángulos en 
+trigonometría. La constante γ ≈ 0.5772 es la constante de Euler-Mascheroni. 
+ 
+3.7 Infinito en contexto 
+ 
+El límite cuando x tiende a ∞ se escribe lim(x→∞). Una serie puede sumar hasta 
+∞ términos. El intervalo (−∞, +∞) representa toda la recta real. La función 
+exponencial e^x tiende a ∞ cuando x→∞ y tiende a 0 cuando x→−∞. 
+ 
+3.8 Proporcionalidad e identidad 
+ 
+Si y ∝ x entonces existe una constante k tal que y = kx. Dos expresiones son 
+idénticamente iguales cuando escribimos a ≡ b, lo que significa que la igualdad 
+vale para todos los valores de las variables. 
+ 
+3.9 Raíces en contexto 
+ 
+La raíz cuadrada √2 es irracional. La expresión √(a² + b²) aparece en el 
+teorema de Pitágoras. La raíz cúbica ∛8 = 2. La expresión ∛(x³) = x para 
+
+[PAGE 9]
+x real positivo. 
+ 
+ 
+SECCIÓN 4 — COMBINACIONES DE SÍMBOLOS 
+───────────────────────────────────────────────────────── 
+ 
+4.1 Combinaciones con conjuntos 
+ 
+∀x ∈ ℝ, x² ≥ 0 
+∃x ∈ ℝ : x² = 2 
+ℕ ⊂ ℤ ⊂ ℚ ⊂ ℝ ⊂ ℂ 
+A ∩ B ⊆ A ⊆ A ∪ B 
+∅ ⊆ A para todo conjunto A 
+ 
+4.2 Combinaciones con operadores 
+ 
+a ≤ b ∧ b ≤ c ⟹ a ≤ c 
+f(x) ≈ f(a) + f'(a)·(x−a) 
+‖u + v‖ ≤ ‖u‖ + ‖v‖ 
+a² + b² ≥ 2ab para a,b ∈ ℝ 
+ 
+4.3 Notación de límites 
+ 
+lim(x→0) sin(x)/x = 1 
+lim(x→∞) (1 + 1/x)^x = e 
+lim(n→∞) ∑ₖ₌₁ⁿ 1/k² = π²/6 
+lim(x→0⁺) ln(x) = −∞ 
+ 
+4.4 Combinaciones con letras griegas 
+ 
+α + β + γ = π (ángulos de un triángulo) 
+
+[PAGE 10]
+σ² = (1/n)·∑(xᵢ − μ)² 
+λ₁ + λ₂ + ... + λₙ = tr(A) 
+ε > 0, δ > 0 : |x − a| < δ ⟹ |f(x) − L| < ε 
+ 
+4.5 Expresiones con subíndices y superíndices combinados 
+ 
+aₙ → L cuando n → ∞ 
+xₙ₊₁ = xₙ − f(xₙ)/f'(xₙ) 
+∑ₙ₌₀^∞ xⁿ/n! = eˣ 
+∏ₚ primo (1 − p⁻ˢ)⁻¹ = ∑ₙ₌₁^∞ n⁻ˢ 
+ 
+ 
+SECCIÓN 5 — EXPRESIONES COMPLEJAS 
+───────────────────────────────────────────────────────── 
+ 
+5.1 Integral gaussiana (Unicode) 
+ 
+∫₋∞^∞ e⁻ˣ² dx = √π 
+ 
+5.2 Integral gaussiana (texto equivalente) 
+ 
+integral desde menos infinito hasta mas infinito de e elevado a menos x cuadrado dx igual 
+a raiz cuadrada de pi 
+ 
+5.3 Serie de Taylor 
+ 
+eˣ = ∑ₙ₌₀^∞ xⁿ/n! = 1 + x + x²/2! + x³/3! + x⁴/4! + ... 
+ 
+sin(x) = ∑ₙ₌₀^∞ (−1)ⁿ x^(2n+1)/(2n+1)! = x − x³/6 + x⁵/120 − ... 
+ 
+cos(x) = ∑ₙ₌₀^∞ (−1)ⁿ x^(2n)/(2n)! = 1 − x²/2 + x⁴/24 − ... 
+
+[PAGE 11]
+ 
+5.4 Identidad de Euler 
+ 
+e^(iπ) + 1 = 0 
+ 
+Esta identidad relaciona cinco constantes fundamentales: e, i, π, 1 y 0. 
+La versión más general es e^(iθ) = cos(θ) + i·sin(θ). 
+ 
+5.5 Derivadas parciales 
+ 
+∂f/∂x, ∂f/∂y, ∂f/∂z 
+ 
+∂²f/∂x², ∂²f/∂y², ∂²f/∂z² 
+ 
+∂²f/∂x∂y = ∂²f/∂y∂x (si f es de clase C²) 
+ 
+Laplaciano: ∇²f = ∂²f/∂x² + ∂²f/∂y² + ∂²f/∂z² 
+ 
+5.6 Gradiente, divergencia y rotacional 
+ 
+∇f = (∂f/∂x)î + (∂f/∂y)ĵ + (∂f/∂z)k̂  
+ 
+∇·F = ∂Fₓ/∂x + ∂F_y/∂y + ∂F_z/∂z 
+ 
+∇×F = (∂F_z/∂y − ∂F_y/∂z)î + (∂Fₓ/∂z − ∂F_z/∂x)ĵ + (∂F_y/∂x − ∂Fₓ/∂y)k̂  
+ 
+5.7 Matrices (representación Unicode/texto) 
+ 
+Matriz 2×2: 
+[ a  b ] 
+[ c  d ] 
+
+[PAGE 12]
+ 
+Determinante: det(A) = ad − bc 
+ 
+Matriz identidad 3×3: 
+[ 1  0  0 ] 
+[ 0  1  0 ] 
+[ 0  0  1 ] 
+ 
+Traza: tr(A) = a₁₁ + a₂₂ + ... + aₙₙ = ∑ᵢ aᵢᵢ 
+ 
+5.8 Notación vectorial 
+ 
+v = (v₁, v₂, v₃) ∈ ℝ³ 
+ 
+‖v‖ = √(v₁² + v₂² + v₃²) 
+ 
+u · v = ∑ᵢ uᵢvᵢ = ‖u‖‖v‖cos(θ) 
+ 
+u × v = (u₂v₃ − u₃v₂, u₃v₁ − u₁v₃, u₁v₂ − u₂v₁) 
+ 
+5.9 Teorema fundamental del cálculo 
+ 
+Si F'(x) = f(x), entonces: 
+ 
+∫ₐᵇ f(x) dx = F(b) − F(a) 
+ 
+5.10 Desigualdad de Cauchy-Schwarz 
+ 
+|∑ᵢ aᵢbᵢ|² ≤ (∑ᵢ aᵢ²)(∑ᵢ bᵢ²) 
+ 
+En forma vectorial: |u·v|² ≤ ‖u‖²·‖v‖² 
+
+[PAGE 13]
+ 
+5.11 Notación de conjuntos y funciones 
+ 
+f: ℝ → ℝ 
+g: ℝⁿ → ℝᵐ 
+A ∈ ℝⁿˣⁿ 
+x ∈ ℝⁿ 
+ 
+Composición: (f ∘ g)(x) = f(g(x)) 
+Imagen inversa: f⁻¹(B) = {x ∈ ℝ : f(x) ∈ B} 
+ 
+5.12 Símbolos de cálculo combinados 
+ 
+∫₀^π sin(x) dx = 2 
+∫₀^∞ e⁻ˣ dx = 1 
+∫₀¹ xⁿ dx = 1/(n+1) 
+∑ₙ₌₁^∞ 1/n² = π²/6 
+∑ₙ₌₀^∞ rⁿ = 1/(1−r), |r| < 1 
+∏ₙ₌₁^∞ (1 − 1/n²) = 1/2 
+ 
+ 
+SECCIÓN 6 — CASOS DIFÍCILES 
+───────────────────────────────────────────────────────── 
+ 
+6.1 Símbolos visualmente similares pero distintos en Unicode 
+ 
+Par 1: ∈ (U+2208, pertenece a) vs. ε (U+03B5, épsilon griego) 
+Par 2: − (U+2212, menos matemático) vs. - (U+002D, guión ASCII) 
+Par 3: × (U+00D7, multiplicación) vs. x (U+0078, letra x) 
+Par 4: · (U+00B7, punto medio) vs. . (U+002E, punto ASCII) 
+Par 5: ∗ (U+2217, asterisco operador) vs. * (U+002A, asterisco ASCII) 
+
+[PAGE 14]
+Par 6: ′ (U+2032, prima) vs. ' (U+0027, apóstrofe ASCII) 
+Par 7: ≤ (U+2264, menor o igual) vs. <= (dos caracteres ASCII) 
+Par 8: ≥ (U+2265, mayor o igual) vs. >= (dos caracteres ASCII) 
+Par 9: ≠ (U+2260, distinto de) vs. != (dos caracteres ASCII) 
+Par 10: ∞ (U+221E, infinito) vs. oo (dos letras ASCII) 
+ 
+6.2 Superíndices Unicode vs. texto normal 
+ 
+Con superíndice Unicode: x² y³ z⁴ a⁻¹ e^(iπ) (mezcla) 
+Sin superíndice: x^2 y^3 z^4 a^(-1) e^(i*pi) 
+ 
+6.3 Subíndices Unicode vs. texto normal 
+ 
+Con subíndice Unicode: x₁ y₂ aₙ bₖ 
+Sin subíndice: x_1 y_2 a_n b_k 
+ 
+6.4 Caracteres combinados de múltiples bloques Unicode 
+ 
+Expresión mixta: ∀ε > 0, ∃δ > 0 : |x − a| < δ ⟹ |f(x) − L| < ε 
+ 
+Contiene: ∀ (U+2200), ε (U+03B5), ∃ (U+2203), δ (U+03B4), − (U+2212), 
+          < (U+003C), ⟹ (U+27F9) 
+ 
+6.5 Notación de prima (derivada) 
+ 
+f′(x) denota la derivada de f respecto a x. (prima: U+2032) 
+f″(x) denota la segunda derivada. (doble prima: U+2033) 
+f‴(x) denota la tercera derivada. (triple prima: U+2034) 
+f⁽ⁿ⁾(x) denota la derivada n-ésima. 
+ 
+6.6 Secuencias densas de símbolos 
+
+[PAGE 15]
+ 
+α·β + γ·δ − ε·ζ = η·θ 
+∫∫∫_Ω f(x,y,z) dV = ∮_∂Ω F·dS 
+∑ᵢ∑ⱼ aᵢⱼ·xᵢ·xⱼ ≥ 0 
+ 
+6.7 Símbolos dentro de denominadores y fracciones (texto) 
+ 
+(a + b) / (c − d) 
+(∑ᵢ aᵢ) / (∑ⱼ bⱼ) 
+√(a² + b²) / √(c² + d²) 
+(∂f/∂x) / (∂g/∂x) 
+ 
+6.8 Notación de norma y valor absoluto 
+ 
+|x| (valor absoluto) 
+‖v‖ (norma) 
+|det(A)| (valor absoluto del determinante) 
+‖A‖_F (norma de Frobenius) 
+‖A‖₂ (norma espectral) 
+‖A‖_∞ (norma infinito) 
+ 
+6.9 Caracteres de lógica matemática en expresiones 
+ 
+P ∧ Q ⟺ ¬(¬P ∨ ¬Q) 
+∀x ∈ ℝ : x² ≥ 0 
+∃!x ∈ ℝ : x² = 0 (existe único) 
+A ⊆ B ∧ B ⊆ A ⟺ A = B 
+ 
+6.10 Notación de probabilidad 
+ 
+P(A ∩ B) = P(A) · P(B|A) 
+
+[PAGE 16]
+P(A ∪ B) = P(A) + P(B) − P(A ∩ B) 
+E[X] = ∑ᵢ xᵢ · P(X = xᵢ) 
+Var(X) = E[X²] − (E[X])² 
+ 
+ 
+SECCIÓN 7 — TEXTO DE CONTROL FINAL 
+───────────────────────────────────────────────────────── 
+ 
+Las matemáticas han evolucionado durante siglos acumulando una notación cada vez 
+más precisa y universal. La mayoría de los símbolos que usamos hoy fueron 
+introducidos gradualmente entre los siglos XVII y XX. Leibniz contribuyó con la 
+notación de integral y diferencial. Euler introdujo muchas de las letras griegas 
+como convenciones establecidas. 
+ 
+La notación matemática moderna permite comprimir razonamientos complejos en 
+expresiones compactas que pueden ser compartidas y verificadas universalmente. 
+Esta característica hace que los documentos matemáticos sean especialmente 
+desafiantes para los sistemas de procesamiento de texto. 
+ 
+Un parser que procese correctamente documentos matemáticos debe ser capaz de 
+preservar no solo los caracteres individuales sino también las relaciones 
+estructurales entre ellos. La pérdida de un superíndice puede cambiar 
+completamente el significado de una expresión. La sustitución de un símbolo 
+matemático por su equivalente ASCII puede hacer irreconocible una expresión 
+para un sistema posterior. 
+ 
+Este documento ha sido diseñado para hacer visibles esas posibles pérdidas de 
+información en cada etapa de un pipeline de procesamiento de documentos. 

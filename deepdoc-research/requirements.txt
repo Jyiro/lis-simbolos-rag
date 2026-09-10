@@ -1,0 +1,8 @@
+# deepdoc-research — dependencias independientes del experimento principal
+# No requiere RAGFlow, Ollama ni ningún LLM
+
+pdfplumber>=0.11
+pymupdf>=1.24
+pypdf>=4.0
+fonttools>=4.60       # Fase 3C: análisis de font encoding (causa raíz del bug)
+reportlab>=4.2        # Fase 1: generación de PDFs sintéticos para baseline

@@ -1,0 +1,349 @@
+========================================================
+Character Preservation Benchmark — Chemistry
+Document ID: 04_quimica
+Domain: Chemistry
+Language: es
+Version: 1.0
+Description: Documento sintético de benchmark para evaluación de parsers PDF
+             en el contexto de arquitecturas RAG. Contiene casos de prueba
+             controlados con símbolos propios de la química.
+Date: 2024-01-01
+========================================================
+
+
+SECCIÓN 1 — TEXTO DE CONTROL
+─────────────────────────────────────────────────────────
+
+La química es la ciencia que estudia la composición, estructura, propiedades y
+transformaciones de la materia. Sus ramas principales incluyen la química
+orgánica, inorgánica, analítica, física y bioquímica.
+
+La tabla periódica organiza los elementos químicos según su número atómico y
+sus propiedades. Los elementos se combinan para formar compuestos mediante
+enlaces covalentes, iónicos o metálicos. Las reacciones químicas transforman
+reactivos en productos mediante la ruptura y formación de enlaces.
+
+La estequiometría permite calcular las cantidades de reactivos y productos en
+una reacción. La termodinámica química determina si una reacción es espontánea
+y cuánta energía libera o absorbe. La cinética química estudia la velocidad de
+las reacciones.
+
+Este texto no contiene símbolos especiales de química y sirve como control.
+
+
+SECCIÓN 2 — CARACTERES AISLADOS
+─────────────────────────────────────────────────────────
+
+2.1 Flechas de reacción
+
+Símbolo | Nombre                            | Unicode
+--------|-----------------------------------|--------
+→       | Reacción directa (flecha simple)  | U+2192
+⇌       | Equilibrio reversible             | U+21CC
+⇒       | Doble flecha (implica)            | U+21D2
+←       | Reacción inversa                  | U+2190
+↑       | Producto gaseoso (gas liberado)   | U+2191
+↓       | Precipitado                       | U+2193
+⟶       | Flecha larga de reacción          | U+27F6
+
+2.2 Subíndices numéricos (fórmulas moleculares)
+
+Símbolo | Nombre        | Unicode
+--------|---------------|--------
+₀       | Subíndice 0   | U+2080
+₁       | Subíndice 1   | U+2081
+₂       | Subíndice 2   | U+2082
+₃       | Subíndice 3   | U+2083
+₄       | Subíndice 4   | U+2084
+₅       | Subíndice 5   | U+2085
+₆       | Subíndice 6   | U+2086
+₇       | Subíndice 7   | U+2087
+₈       | Subíndice 8   | U+2088
+₉       | Subíndice 9   | U+2089
+
+2.3 Superíndices de carga iónica
+
+Símbolo | Nombre           | Unicode
+--------|------------------|--------
+⁺       | Superíndice +    | U+207A
+⁻       | Superíndice −    | U+207B
+¹       | Superíndice 1    | U+00B9
+²       | Superíndice 2    | U+00B2
+³       | Superíndice 3    | U+00B3
+⁴       | Superíndice 4    | U+2074
+⁰       | Superíndice 0    | U+2070
+
+2.4 Símbolos especiales en química
+
+Símbolo | Nombre                        | Unicode
+--------|-------------------------------|--------
+°       | Grado (temperatura, ángulo)   | U+00B0
+Δ       | Delta (calor de reacción)     | U+0394
+±       | Más-menos (incertidumbre)     | U+00B1
+∞       | Infinito (solubilidad)        | U+221E
+≈       | Aproximadamente              | U+2248
+≡       | Triple enlace / Equivalente   | U+2261
+·       | Punto de hidratación          | U+00B7
+•       | Radical libre                 | U+2022
+
+
+SECCIÓN 3 — CARACTERES DENTRO DE TEXTO
+─────────────────────────────────────────────────────────
+
+3.1 Fórmulas moleculares con subíndices
+
+El agua se representa como H₂O, donde el subíndice 2 indica que hay dos átomos
+de hidrógeno por cada átomo de oxígeno. El dióxido de carbono es CO₂. El ácido
+sulfúrico es H₂SO₄.
+
+El metano CH₄ es el hidrocarburo más simple. El etanol C₂H₅OH contiene dos
+átomos de carbono. El benceno C₆H₆ tiene una estructura de anillo aromático.
+
+La glucosa C₆H₁₂O₆ es un azúcar simple fundamental para la biología. La
+sacarosa C₁₂H₂₂O₁₁ es el azúcar de mesa común.
+
+3.2 Iones con cargas superíndice
+
+El sodio ionizado es Na⁺. El cloruro es Cl⁻. La sal común es NaCl, formada
+por Na⁺ y Cl⁻. El magnesio forma el ion Mg²⁺. El aluminio forma Al³⁺.
+
+El sulfato es SO₄²⁻. El carbonato es CO₃²⁻. El fosfato es PO₄³⁻. El amonio
+es NH₄⁺. El hidróxido es OH⁻. El nitrato es NO₃⁻.
+
+El hierro puede formar Fe²⁺ (ferroso) o Fe³⁺ (férrico). El cobre puede ser
+Cu⁺ o Cu²⁺. El estaño puede ser Sn²⁺ o Sn⁴⁺.
+
+3.3 Reacciones con flechas
+
+La combustión del metano: CH₄ + 2O₂ → CO₂ + 2H₂O
+
+La síntesis del amoniaco: N₂ + 3H₂ ⇌ 2NH₃
+
+La disociación del ácido clorhídrico: HCl → H⁺ + Cl⁻
+
+La reacción de neutralización: H⁺ + OH⁻ → H₂O
+
+La formación del cloruro de sodio: Na + ½Cl₂ → NaCl
+
+3.4 Isótopos
+
+El carbono tiene varios isótopos: ¹²C (el más abundante), ¹³C y ¹⁴C (radioactivo).
+El hidrógeno tiene tres isótopos: ¹H (protio), ²H (deuterio, también escrito D)
+y ³H (tritio, también escrito T).
+
+El uranio ²³⁸U y el ²³⁵U son los isótopos más importantes del uranio. El
+uranio ²³⁵U puede experimentar fisión nuclear. El sodio ²³Na es un isótopo
+estable del sodio, mientras que ²²Na es radiactivo.
+
+3.5 Calor y energía de reacción
+
+La reacción exotérmica: A + B → C + D    ΔH < 0
+La reacción endotérmica: A + B → C + D   ΔH > 0
+Reacción a temperatura T: ΔG = ΔH − TΔS
+Equilibrio: ΔG = 0
+
+3.6 pH y concentraciones
+
+El pH de una solución se define como pH = −log[H⁺]. Agua pura: pH = 7.
+Una solución con pH < 7 es ácida; pH > 7 es básica.
+
+La constante de equilibrio del agua: Kw = [H⁺][OH⁻] = 10⁻¹⁴ a 25 °C.
+
+3.7 Punto de hidratación y radical libre
+
+El sulfato de cobre pentahidratado: CuSO₄·5H₂O (el punto · es U+00B7)
+El carbonato de sodio decahidratado: Na₂CO₃·10H₂O
+
+El radical hidroxilo: HO• (el punto • es U+2022, indica electrón desapareado)
+El radical metilo: CH₃•
+El superóxido: O₂•⁻
+
+3.8 Equilibrio y constantes
+
+La constante de disociación ácida: Ka = [H⁺][A⁻]/[HA]
+La constante de equilibrio: Kc = [C]^c[D]^d / ([A]^a[B]^b)
+La ley de Raoult: p = x₁·p°₁ + x₂·p°₂ (presiones parciales)
+
+
+SECCIÓN 4 — COMBINACIONES DE SÍMBOLOS
+─────────────────────────────────────────────────────────
+
+4.1 Reacciones balanceadas
+
+2H₂ + O₂ → 2H₂O
+2Na + 2H₂O → 2NaOH + H₂↑
+CaCO₃ → CaO + CO₂↑
+AgNO₃ + NaCl → AgCl↓ + NaNO₃
+Zn + 2HCl → ZnCl₂ + H₂↑
+
+4.2 Equilibrios ácido-base
+
+CH₃COOH ⇌ CH₃COO⁻ + H⁺
+H₂CO₃ ⇌ H⁺ + HCO₃⁻
+HCO₃⁻ ⇌ H⁺ + CO₃²⁻
+NH₃ + H₂O ⇌ NH₄⁺ + OH⁻
+H₂O ⇌ H⁺ + OH⁻
+
+4.3 Reacciones redox
+
+Fe²⁺ → Fe³⁺ + e⁻  (oxidación)
+Cu²⁺ + 2e⁻ → Cu   (reducción)
+MnO₄⁻ + 8H⁺ + 5e⁻ → Mn²⁺ + 4H₂O
+
+4.4 Combinaciones de isótopos con cargas
+
+¹⁴C⁴⁺ (carbono-14 totalmente ionizado)
+²³⁸U⁶⁺ (uranio-238 hexavalente)
+¹H⁺ (protón)
+²H⁺ (deuterón)
+
+4.5 Fórmulas con múltiples subíndices y superíndices
+
+Na₂SO₄·10H₂O (sulfato de sodio decahidratado)
+[Fe(CN)₆]⁴⁻ (ferrocianuro)
+[Fe(CN)₆]³⁻ (ferricianuro)
+[Cu(NH₃)₄]²⁺ (tetraaminocobre II)
+Ca₃(PO₄)₂ (fosfato de calcio)
+Al₂(SO₄)₃ (sulfato de aluminio)
+KAl(SO₄)₂·12H₂O (alumbre)
+
+
+SECCIÓN 5 — EXPRESIONES COMPLEJAS
+─────────────────────────────────────────────────────────
+
+5.1 Termodinámica química completa
+
+ΔG° = −RT ln K
+ΔG = ΔG° + RT ln Q
+ΔG° = ΔH° − TΔS°
+
+Para la reacción N₂ + 3H₂ ⇌ 2NH₃:
+ΔH° = −92.4 kJ/mol
+ΔS° = −198.3 J/(mol·K)
+ΔG° = ΔH° − TΔS°  a T = 298 K:
+ΔG° = −92400 − 298·(−198.3) = −92400 + 59095 ≈ −33305 J/mol ≈ −33.3 kJ/mol
+
+5.2 Cinética química
+
+Para A + B → Productos:
+v = k[A]^m[B]^n  (ley de velocidad)
+k = A·e^(−Ea/RT)  (ecuación de Arrhenius)
+
+t₁/₂ = 0.693/k  (vida media de reacción de orden 1)
+[A] = [A]₀·e^(−kt)  (concentración en función del tiempo)
+
+5.3 Electroquímica
+
+Celda galvánica: E°celda = E°cátodo − E°ánodo
+ΔG° = −nFE°
+n = número de moles de electrones transferidos
+F ≈ 96485 C/mol (constante de Faraday)
+
+Ecuación de Nernst: E = E° − (RT/nF)·ln Q  ≈ E° − (0.0592/n)·log Q  (25 °C)
+
+5.4 Espectroscopía
+
+Para la serie de Balmer del hidrógeno:
+1/λ = R_H·(1/2² − 1/n²)   n = 3, 4, 5, ...
+R_H ≈ 1.097×10⁷ m⁻¹ (constante de Rydberg)
+
+Las líneas del hidrógeno en visible: Hα (656 nm), Hβ (486 nm), Hγ (434 nm)
+
+5.5 Estequiometría con isótopos
+
+Masa atómica del cloro:
+Cl = 35.45 u
+³⁵Cl: 75.77% (masa 34.97 u)
+³⁷Cl: 24.23% (masa 36.97 u)
+Masa promedio = 0.7577×34.97 + 0.2423×36.97 = 26.50 + 8.95 ≈ 35.45 u
+
+5.6 Fórmulas estructurales en texto
+
+Nomenclatura de compuestos orgánicos:
+CH₃−CH₂−OH  (etanol, notación de estructura)
+CH₃−CO−CH₃  (propanona/acetona)
+CH₃−COO−CH₂−CH₃  (acetato de etilo)
+C₆H₅−OH  (fenol)
+NH₂−CH₂−COOH  (glicina, aminoácido)
+
+
+SECCIÓN 6 — CASOS DIFÍCILES
+─────────────────────────────────────────────────────────
+
+6.1 Símbolos visualmente similares en química
+
+Par 1: → (U+2192, flecha de reacción) vs. -> (dos ASCII)
+Par 2: ⇌ (U+21CC, equilibrio) vs. <=> (tres ASCII) vs. ⇔ (U+21D4)
+Par 3: · (U+00B7, punto de hidratación) vs. • (U+2022, radical) vs. . (U+002E)
+Par 4: ⁺ (U+207A, superíndice +) vs. + (U+002B, más ASCII)
+Par 5: ⁻ (U+207B, superíndice −) vs. - (U+002D, guión ASCII)
+Par 6: ↑ (U+2191, gas) vs. ^ (U+005E, circunflejo ASCII)
+Par 7: ↓ (U+2193, precipitado) vs. v (U+0076, letra ASCII)
+Par 8: ° (U+00B0, grado) vs. º (U+00BA, ordinal masculino)
+
+6.2 Iones con múltiples cargas escritos de diferentes formas
+
+Forma A (superíndice Unicode): SO₄²⁻  NH₄⁺  Fe³⁺  PO₄³⁻
+Forma B (sin superíndice):    SO4(2-)  NH4(+)  Fe(3+)  PO4(3-)
+Forma C (ASCII):              SO4^2-  NH4+  Fe^3+  PO4^3-
+
+6.3 Isótopos con diferentes notaciones
+
+Forma A (superíndice Unicode): ¹⁴C  ²³⁸U  ¹H  ²H  ³H
+Forma B (ASCII):               14C  238U  1H  2H  3H
+Forma C (mixta):               C-14  U-238
+
+6.4 Secuencias densas de subíndices y superíndices
+
+Na₂SO₄ + BaCl₂ → BaSO₄↓ + 2NaCl
+[Co(NH₃)₆]³⁺ + 6H₂O → [Co(H₂O)₆]³⁺ + 6NH₃
+2KMnO₄ + 16HCl → 2KCl + 2MnCl₂ + 5Cl₂↑ + 8H₂O
+
+6.5 Números de masa e isótopos en contexto
+
+El isótopo ¹²C tiene 6 protones y 6 neutrones. El isótopo ¹³C tiene 6 protones
+y 7 neutrones. La relación ¹³C/¹²C se usa en estudios isotópicos.
+
+El tritio ³H es radioactivo con una vida media de ≈ 12.3 años.
+El ¹⁴C se usa en datación por radiocarbono. Su vida media es ≈ 5730 años.
+
+El ²³⁵U es fisionable: ²³⁵U + n → productos de fisión + 2-3 n + energía
+
+6.6 Fracciones y constantes de equilibrio
+
+Ka de ácido acético: Ka = [CH₃COO⁻][H⁺]/[CH₃COOH] ≈ 1.8×10⁻⁵
+Kw a 25°C: Kw = [H⁺][OH⁻] = 10⁻¹⁴
+Ksp de AgCl: Ksp = [Ag⁺][Cl⁻] ≈ 1.8×10⁻¹⁰
+
+6.7 Compuestos de coordinación
+
+[Cr(H₂O)₄Cl₂]⁺  (tetraaquodiclorocromo III)
+[Fe(CN)₆]⁴⁻      (hexacianoferrato II)
+[Pt(NH₃)₂Cl₂]   (cisplatino, neutro)
+[Au(CN)₂]⁻       (dicianaurato I)
+
+6.8 Diferencia entre flecha simple, doble y equilibrio
+
+Reacción irreversible:     A → B
+Reacción reversible:       A ⇌ B
+Equilibrio desplazado der: A ⇒ B
+Equilibrio desplazado izq: A ⇐ B
+
+
+SECCIÓN 7 — TEXTO DE CONTROL FINAL
+─────────────────────────────────────────────────────────
+
+La notación química fue desarrollada para comunicar con precisión la composición
+y estructura de las sustancias. Los subíndices indican cantidades de átomos,
+los superíndices indican cargas iónicas, y las flechas indican el sentido de
+las reacciones. Esta notación es compacta y precisa, pero presenta desafíos
+significativos para los sistemas de procesamiento de texto.
+
+La pérdida de un subíndice puede transformar H₂O en HO o H2O, cambiando
+completamente el significado. La pérdida de la carga iónica puede convertir
+Na⁺ en Na, confundiendo el elemento con el ion. La sustitución de ⇌ por = o
+→ puede cambiar la interpretación de un equilibrio.
+
+Los sistemas RAG que procesen documentos de química deben ser capaces de
+preservar estos símbolos para proporcionar respuestas correctas. Este documento
+ha sido diseñado para detectar exactamente esas pérdidas en el pipeline.

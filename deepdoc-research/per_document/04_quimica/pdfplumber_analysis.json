@@ -1,0 +1,379 @@
+{
+  "doc_id": "04_quimica",
+  "extractor": "pdfplumber",
+  "per_symbol": {
+    "ARROW_RIGHT": {
+      "char": "→",
+      "codepoint": "U+2192",
+      "gt_count": 23,
+      "ex_count": 23,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "INFINITY": {
+      "char": "∞",
+      "codepoint": "U+221E",
+      "gt_count": 1,
+      "ex_count": 1,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "PLUS_MINUS": {
+      "char": "±",
+      "codepoint": "U+00B1",
+      "gt_count": 1,
+      "ex_count": 1,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "APPROX": {
+      "char": "≈",
+      "codepoint": "U+2248",
+      "gt_count": 11,
+      "ex_count": 11,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "CROSS": {
+      "char": "×",
+      "codepoint": "U+00D7",
+      "gt_count": 5,
+      "ex_count": 5,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "EQUIL": {
+      "char": "⇌",
+      "codepoint": "U+21CC",
+      "gt_count": 11,
+      "ex_count": 11,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "DOUBLE_ARROW": {
+      "char": "⇒",
+      "codepoint": "U+21D2",
+      "gt_count": 2,
+      "ex_count": 2,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "ARROW_LEFT": {
+      "char": "←",
+      "codepoint": "U+2190",
+      "gt_count": 1,
+      "ex_count": 1,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "LONG_ARROW": {
+      "char": "⟶",
+      "codepoint": "U+27F6",
+      "gt_count": 1,
+      "ex_count": 1,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "SUB0": {
+      "char": "₀",
+      "codepoint": "U+2080",
+      "gt_count": 2,
+      "ex_count": 2,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "SUB1": {
+      "char": "₁",
+      "codepoint": "U+2081",
+      "gt_count": 8,
+      "ex_count": 8,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "SUB2": {
+      "char": "₂",
+      "codepoint": "U+2082",
+      "gt_count": 60,
+      "ex_count": 60,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "SUB3": {
+      "char": "₃",
+      "codepoint": "U+2083",
+      "gt_count": 30,
+      "ex_count": 30,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "SUB4": {
+      "char": "₄",
+      "codepoint": "U+2084",
+      "gt_count": 22,
+      "ex_count": 22,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "SUP_PLUS": {
+      "char": "⁺",
+      "codepoint": "U+207A",
+      "gt_count": 42,
+      "ex_count": 42,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "SUP_MINUS": {
+      "char": "⁻",
+      "codepoint": "U+207B",
+      "gt_count": 38,
+      "ex_count": 38,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "SUP2": {
+      "char": "²",
+      "codepoint": "U+00B2",
+      "gt_count": 31,
+      "ex_count": 31,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "SUP3": {
+      "char": "³",
+      "codepoint": "U+00B3",
+      "gt_count": 26,
+      "ex_count": 26,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "DEGREE": {
+      "char": "°",
+      "codepoint": "U+00B0",
+      "gt_count": 25,
+      "ex_count": 25,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "DELTA_UPPER": {
+      "char": "Δ",
+      "codepoint": "U+0394",
+      "gt_count": 20,
+      "ex_count": 20,
+      "cpr": 100.0,
+      "note": ""
+    }
+  },
+  "dangerous_pairs": {
+    "equilibrium/equals": {
+      "original": "⇌",
+      "substitution": "=",
+      "occurrences": 5,
+      "contexts": [
+        {
+          "line": 2,
+          "text": "========================================================"
+        },
+        {
+          "line": 12,
+          "text": "========================================================"
+        },
+        {
+          "line": 114,
+          "text": "Reacción a temperatura T: ΔG = ΔH − TΔS"
+        },
+        {
+          "line": 115,
+          "text": "Equilibrio: ΔG = 0"
+        },
+        {
+          "line": 117,
+          "text": "El pH de una solución se define como pH = −log[H⁺]. Agua pura: pH = 7."
+        }
+      ]
+    },
+    "equilibrium/ascii": {
+      "original": "⇌",
+      "substitution": "<=>",
+      "occurrences": 1,
+      "contexts": [
+        {
+          "line": 214,
+          "text": "Par 2: ⇌ (U+21CC, equilibrio) vs. <=> (tres ASCII) vs. ⇔ (U+21D4)"
+        }
+      ]
+    },
+    "reaction/ascii": {
+      "original": "→",
+      "substitution": "->",
+      "occurrences": 1,
+      "contexts": [
+        {
+          "line": 213,
+          "text": "Par 1: → (U+2192, flecha de reacción) vs. -> (dos ASCII)"
+        }
+      ]
+    },
+    "subscript2/digit": {
+      "original": "₂",
+      "substitution": "2",
+      "occurrences": 5,
+      "contexts": [
+        {
+          "line": 11,
+          "text": "Date: 2024-01-01"
+        },
+        {
+          "line": 28,
+          "text": "[PAGE 2]"
+        },
+        {
+          "line": 29,
+          "text": "SECCIÓN 2 — CARACTERES AISLADOS"
+        },
+        {
+          "line": 31,
+          "text": "2.1 Flechas de reacción"
+        },
+        {
+          "line": 34,
+          "text": "→ | Reacción directa (flecha simple) | U+2192"
+        }
+      ]
+    },
+    "subscript3/digit": {
+      "original": "₃",
+      "substitution": "3",
+      "occurrences": 5,
+      "contexts": [
+        {
+          "line": 39,
+          "text": "↓ | Precipitado | U+2193"
+        },
+        {
+          "line": 47,
+          "text": "₃ | Subíndice 3 | U+2083"
+        },
+        {
+          "line": 55,
+          "text": "[PAGE 3]"
+        },
+        {
+          "line": 56,
+          "text": "2.3 Superíndices de carga iónica"
+        },
+        {
+          "line": 63,
+          "text": "³ | Superíndice 3 | U+00B3"
+        }
+      ]
+    },
+    "superscript-plus/ascii": {
+      "original": "⁺",
+      "substitution": "+",
+      "occurrences": 5,
+      "contexts": [
+        {
+          "line": 34,
+          "text": "→ | Reacción directa (flecha simple) | U+2192"
+        },
+        {
+          "line": 35,
+          "text": "⇌ | Equilibrio reversible | U+21CC"
+        },
+        {
+          "line": 36,
+          "text": "⇒ | Doble flecha (implica) | U+21D2"
+        },
+        {
+          "line": 37,
+          "text": "← | Reacción inversa | U+2190"
+        },
+        {
+          "line": 38,
+          "text": "↑ | Producto gaseoso (gas liberado) | U+2191"
+        }
+      ]
+    },
+    "superscript-minus/ascii": {
+      "original": "⁻",
+      "substitution": "-",
+      "occurrences": 5,
+      "contexts": [
+        {
+          "line": 11,
+          "text": "Date: 2024-01-01"
+        },
+        {
+          "line": 33,
+          "text": "--------|-----------------------------------|--------"
+        },
+        {
+          "line": 43,
+          "text": "--------|---------------|--------"
+        },
+        {
+          "line": 58,
+          "text": "--------|------------------|--------"
+        },
+        {
+          "line": 68,
+          "text": "--------|-------------------------------|--------"
+        }
+      ]
+    },
+    "degree/letter-o": {
+      "original": "°",
+      "substitution": "o",
+      "occurrences": 5,
+      "contexts": [
+        {
+          "line": 3,
+          "text": "Character Preservation Benchmark — Chemistry"
+        },
+        {
+          "line": 4,
+          "text": "Document ID: 04_quimica"
+        },
+        {
+          "line": 5,
+          "text": "Domain: Chemistry"
+        },
+        {
+          "line": 7,
+          "text": "Version: 1.0"
+        },
+        {
+          "line": 8,
+          "text": "Description: Documento sintético de benchmark para evaluación de parsers PDF"
+        }
+      ]
+    }
+  },
+  "domain_cpr": 100.0,
+  "symbols_lost": [],
+  "symbols_degraded": [],
+  "symbols_perfect": [
+    "ARROW_RIGHT",
+    "INFINITY",
+    "PLUS_MINUS",
+    "APPROX",
+    "CROSS",
+    "EQUIL",
+    "DOUBLE_ARROW",
+    "ARROW_LEFT",
+    "LONG_ARROW",
+    "SUB0",
+    "SUB1",
+    "SUB2",
+    "SUB3",
+    "SUB4",
+    "SUP_PLUS",
+    "SUP_MINUS",
+    "SUP2",
+    "SUP3",
+    "DEGREE",
+    "DELTA_UPPER"
+  ],
+  "total_gt_symbols": 360,
+  "total_ex_symbols": 360
+}

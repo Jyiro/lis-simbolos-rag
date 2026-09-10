@@ -1,0 +1,382 @@
+========================================================
+Character Preservation Benchmark — Logic & Discrete Mathematics
+Document ID: 02_logica
+Domain: Logic / Discrete Mathematics
+Language: es
+Version: 1.0
+Description: Documento sintético de benchmark para evaluación de parsers PDF
+             en el contexto de arquitecturas RAG. Contiene casos de prueba
+             controlados con símbolos de lógica y matemática discreta.
+Date: 2024-01-01
+========================================================
+
+
+SECCIÓN 1 — TEXTO DE CONTROL
+─────────────────────────────────────────────────────────
+
+La lógica matemática estudia los principios del razonamiento válido. Mediante
+símbolos formales permite expresar proposiciones y sus relaciones con precisión.
+Las proposiciones son afirmaciones que pueden ser verdaderas o falsas.
+
+La lógica proposicional se ocupa de proposiciones atómicas y sus combinaciones
+mediante conectivos lógicos. La lógica de predicados extiende este marco
+incluyendo cuantificadores que permiten hablar sobre elementos de un dominio.
+
+La matemática discreta estudia estructuras matemáticas que son fundamentalmente
+discretas rather than continuous. Sus objetos principales incluyen grafos,
+combinatoria, teoría de números, álgebra booleana y teoría de conjuntos.
+
+La lógica formal proporciona la base para las ciencias de la computación,
+en particular para la verificación formal de programas y la inteligencia
+artificial. Este texto de control no contiene símbolos especiales de lógica.
+
+
+SECCIÓN 2 — CARACTERES AISLADOS
+─────────────────────────────────────────────────────────
+
+2.1 Cuantificadores
+
+Símbolo | Nombre                    | Unicode
+--------|---------------------------|--------
+∀       | Cuantificador universal   | U+2200
+∃       | Cuantificador existencial | U+2203
+∄       | No existe                 | U+2204
+∃!      | Existe único (compuesto)  | U+2203 + U+0021
+
+2.2 Conectivos lógicos
+
+Símbolo | Nombre                    | Unicode
+--------|---------------------------|--------
+¬       | Negación                  | U+00AC
+∧       | Conjunción (Y lógico)     | U+2227
+∨       | Disyunción (O lógico)     | U+2228
+→       | Implicación               | U+2192
+↔       | Bicondicional             | U+2194
+⊕       | Disyunción exclusiva (XOR)| U+2295
+↑       | NAND (Sheffer stroke)     | U+2191
+↓       | NOR (Peirce arrow)        | U+2193
+
+2.3 Relaciones semánticas y sintácticas
+
+Símbolo | Nombre                    | Unicode
+--------|---------------------------|--------
+⊢       | Deducible (turnstile)     | U+22A2
+⊣       | Inverso de turnstile      | U+22A3
+⊨       | Consecuencia semántica    | U+22A8
+⊭       | No consecuencia semántica | U+22AD
+∴       | Por lo tanto              | U+2234
+∵       | Porque / dado que         | U+2235
+
+2.4 Teoría de conjuntos
+
+Símbolo | Nombre                    | Unicode
+--------|---------------------------|--------
+∈       | Pertenece a               | U+2208
+∉       | No pertenece a            | U+2209
+⊂       | Subconjunto propio        | U+2282
+⊆       | Subconjunto               | U+2286
+⊃       | Superconjunto propio      | U+2283
+⊇       | Superconjunto             | U+2287
+∅       | Conjunto vacío            | U+2205
+∩       | Intersección              | U+2229
+∪       | Unión                     | U+222A
+∖       | Diferencia de conjuntos   | U+2216
+Δ       | Diferencia simétrica      | U+0394
+℘       | Conjunto potencia         | U+2118
+
+2.5 Operadores booleanos y de álgebra
+
+Símbolo | Nombre                    | Unicode
+--------|---------------------------|--------
+⊤       | Tautología / Verdad       | U+22A4
+⊥       | Contradicción / Falso     | U+22A5
+□       | Necesariamente (modal)    | U+25A1
+◇       | Posiblemente (modal)      | U+25C7
+
+
+SECCIÓN 3 — CARACTERES DENTRO DE TEXTO
+─────────────────────────────────────────────────────────
+
+3.1 Cuantificador universal
+
+El símbolo ∀ se lee "para todo". La expresión ∀x ∈ ℝ significa "para todo x
+en los reales". Cuando escribimos ∀x P(x) afirmamos que la propiedad P se
+cumple para todos los elementos del dominio.
+
+El cuantificador ∀ tiene mayor precedencia que los conectivos lógicos en la
+mayoría de las convenciones. La negación de ∀x P(x) es ∃x ¬P(x).
+
+3.2 Cuantificador existencial
+
+El símbolo ∃ se lee "existe al menos uno". La expresión ∃x ∈ ℝ : P(x) afirma
+que existe un real que satisface P. La notación ∃! indica existencia y unicidad.
+
+La negación de ∃x P(x) es ∀x ¬P(x). Cuando ∃ y ∀ se combinan, el orden
+importa: ∀x ∃y R(x,y) no es lo mismo que ∃y ∀x R(x,y).
+
+3.3 Negación
+
+La negación ¬P invierte el valor de verdad de P. Si P es verdadera, ¬P es falsa
+y viceversa. La doble negación ¬¬P es equivalente a P en lógica clásica.
+
+Las leyes de De Morgan son: ¬(P ∧ Q) ↔ ¬P ∨ ¬Q y ¬(P ∨ Q) ↔ ¬P ∧ ¬Q.
+
+3.4 Conjunción y disyunción
+
+La conjunción P ∧ Q es verdadera cuando tanto P como Q son verdaderas. La
+disyunción P ∨ Q es verdadera cuando al menos una de P o Q es verdadera.
+
+La conjunción ∧ es conmutativa: P ∧ Q ↔ Q ∧ P. La disyunción ∨ también lo es.
+Ambas son asociativas: (P ∧ Q) ∧ R ↔ P ∧ (Q ∧ R).
+
+3.5 Implicación
+
+La implicación P → Q se lee "P implica Q" o "si P entonces Q". P se llama
+antecedente y Q consecuente. La implicación P → Q es falsa solamente cuando
+P es verdadera y Q es falsa.
+
+P → Q es equivalente a ¬P ∨ Q. La contrarrecíproca es ¬Q → ¬P. La conversa
+es Q → P (no equivalente en general).
+
+3.6 Bicondicional
+
+El bicondicional P ↔ Q significa que P y Q tienen el mismo valor de verdad.
+P ↔ Q es verdadera cuando P → Q y Q → P. Se lee "P si y solo si Q".
+
+P ↔ Q es equivalente a (P → Q) ∧ (Q → P) y también a (P ∧ Q) ∨ (¬P ∧ ¬Q).
+
+3.7 Deducción y consecuencia
+
+El símbolo ⊢ indica derivabilidad sintáctica: Γ ⊢ φ significa que φ es
+deducible desde el conjunto de premisas Γ mediante reglas de inferencia.
+
+El símbolo ⊨ indica consecuencia semántica: Γ ⊨ φ significa que φ es verdadera
+en todo modelo que satisfaga todas las fórmulas de Γ.
+
+El teorema de completitud dice: Γ ⊢ φ si y solo si Γ ⊨ φ.
+
+3.8 Conclusión lógica
+
+El símbolo ∴ se usa para indicar "por lo tanto" o "en consecuencia":
+P → Q, P ∴ Q (modus ponens).
+El símbolo ∵ indica "porque" o "dado que": Q ∵ P → Q, P.
+
+3.9 Pertenencia y conjuntos en contexto
+
+Si x ∈ A y A ⊆ B entonces x ∈ B. Si x ∉ A entonces x ∈ A^c (complemento de A).
+La intersección A ∩ B contiene los elementos que pertenecen a A y a B.
+La unión A ∪ B contiene los elementos que pertenecen a A o a B (o a ambos).
+
+
+SECCIÓN 4 — COMBINACIONES DE SÍMBOLOS
+─────────────────────────────────────────────────────────
+
+4.1 Fórmulas proposicionales
+
+P ∧ Q → R
+P → (Q → P)
+(P → Q) ∧ (Q → R) → (P → R)
+¬P ∨ Q
+P ∧ ¬Q ∧ R
+
+4.2 Leyes lógicas fundamentales
+
+Identidad:         P ∧ ⊤ ↔ P         P ∨ ⊥ ↔ P
+Dominación:        P ∧ ⊥ ↔ ⊥         P ∨ ⊤ ↔ ⊤
+Idempotencia:      P ∧ P ↔ P          P ∨ P ↔ P
+Doble negación:    ¬¬P ↔ P
+Complemento:       P ∧ ¬P ↔ ⊥         P ∨ ¬P ↔ ⊤
+Conmutativa:       P ∧ Q ↔ Q ∧ P      P ∨ Q ↔ Q ∨ P
+Asociativa:        (P ∧ Q) ∧ R ↔ P ∧ (Q ∧ R)
+Distributiva:      P ∧ (Q ∨ R) ↔ (P ∧ Q) ∨ (P ∧ R)
+De Morgan:         ¬(P ∧ Q) ↔ ¬P ∨ ¬Q
+                   ¬(P ∨ Q) ↔ ¬P ∧ ¬Q
+
+4.3 Fórmulas con cuantificadores
+
+∀x ∈ ℝ, x² ≥ 0
+∃x ∈ ℝ : x² = 2
+∀x ∀y (x + y = y + x)
+∃x ∀y (x ≤ y)
+∀ε > 0, ∃δ > 0 : |x − a| < δ → |f(x) − L| < ε
+¬(∀x P(x)) ↔ ∃x ¬P(x)
+¬(∃x P(x)) ↔ ∀x ¬P(x)
+
+4.4 Relaciones de conjuntos combinadas
+
+A ∩ B ⊆ A ⊆ A ∪ B
+∅ ⊆ A para todo A
+A ∩ ∅ = ∅
+A ∪ ∅ = A
+A ∩ A^c = ∅
+A ∪ A^c = U (universo)
+A ∖ B = A ∩ B^c
+
+4.5 Combinaciones de deducción
+
+Γ ⊢ φ y Γ ⊢ φ → ψ implican Γ ⊢ ψ (modus ponens)
+Si Γ ⊢ φ entonces Γ ∪ {ψ} ⊢ φ (monotonía)
+Si Γ ⊢ φ entonces ⊨ φ es consecuencia del teorema de completitud
+
+
+SECCIÓN 5 — EXPRESIONES COMPLEJAS
+─────────────────────────────────────────────────────────
+
+5.1 Definición de límite (estilo lógico formal)
+
+lim(x→a) f(x) = L  ↔  ∀ε > 0, ∃δ > 0 : 0 < |x − a| < δ → |f(x) − L| < ε
+
+5.2 Principio de inducción matemática
+
+Sea P(n) una propiedad de números naturales. Entonces:
+[ P(0) ∧ ∀n ∈ ℕ (P(n) → P(n+1)) ] → ∀n ∈ ℕ P(n)
+
+5.3 Axioma de extensionalidad
+
+∀A ∀B [ (∀x (x ∈ A ↔ x ∈ B)) ↔ A = B ]
+
+5.4 Axioma de separación (esquema)
+
+∀A ∃B ∀x [ x ∈ B ↔ (x ∈ A ∧ φ(x)) ]
+
+donde φ(x) es una fórmula con x libre.
+
+5.5 Definición de función inyectiva
+
+f es inyectiva ↔ ∀x₁ ∀x₂ [ f(x₁) = f(x₂) → x₁ = x₂ ]
+                ↔ ∀x₁ ∀x₂ [ x₁ ≠ x₂ → f(x₁) ≠ f(x₂) ]
+
+5.6 Definición de función sobreyectiva
+
+f: A → B es sobreyectiva ↔ ∀y ∈ B, ∃x ∈ A : f(x) = y
+
+5.7 Forma normal disyuntiva (DNF)
+
+Una fórmula está en DNF si es una disyunción de conjunciones de literales:
+(P ∧ Q ∧ ¬R) ∨ (¬P ∧ Q) ∨ (P ∧ ¬Q ∧ R)
+
+Cada literal es una variable o su negación: P, ¬P, Q, ¬Q, etc.
+
+5.8 Forma normal conjuntiva (CNF)
+
+Una fórmula está en CNF si es una conjunción de disyunciones de literales:
+(P ∨ Q ∨ ¬R) ∧ (¬P ∨ Q) ∧ (P ∨ ¬Q ∨ R)
+
+5.9 Tabla de verdad representada en texto
+
+P | Q | P∧Q | P∨Q | P→Q | P↔Q | ¬P
+--|---|-----|-----|-----|-----|----
+V | V |  V  |  V  |  V  |  V  | F
+V | F |  F  |  V  |  F  |  F  | F
+F | V |  F  |  V  |  V  |  F  | V
+F | F |  F  |  F  |  V  |  V  | V
+
+5.10 Demostración formal (modus ponens)
+
+Premisa 1:  P → Q
+Premisa 2:  P
+∴ Conclusión: Q
+
+Justificación: Por modus ponens sobre premisas 1 y 2.
+Notación: {P → Q, P} ⊢ Q
+
+5.11 Predicados y cuantificadores combinados
+
+Sea R(x, y) la relación "x es menor que y":
+
+∀x ∈ ℝ, ∀y ∈ ℝ : x < y → ∃z ∈ ℝ : x < z ∧ z < y  (densidad de ℝ)
+∀x ∈ ℕ, ∃y ∈ ℕ : y = x + 1  (sucesor)
+¬∃ mayor natural: ¬∃M ∈ ℕ : ∀n ∈ ℕ, n ≤ M
+
+
+SECCIÓN 6 — CASOS DIFÍCILES
+─────────────────────────────────────────────────────────
+
+6.1 Símbolos visualmente similares
+
+Par 1: → (U+2192, implicación) vs. - > (guión + mayor ASCII)
+Par 2: ↔ (U+2194, bicondicional) vs. <-> (tres ASCII)
+Par 3: ∧ (U+2227, conjunción) vs. ^ (U+005E, circunflejo ASCII)
+Par 4: ∨ (U+2228, disyunción) vs. v (U+0076, letra v ASCII)
+Par 5: ¬ (U+00AC, negación) vs. ~ (U+007E, tilde ASCII)
+Par 6: ∈ (U+2208, pertenece) vs. ε (U+03B5, épsilon griego)
+Par 7: ⊢ (U+22A2, turnstile) vs. |- (barra + guión ASCII)
+Par 8: ⊨ (U+22A8, doble turnstile) vs. |= (barra + igual ASCII)
+Par 9: ⊤ (U+22A4, verdad) vs. T (U+0054, letra T mayúscula)
+Par 10: ⊥ (U+22A5, falso) vs. F (U+0046, letra F mayúscula)
+
+6.2 Secuencias densas de símbolos lógicos
+
+¬(P ∧ Q) ↔ (¬P ∨ ¬Q)
+¬(P ∨ Q) ↔ (¬P ∧ ¬Q)
+(P → Q) ↔ (¬P ∨ Q)
+(P ↔ Q) ↔ ((P → Q) ∧ (Q → P))
+∀x (P(x) → Q(x)) ∧ ∀x P(x) → ∀x Q(x)
+
+6.3 Fórmulas anidadas con cuantificadores
+
+∀x ∃y ∀z [ R(x,y) ∧ ¬R(y,z) → R(x,z) ]
+∃x [ P(x) ∧ ∀y (P(y) → y = x) ]  (existencia y unicidad)
+∀A ∀B [ A ⊆ B ↔ ∀x (x ∈ A → x ∈ B) ]
+
+6.4 Símbolos de diferentes bloques Unicode en la misma expresión
+
+∀ε ∈ ℝ⁺, ∃δ ∈ ℝ⁺ : ∀x ∈ Dom(f), 0 < |x − a| < δ → |f(x) − L| < ε
+
+Contiene: ∀ (U+2200), ε (U+03B5), ∈ (U+2208), ℝ (U+211D), ⁺ (U+207A),
+          ∃ (U+2203), δ (U+03B4), − (U+2212), | (U+007C)
+
+6.5 Operadores de lógica modal
+
+□P significa "P es necesariamente verdadera"
+◇P significa "P es posiblemente verdadera"
+□P → P  (axioma T)
+P → □◇P  (axioma B)
+□P → □□P  (axioma 4)
+◇P ↔ ¬□¬P
+□P ↔ ¬◇¬P
+
+6.6 Lógica de predicados: alternancia de cuantificadores
+
+Considerar las diferencias entre:
+∀x ∃y R(x,y)  (para todo x, existe un y)
+∃y ∀x R(x,y)  (existe un y, para todo x)
+
+Primera implica: para cada x puede haber un y diferente.
+Segunda implica: hay un único y que funciona para todos los x.
+∃y ∀x R(x,y) → ∀x ∃y R(x,y) pero no al revés.
+
+6.7 Símbolo de conjunto potencia
+
+℘(A) = {B : B ⊆ A}
+|℘(A)| = 2^|A|  (si A es finito)
+∀B (B ∈ ℘(A) ↔ B ⊆ A)
+
+6.8 Diferencia simétrica
+
+A Δ B = (A ∖ B) ∪ (B ∖ A) = (A ∪ B) ∖ (A ∩ B)
+A Δ A = ∅
+A Δ ∅ = A
+(A Δ B) Δ C = A Δ (B Δ C)  (asociatividad)
+
+
+SECCIÓN 7 — TEXTO DE CONTROL FINAL
+─────────────────────────────────────────────────────────
+
+La lógica formal proporciona las herramientas para razonar con precisión. Los
+sistemas de deducción natural y los cálculos de secuentes son dos enfoques para
+sistematizar la derivación de conclusiones a partir de premisas.
+
+La completitud y la consistencia son propiedades fundamentales de los sistemas
+formales. Un sistema es completo si toda verdad semántica es demostrable. Un
+sistema es consistente si no es posible demostrar tanto una fórmula como su
+negación.
+
+El teorema de incompletitud de Gödel establece que ningún sistema formal
+suficientemente expresivo puede ser a la vez completo y consistente. Este
+resultado profundo tiene consecuencias fundamentales para los fundamentos de
+las matemáticas y para la informática teórica.
+
+Este texto final no contiene símbolos especiales de lógica y sirve como control
+para verificar que el parser no degrada el texto convencional al procesar el
+documento.

@@ -1,0 +1,46 @@
+{
+  "TURNSTILE": {
+    "pdfplumber": [
+      {
+        "line_no": 11,
+        "snippet": "Abstract\nWe introducesyntactic modal operator ✷⊢⊢⊢ for being a thesis into first-\norderlogic. Thislogic isamodernrealization ofR.Carnap’sold ideason"
+      },
+      {
+        "line_no": 17,
+        "snippet": "form,andthefactthatinthecanonicalframe,therelationonallmaximal\nconsistentsets,R={hΓ,∆i:∀A(✷⊢⊢⊢A∈Γ=⇒A∈∆)},isauniversalrela-\ntion(bothareunprovableinknownquantifiedmodallogics).Thestrength"
+      },
+      {
+        "line_no": 19,
+        "snippet": "tion(bothareunprovableinknownquantifiedmodallogics).Thestrength\nofthe✷⊢⊢⊢ operatorisaproperextensionofmodallogicS5.Usingcomplete-\nness, weprovethat satisfiability in amodelof ✷⊢⊢⊢A underarbitrary valua-"
+      }
+    ],
+    "pymupdf": [
+      {
+        "line_no": 8,
+        "snippet": "We introduce syntactic modal operator ✷\n⊢for being a thesis into ﬁrst-\norder logic. This logic is a modern realization of R. Carnap’s old ideas on"
+      },
+      {
+        "line_no": 15,
+        "snippet": "consistent sets, R = {⟨Γ, ∆⟩: ∀A(✷\n⊢A ∈Γ =⇒A ∈∆)}, is a universal rela-\ntion (both are unprovable in known quantiﬁed modal logics). The strength"
+      },
+      {
+        "line_no": 18,
+        "snippet": "of the ✷\n⊢operator is a proper extension of modal logic S5. Using complete-\nness, we prove that satisﬁability in a model of ✷"
+      }
+    ],
+    "pypdf": [
+      {
+        "line_no": 7,
+        "snippet": "Abstract\nWe introduce syntactic modal operator ✷⊢⊢⊢ for being a thesis into ﬁrst-\norder logic. This logic is a modern realization of R. Carnap’ s old ideas on"
+      },
+      {
+        "line_no": 13,
+        "snippet": "form, and the fact that in the canonical frame, the relation o n all maximal\nconsistent sets, R = {⟨Γ,∆⟩: ∀A(✷⊢⊢⊢A ∈ Γ =⇒ A ∈ ∆)}, is a universal rela-\ntion (both are unprovable in known quantiﬁed modal logics). The strength"
+      },
+      {
+        "line_no": 15,
+        "snippet": "tion (both are unprovable in known quantiﬁed modal logics). The strength\nof the ✷⊢⊢⊢ operator is a proper extension of modal logic S5. Using complete-\nness, we prove that satisﬁability in a model of ✷⊢⊢⊢A under arbitrary valua-"
+      }
+    ]
+  }
+}

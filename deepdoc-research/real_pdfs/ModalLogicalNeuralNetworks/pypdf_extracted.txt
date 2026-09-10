@@ -1,0 +1,1833 @@
+[PAGE 1]
+MODALLOGICALNEURALNETWORKS
+Antonin Sulc
+Lawrence Berkeley National Lab
+Berkeley, CA, USA
+ABSTRACT
+We propose Modal Logical Neural Networks (MLNNs), a neurosymbolic frame-
+work that integrates deep learning with the formal semantics of modal logic, en-
+abling reasoning about necessity and possibility. Drawing on Kripke semantics,
+we introduce specialized neurons for the modal operators□and♢that operate
+over a set of possible worlds, enabling the framework to act as a differentiable
+“logical guardrail.” The architecture is highly flexible: the accessibility relation
+between worlds can either be fixed by the user to enforce known rules or, as an
+inductive feature, be parameterized by a neural network. This allows the model
+to optionally learn the relational structure of a logical system from data while
+simultaneously performing deductive reasoning within that structure.
+This versatile construction is designed for flexibility. The entire framework is
+differentiable from end to end, with learning driven by minimizing a logical con-
+tradiction loss. This not only makes the system resilient to inconsistent knowl-
+edge but also enables it to learn nonlinear relationships that can help define the
+logic of a problem space. We illustrate MLNNs on four case studies: grammat-
+ical guardrailing, multi-agent epistemic trust, detecting constructive deception in
+natural language negotiation, and combinatorial constraint satisfaction in Sudoku.
+These experiments demonstrate how enforcing or learning accessibility can in-
+crease logical consistency and interpretability without changing the underlying
+task architecture.
+1 INTRODUCTION
+Modern neural networks, particularly large language models, have achieved remarkable success in
+learning complex statistical patterns from vast datasets. However, their reliance on purely data-
+driven learning presents a critical challenge in high-stakes environments. These models can produce
+outputs that are statistically plausible yet logically incoherent, factually incorrect, or in violation of
+fundamental domain constraints. This inherent unpredictability poses a significant barrier to their
+deployment in safety-critical applications such as autonomous systems, medical diagnostics, or legal
+reasoning, where adherence to explicit rules and principles is not just desirable, but essential. The
+core of this problem is a methodological gap: a lack of a native mechanism within these architectures
+to enforce declarative, symbolic knowledge and guarantee that outputs conform to a set of verifiable
+logical rules.
+This paper addresses this gap by turning to modal logic, a powerful extension of classical logic
+designed for reasoning about concepts like necessity and possibility. While standard logic deals
+with propositions that are simply true or false in a single, fixed reality, modal logic introduces a
+framework of “possible worlds” to reason about qualified truths. For instance, in the context of
+an autonomous vehicle, a temporal logic rule might state□(¬moving∧red light), meaning “it is
+necessarily true at all future moments that the vehicle is not moving while the traffic light is red.”
+This is a far stronger and more useful constraint than a simple statistical correlation. Similarly,
+epistemic logic, another form of modal logic, reasons about knowledge, where a statement likeKaϕ
+means “agentaknows thatϕis true.” These logics provide the formal language needed to specify
+the complex, nuanced rules that govern real-world systems, but integrating them into differentiable,
+learnable models remains an open challenge.
+1
+arXiv:2512.03491v2  [cs.LG]  12 Feb 2026
+
+[PAGE 2]
+Proposer NN
+Learns State
+Differentiable
+Modal Logic
+Relation
+FixedR/LearnedA θ
+Loss
+Ltask +L contra
+Gradient (∇)
+(A) Deductive
+Fixed Rules, Learn Content
+Context Enc.
+Fixed Input
+Differentiable
+Modal Logic
+Relation NN
+LearnsA θ
+Loss
+Ltask +L contra
+Gradient (∇)
+(B) Inductive
+Fixed Input, Learn Structure
+Figure 1: MLNN learning modes executing the Upward-Downward inference algorithm. (A) De-
+ductive: Enforces fixed axioms by updating state representations (Proposer NN). (B) Inductive:
+Discovers relational structure (Aθ) by updating the Relation NN. Gray arrows denote the forward
+differentiable inference (performing Upward aggregation and Downward constraint propagation);
+Orange arrows denote the gradient flow minimizing logical contradiction.Key:The central “Differ-
+entiable Modal Logic” block evaluates□and♢operators over truth bounds[L,U]across the world
+setW. The accessibility relation (top) determines which worlds participate in modal aggregation.
+In mode (A), the relation is fixed (denotedR), while in mode (B), it is learned (Aθ).
+We introduce Modal Logical Neural Networks (MLNNs) 1, a neurosymbolic framework that
+bridges this divide. Building upon the weighted real-valued logic of Logical Neural Networks
+(LNNs) Riegel et al. (2020), we propose a distinct architecture centered on Kripke semantics that
+reasons over possible worlds. This moves beyond purely statistical learning to a hybrid approach,
+allowing users to impose explicit modal logic constraints on a model’s behavior. A defining feature
+of this architecture is its flexibility: the accessibility relation between worlds can be parameterized
+by a neural network. This design enables MLNNs to simultaneously perform deductive reasoning
+based on user-defined axioms and inductively learn the relational structure that best explains the
+data. Consequently, this work shows modeling multi-agent systems: by interpreting the learnable
+accessibility relation as a dynamic graph of trust or information flow, the framework can formalize
+how agent behavior and communication evolve in response to one another.
+This approach enables the creation of differentiable “guardrails” for powerful statistical models.
+By framing learning as the dual objective of fitting data and minimizing logical contradiction,
+MLNNs can steer models toward outputs that are both statistically likely and logically sound. In
+this paradigm, we explicitly accept a trade-off: we may sacrifice a margin of raw statistical accu-
+racy to achieve higher logical coherence and explainability. We demonstrate this capability through
+a series of experiments: reducing specific grammatical errors made by a sequence tagger, training
+a classifier to logically abstain on ambiguous inputs, solving highly non-convex Sudoku puzzles
+as a multi-world constraint problem, and learning relational knowledge structures in multi-agent
+systems, and identifying deceptive strategies in human negotiation benchmarks.
+Beyond these demonstrated applications, the MLNN framework has potential relevance for a broader
+range of domains where relational structure and logical constraints are paramount. In bioinformat-
+ics, the framework could model gene regulatory networks with temporal and epistemic uncertainties
+about gene expression states. In climate science, MLNNs could reason about alternative future
+scenarios (possible worlds) under different policy interventions, enabling formal verification of cli-
+mate model predictions. For autonomous systems, the framework offers a path toward verifying
+temporal-epistemic properties of multi-robot teams, where each robot’s knowledge and beliefs must
+be coordinated. In financial networks, MLNNs could learn trust and influence relationships among
+actors from transaction data, providing interpretable representations of systemic risk.
+MLNNs offer a methodological step toward building AI systems that are not only powerful pat-
+tern recognizers but also more predictable and verifiable reasoners. In the following sections, we
+formalize the MLNN architecture (Section 3), analyze its theoretical properties (Section 4), and
+demonstrate its capabilities across distinct case studies (Section 5).
+1Code available at https://github.com/sulcantonin/MLNN public.git
+2
+
+[PAGE 3]
+2 RELATEDWORK
+2.1 CLASSICAL(SINGLE-WORLD) NEUROSYMBOLICLOGIC
+Our work utilizes the foundational principles of the Logical Neural Network (LNN) framework
+Riegel et al. (2020). LNNs establish a one-to-one correspondence between neurons and the com-
+ponents of logical formulae, creating a highly disentangled and interpretable representation. They
+employ a weighted real-valued logic, where neurons compute truth values within the continuous
+interval[0,1]and use truth bounds[L,U]to represent uncertainty and enable an open-world as-
+sumption. Inference is performed via a provably convergent Upward-Downward algorithm, and
+learning is driven by a novel loss function that minimizes logical contradiction (L>U).
+Other prominent neurosymbolic systems designed for First-Order Logic (FOL) or probabilistic logic
+also operate on a single-world assumption. Frameworks like Logic Tensor Networks (LTNs) ground
+FOL formulae in tensors Serafini and d’Avila Garcez (2016), Markov Logic Networks (MLNs)
+merge FOL with probabilistic graphical models by weighting clauses as features Richardson and
+Domingos (2006), and ProbLog integrates probabilistic reasoning with logic programming De Raedt
+et al. (2007). While powerful, these systems share a common characteristic: their logic is defined
+over a single, fixed reality.
+Sophisticated reasoning often demands evaluating statements across dynamic contexts, such as tem-
+poral futures or epistemic beliefs, rather than within a static snapshot. By incorporating Kripke se-
+mantics Fagin et al. (1995), our framework evaluates propositions over connected possible worlds.
+This architecture captures structural relationships inexpressible in single-world models, enabling the
+richer analysis of complex domains like demonstrated in experiment section.
+2.2 NEURALMODELS FORMODALLOGIC
+The concept of representing modal logic in neural networks was pioneered by Connectionist Modal
+Logic (CML) Garcez et al. (2007). CML represents Kripke models by using an ensemble of neural
+networks, with one network dedicated to each possible world. In this framework, the modal opera-
+tors (□,♢) are implemented by structurally propagating information between these networks based
+on a fixed accessibility relation, which is typically derived a priori from a logic program. Conse-
+quently, the learning task in CML is restricted to the internal propositions of each world within this
+fixed topology.
+Modal Logical Neural Networks (MLNNs) advance this paradigm in two fundamental ways. First,
+rather than relying on binary truth values, they incorporate a weighted, real-valued logic capable
+of modeling uncertainty and actively minimizing logical inconsistencies. Second, and most signif-
+icantly, MLNNs treat the accessibility relation, the structural rules defining how different possible
+worlds connect, as a flexible, learnable component. Unlike CML, which relies on a pre-determined
+logical structure, MLNNs employ fully differentiable modal operators. This allows the entire rea-
+soning pipeline to be trained end-to-end, enabling the system to be embedded within larger neural
+architectures and to inductively discover complex logical structures, such as epistemic trust or tem-
+poral dependencies, directly from data.
+Key distinction from CML:The differentiability of MLNN operators enables joint optimization
+of logical structure and task performance. In CML, the accessibility relationRis fixed before
+training, meaning the network can only learn propositional content within a predetermined logical
+structure. In contrast, MLNNs can simultaneously learnwhatis true (propositional content) and
+how worlds relate(accessibility structure), guided by a unified objective that balances task loss and
+logical consistency. This joint optimization is impossible in CML’s architecture.
+2.3 MODALLOGIC AS ACONSTRAINT ORTOOL FORNEURALNETS
+Other recent work has used modal logics, particularly temporal and epistemic logics, around neural
+networks rather than as the network architecture itself. For example, LTLfNet trains a recursive
+neural network to decide the satisfiability of Linear Temporal Logic on finite traces (LTLf) Luo
+et al. (2022). Here, the logic is the input to be classified, not a persistent multi-world state for
+reasoning.
+3
+
+[PAGE 4]
+In epistemic reinforcement learning, modal logic has been used as an external model-checking layer
+or “shield” to verify an agent’s beliefs (doxastic states) and guide its actions Engesser et al. (2025).
+In such systems, the agent itself is often a standard neural network, and the accessibility relation
+(defining an agent’s beliefs) is symbolically defined, not learned via gradient descent asAθ is in our
+framework. These approaches demonstrate the utility of modal logic for specification and verifica-
+tion, but do not provide a unified, differentiable Kripke-style architecture.
+2.4 MODALLOGIC AS ANANALYSISTOOL FORGNNS
+While theoretical studies have established an expressive equivalence between GNNs and certain
+fragments of modal logic Nunn and Schwarzentruber (2023), the two frameworks differ fundamen-
+tally in their operational direction. Their approach leverage this duality for post-hoc analysis: they
+train standard GNNs on data and subsequently attempt to extract or explain logical behaviors from
+the learned weights. In contrast, MLNNs natively embed modal semantics into the neural architec-
+ture itself. Rather than relying on a statistical model to approximate logical rules as an emergent
+property of the data, MLNNs enforce these rules as differentiable constraints.
+Advantage over GNN+verifier pipelines:Recent work has used modal logic as a specification
+language for GNN verification (e.g., Nunn and Schwarzentruber (2023)). Such approaches train a
+GNN first, then apply an external modal logic verifier to check properties post-hoc. MLNNs of-
+fer an integrated alternative: modal constraints are enforcedduringtraining via the contradiction
+loss, not verified afterward. This has several implications: (1) the model is guided toward satisfy-
+ing constraints during optimization rather than potentially failing verification later; (2) the learned
+accessibility relationAθ provides an interpretable structure that emerges from the learning process;
+and (3) the framework avoids the computational overhead of running a separate verification pipeline.
+Similarly,Barcel´o et al. (2020) identified the limitations of the equivalence between GNNs and
+graded modal logic. They demonstrated that this logical fragment is inherently restricted to local
+neighborhoods, preventing the representation of global properties without explicit readout mech-
+anisms. Our framework addresses this theoretical constraint by parameterizing the accessibility
+relation (Aθ), enabling the model to learn the global connectivity needed for broader logical expres-
+sivity.
+2.5 POSITIONING OFMLNNS
+To clarify the specific advances of MLNNs relative to prior work, we provide a systematic com-
+parison in Table 1. This comparison highlights the unique combination of capabilities that MLNNs
+offer.
+Table 1: Comparison of MLNNs with related neurosymbolic and modal logic systems. MLNNs
+uniquely combine all listed capabilities.
+Capability CML LNN GNN+Verifier Shielding MLNN (Ours)
+Real-valued truth bounds[L,U]✗ ✓ ✗ ✗ ✓
+Explicit□/♢operators✓ ✗ ✗ ∗ ✓ ✓
+Multiple possible worlds✓ ✗ ✗ ✓ ✓
+Learnable accessibilityAθ ✗N/A✗ ✗ ✓
+End-to-end differentiable Partial † ✓ ✗ ✗ ✓
+Contradiction-driven learning✗ ✓ ✗ ✗ ✓
+Joint structure+content learning✗N/A✗ ✗ ✓
+Axiomatic regularization (T, S4, S5)✗N/A N/A Fixed✓
+Scalable (metric learning)✗ ✓ ✓ ✗ ✓
+Combinatorial Opt. (e.g., Sudoku)‡ ✗ ✗ ✗ ✗ ✓
+∗GNN+Verifier uses modal logic externally, not as network operators.
+†CML networks are differentiable but the accessibility relation is not.
+‡MLNN enables solving NP-hard constraints via differentiable energy minimization.
+MLNNs synthesize and extend ideas from multiple research threads. Our framework makes two
+primary contributions to this landscape. First, it brings full Kripke semantics to neurosymbolic
+4
+
+[PAGE 5]
+learning by introducing sound, differentiable□and♢neurons that operate over a set of possible
+worlds, inheriting the LNN’s[L,U]bounds and contradiction-driven learning. Second, unlike CML
+or shielding-based approaches, MLNNs uniquely parameterize the accessibility relation itself asAθ,
+allowing the logical structure to be learned from data. ThisA θ can also be optionally regularized
+to approximate the relational properties of standard modal systems, such asT(reflexivity) orS4
+(transitivity), as discussed in Section 4.3.
+Relationship to LNNs:The extension from LNNs to MLNNs is nontrivial. The introduction of
+multiple worlds and accessibility relations changes the inference algorithm in several key ways: (1)
+the Upward pass must now aggregate truth valuesacross worldsvia the modal operators, weighted
+byA θ; (2) the Downward pass must propagate constraints not just within a formula tree but across
+the accessibility structure; and (3) the contradiction loss now accumulates across all world-formula
+pairs, allowing contradictions in one world to influence learning in accessible worlds. We detail
+these changes in Section 3 and prove their soundness in Section 4.
+This makes MLNN a general-purpose, differentiable modal reasoning layer designed to enforce
+logical coherence. This capability complements purely statistical approaches. For instance, while
+Conformal Prediction (CP) provides statistical guarantees for abstention Angelopoulos and Bates
+(2021), MLNNs enable axiomatic detection of the unknown (as shown in Section 5.2) based on
+user-defined axioms, providing a form of logical interpretability absent in statistical methods.
+To the best of our knowledge, there is currently no neurosymbolic framework that simultaneously
+(i) implements Kripke-style modal semantics with explicit□/♢operators, (ii) maintains LNN-style
+lower/upper truth bounds for open-world reasoning, and (iii) treats the accessibility relation itself as
+a differentiable, learnable component trained jointly with the task. Existing systems either handle
+only propositional or first-order constraints, rely on symbolic (non-differentiable) modal reasoning,
+or assume a fixed accessibility relation defined a priori. As a consequence, there is no directly
+comparable “drop-in” baseline for MLNNs; in our experiments we therefore focus on controlled
+comparisons to simplified variants of our own model and to standard non-symbolic baselines that
+address overlapping subtasks.
+3 METHOD: MODALLOGICALNEURALNETWORKS
+3.1 PRELIMINARIES ANDNOTATION
+The power of modal logic stems from Kripke semantics, which extends classical logic by evaluating
+propositions across multiple ’possible worlds’. Formally, a Kripke model is a tupleM=⟨W,R,V⟩,
+whereWis a set of possible worlds,Ris a binary accessibility relation onW(i.e.,R⊆W×W),
+andVis a valuation function that assigns a truth value to each atomic propositionp∈Pin each
+worldw∈W. An MLNN instantiates a differentiable, learnable version of this model. A “world”
+is a flexible concept representing an agent’s belief, a moment in time, or a specific context.
+We formalize our framework using the following notation. LetWbe a finite set of possible worlds
+andTbe a finite set of discrete time steps, which together define a set of spacetime statesS=
+W×T. Atomic propositions and logical formulae are denoted bypandϕ, respectively, with their
+truth values represented by continuous lower and upper bounds[L,U]⊆[0,1]. The structural
+relationships between worlds are defined by a crisp binary accessibility relationR⊆W×W(used
+when the relation is fixed and given) or a learnable, neurally parameterized accessibility matrix
+Aθ (used when the relation is learned), which may be applied as a masked matrix ˜A. We use
+Rexclusively for fixed relations andA θ for learnable relations throughout this paper. We utilize
+the standard modal operators□(necessity) and♢(possibility), which instantiate asK aϕ(“Agent
+aknowsϕ”) in epistemic logic orGϕ(“Globally”) andFϕ(“Finally”) in temporal logic. The
+soft logic aggregations are controlled by a temperature parameterτ, and the model is trained by
+minimizing a total loss composed of a task lossLtask and a logical contradiction lossLcontra, balanced
+by a weighting hyperparameterβ.
+3.2 DIFFERENTIABLEKRIPKESEMANTICS
+In an MLNN, the components of a Kripke model are realized as differentiable tensors. For each
+propositionp, the MLNN stores a tensor of truth bounds of shape(|W|,2), where each row
+5
+
+[PAGE 6]
+[Lp,w,Up,w]represents the truth bounds ofpin worldw. The accessibility relation, which de-
+fines which worlds can “see” each other, dictates the function of modal operators. A key feature
+of the MLNN is the option to make this relation a learnable component, parameterized by a neu-
+ral network,A θ. This allows the model to learn the underlying relational physics of the problem
+domain-such as which agents trust each other or how time flows-directly from data, guided by the
+goal of achieving logical consistency.
+3.2.1 MODALOPERATORS: THENECESSITY ANDPOSSIBILITYNEURONS
+The modal operators are specialized neurons that aggregate information across worlds. While clas-
+sical logic uses hard minimums and maximums over a fixed set of neighbors, we employ differen-
+tiable relaxations over the weighted accessibility matrix ˜Ato allow gradients to propagate through
+the structural decision boundaries. To ensure the soundness of our bounds (as shown in Theorem 1),
+we define a set of differentiable, monotonic operators. Letx={x i}be a set of truth values from all
+worlds. We define:
+•softmin τ(x) =−τlog P
+i exp(−xi/τ), which is a sound lower bound onmin(x).
+•softmax τ(x) =τlog P
+i exp(xi/τ), which is a sound upper bound onmax(x).
+•conv-pool τ(x,z) = P
+iwixi, wherew i = softmax(zi/τ). This is a convex pooling (a
+weighted average). Whenz=x, this is a lower bound onmax(x). Whenz=−x, this is
+an upper bound onmin(x).
+We use these to define the modal neuron bounds (defaultτ= 0.1unless stated).
+The□(Necessity) NeuronIn differentiable Kripke semantics,□ϕrepresents a weighted universal
+quantification:ϕmust be true in all worlds to the degree that they are accessible. We implement this
+using the differentiable implication(1− ˜Aw,w′ +truth). Intuitively, this acts as a “weakest link”
+detector: if a world is highly accessible ( ˜A≈1) butϕis false, the score collapses.
+L□ϕ,w = softmin τ
+w′∈W
+
+(1− ˜Aw,w′) +Lϕ,w′
+
+(Weighted Universal)
+U□ϕ,w = conv-pool τ
+w′∈W
+
+(1− ˜Aw,w′) +Uϕ,w′,...
+
+(Sound Upper Bound)
+(1)
+The♢(Possibility) NeuronDually,♢ϕrepresents a weighted existential quantification:ϕmust
+be true in at least one highly accessible world. We implement this using a differentiable conjunction.
+Functionally, this acts as an “evidence scout”: the neuron activates if it finds any world that is both
+accessible and whereϕis true.
+L♢ϕ,w = conv-pool τ
+w′∈W
+
+˜Aw,w′ +Lϕ,w′−1,...
+
+(Sound Lower Bound)
+U♢ϕ,w = softmax τ
+w′∈W
+
+˜Aw,w′ +Uϕ,w′−1
+
+(Weighted Existential)
+(2)
+This formulation ensures that the bounds respect the fundamental modal duality♢ϕ≡¬□¬ϕvia
+the identitysoftmax(x) = 1−softmin(1−x).
+3.3 FLEXIBLE ANDLEARNABLEACCESSIBILITYRELATIONS
+A key capability of MLNNs is the ability to treat the accessibility relation as a learnable parameter,
+rather than a fixed part of the model structure. In classical modal logic,Ris a fixed, given structure.
+In an MLNN, this fixedRcan be replaced by a learnable, weighted relationA θ. The flexibility
+to use either a fixed or learnable structure is crucial; we use fixed logical rules in our grammatical
+guardrailing and axiomatic detection of the unknown, while the learnable relationA θ is showcased
+in our multi-agent epistemic trust analysis.
+We parameterize this relation with a neural network,A θ :W×W→[0,1]. For smaller domains,
+this can be instantiated as a direct matrix of learnable logits passed through a sigmoid function. For
+scalable applications, we can employ a metric learning parameterization, where a neural encoder
+6
+
+[PAGE 7]
+maps each worldwto a latent embeddingh w ∈R d. The accessibility score is then defined by
+a kernel function, such asA θ(wi,wj) =σ(h ⊤
+wi hwj), effectively determining logical access via
+geometric proximity. This factorized form reduces the parameter space from quadratic to linear
+with respect to|W|.
+Initialization ofA θ The initialization ofA θ can significantly affect convergence speed and final
+performance. We recommend the following strategies based on domain knowledge:
+•Default (no prior):Initialize logits with small random values (e.g.,N(0,0.01)), yielding
+Aθ≈0.5uniformly.
+•Reflexivity prior:When reflexivity is expected (e.g., epistemic logic), initialize diagonal
+entries with positive bias (e.g., logits= 2.0) soA θ(w,w)≈0.88.
+•Distrust prior:For adversarial domains (e.g., Diplomacy), initialize with negative bias
+(e.g., logits=−2.0) soA θ≈0.12, encoding a prior of skepticism.
+•Identity prior:Initialize as identity matrix when agents should initially only “see” them-
+selves.
+For differentiability, we use these weights directly in a soft aggregation. The necessity neuron, for
+example, becomes a weighted soft minimum, see Equation 1. The truth valueL ϕ,wj from a target
+worldwj is incorporated into the minimum atwi using a differentiable implication1−( ˜A)ij+Lϕ,wj .
+If( ˜A)ij≈1(full access), the term(1−( ˜A)ij)is near 0, andLϕ,wj fully participates in the minimum.
+If( ˜A)ij≈0(no access), the term is near 1, effectively removingL ϕ,wj from consideration.
+This formulation is a weighted generalization of a logical conjunction, adapted from the LNN frame-
+work’s operator for universal quantification. Its use preserves the monotonicity required for the
+Upward-Downward algorithm, as it is a composition of monotonic functions (soft-min and a linear
+term inL), which we rely on in Section 4.2. In line with the base LNN framework, we assume that
+all neuron activations are clipped to the interval[0,1]to maintain valid truth values.
+The parametersθof this accessibility network are learnable, updated via gradient descent on the
+system’s overall contradiction loss. This is the core inductive capability of the MLNN. It allows the
+model to discover the logical structure that best resolves contradictions in the data. For example,
+it can learn whether the relation should be reflexive (by learning high values on the diagonal) or
+symmetric, all driven by the objective of finding a maximally consistent logical theory.
+3.4 MODALINFERENCE ANDLEARNING
+We extend the Upward-Downward algorithm from Riegel et al. (2020) to handle modal operators.
+During the upward pass, the truth of a modal formula is determined by aggregating its subformula’s
+truth from accessible worlds, as shown in the equations above.
+Downward PassDuring the downward pass, a parent modal formula’s truth constrains its subfor-
+mula in accessible worlds. This propagation is also monotonic. For the necessity operator, if the
+lower boundL □ϕ,w is high, it implies a strong belief thatϕmust be true inallaccessible worlds.
+This propagates a new, tighter lower bound to all children:
+L(t+1)
+ϕ,w′ ←max(L (t)
+ϕ,w′,L (t)
+□ϕ,w)∀w ′ s.t.( ˜A)w,w′ >0
+Dually, a low upper boundU ♢ϕ,w impliesϕmust be false in all accessible worlds:
+U(t+1)
+ϕ,w′ ←min(U (t)
+ϕ,w′,U (t)
+♢ϕ,w)∀w ′ s.t.( ˜A)w,w′ >0
+Cross-World Contradiction PropagationA key difference from single-world LNNs is how con-
+tradictions propagate across the Kripke structure. In a standard LNN, a contradiction (L > U)
+affects only the formula tree containing that proposition. In an MLNN, contradictions can propagate
+across worlds via the accessibility relation:
+1.Direct contradiction:IfL ϕ,w >U ϕ,w in worldw, this contributes toL contra.
+7
+
+[PAGE 8]
+2.Modal propagation:If□ϕhas a high lower bound atw, but some accessible worldw ′
+hasϕwith a low upper bound, the modal operator creates a “cross-world” tension that
+manifests as a gradient signal.
+3.Accessibility learning:WhenA θ is learnable, the gradient from this cross-world tension
+flows back to modifyAθ, potentially “severing” logical access to resolve the contradiction.
+This mechanism is what enables inductive learning of relational structure: the model can learn to
+adjust which worlds are accessible to minimize logical contradictions.
+The entire system is trained end-to-end via joint optimization. The total loss combines a standard
+task-specific loss (e.g., cross-entropy) with the logical contradiction loss. This loss is theoretically
+grounded in the principle of reductio ad absurdum. A state where the lower boundLexceeds the
+upper boundUis a logical impossibility. Theoretically, the minimization ofL contra can be viewed
+as a differentiable search for a satisfying interpretation of the logical theory. Under the assumption
+that a fully consistent Kripke model exists that is representable by the network, gradient descent is
+guided towards a parameterizationθand a set of truth bounds that satisfy all axioms simultaneously.
+The total loss is formulated as:
+Ltotal =L task +βL contra (3)
+whereβis a hyperparameter that balances statistical learning and logical consistency. Gradients
+from both loss terms flow back through the entire network, including the parametersθof the acces-
+sibility relationAθ, allowing the logical structure itself to be learned.
+Guidance on SettingβThe hyperparameterβcontrols the trade-off between task performance
+and logical consistency. We provide the following guidelines:
+•Compute relative scales:Before training, estimate the typical magnitudes ofL task and
+Lcontra on a validation batch. Setβso thatβ·L contra is comparable toL task.
+•Constraint-critical tasks:When logical consistency is paramount (e.g., safety con-
+straints), useβ∈[0.5,1.0]or higher.
+•Accuracy-critical tasks:When task performance dominates, useβ∈[0.1,0.3].
+•Adaptive scheduling:Consider increasingβover training epochs, allowing the model to
+first learn task-relevant features before enforcing strict logical consistency.
+3.5 NEURALPARAMETERIZATION FORTEMPORALEPISTEMICLOGIC
+A particularly powerful instantiation of the MLNN framework is for temporal epistemic logic, which
+combines reasoning about knowledge (epistemic) and time (temporal). This is essential for modeling
+scenarios like multiagent planning or verifying the behavior of autonomous systems over time.
+Worlds as Spacetime PointsInstead of a simple set of worldsW, we consider a set of world-time
+pointsS=W×T, whereWis a set of agents andT={t 0,...,t m}is a set of discrete time steps.
+A “world” in this context is a tuple(w,t), representing the state of agentwat timet. Propositional
+truth bounds are now tensors of shape(|W|×|T|,2). While we typically use discrete time steps
+for simplicity, it is worth noting that continuous representations of time are also possible within this
+framework, for instance by parameterizingA θ as a function of a continuous variable∆t(e.g., via
+Neural ODEs), though we leave this exploration for future work.
+Multiple Accessibility RelationsWe introduce distinct, learnable neural models for the different
+accessibility relations. First,Epistemic Accessibility (A a
+θ)defines, for each agenta, a separate
+neural network that computes a matrix defining which states the agent considers possible. The
+operatorKaϕ(“agentaknowsϕ”) is then implemented as a□neuron operating with theA a
+θ relation.
+Second,Temporal Accessibility (A T
+θ )is a network that computes a matrix governing the flow of
+time. Common temporal operators likeGϕ(“ϕis always true in the future”) andFϕ(“ϕis eventually
+true in the future”) are implemented as□and♢neurons, respectively, using theA T
+θ relation.
+8
+
+[PAGE 9]
+Composite Modal OperatorsThis structure allows for rich, composite operators. For example,
+the statement “Agentawill always know thatϕis true” (GK aϕ) is implemented as a nested ag-
+gregation. First, the epistemic neuron forK aϕis computed at each future time step. Then, the
+temporal neuron forG(Globally/Always) aggregates these intermediate results. This compositional
+approach allows the MLNN to learn and reason about complex specifications involving how agents’
+knowledge evolves over time.
+Having defined the architecture and learning mechanism of an MLNN, we now turn to a formal
+analysis of its soundness, convergence, and expressivity.
+4 THEORETICALANALYSIS
+4.1 SOUNDNESS OFMLNN BOUNDS
+We first establish the formal setting and then prove that the bounds computed by an MLNN are
+sound with respect to a probabilistic semantics over Kripke models. This extends Theorem 2 from
+the LNN paper Riegel et al. (2020).
+AssumptionsThroughout this section, we assume: (1) finite world setW; (2) bounded continu-
+ous operators with monotone updates; (3) fixed temperatureτ >0; and (4) bounded accessibility
+weightsAθ(w,w′)∈[0,1].
+DefinitionsLet a set of atomic propositions be given over a set of worldsW.
+Definition 1(Classical Kripke Interpretation).A classical Kripke interpretationgassigns a crisp
+truth value{T,F}to each propositionpin each worldw∈W. LetGbe the set of all such
+interpretations.
+Definition 2(Probabilistic Kripke Model).A probabilistic Kripke model is a probability distribution
+p(·)overG. For any modal formulaσand worldw, we defineS σ,w ={g∈G|g(σ,w) =T}as
+the set of interpretations whereσis true atw.
+Definition 3(Consistent Probabilistic Model).Given an MLNN initialized with a theoryΓ 0 =
+{(σ,L 0(σ),U 0(σ))}, a probabilistic Kripke modelpis consistent withΓ 0 if for any formulaσand
+worldw:L 0(σ,w)≤p(S σ,w)≤U 0(σ,w). LetP Γ0 denote the set of all such consistent models.
+We first establish a key lemma regarding the monotonicity of modal operators.
+Lemma 1(Monotonicity of Modal Operators).The modal operators□and♢, as defined in Sec-
+tion 3, are monotonic with respect to their input bounds when composed with the accessibility
+weights ˜A. Specifically:
+1.L □ϕ,w is monotonically non-decreasing in eachLϕ,w′ and non-increasing in each ˜Aw,w′.
+2.U □ϕ,w is monotonically non-decreasing in eachUϕ,w′.
+3.L ♢ϕ,w is monotonically non-decreasing in eachLϕ,w′ and each ˜Aw,w′.
+4.U ♢ϕ,w is monotonically non-decreasing in eachUϕ,w′.
+Proof.We verify each case:
+(1) ForL □ϕ,w = softminτ((1− ˜Aw,w′) +L ϕ,w′):The softmin function is monotonically non-
+decreasing in each of its arguments (since∂softmin/∂x i≥0). The term(1− ˜Aw,w′) +Lϕ,w′ is
+linear and non-decreasing inL ϕ,w′ and non-increasing in ˜Aw,w′. By composition,L □ϕ,w is non-
+decreasing inLϕ,w′ and non-increasing in ˜Aw,w′.
+(2) ForU □ϕ,w = conv-poolτ((1− ˜Aw,w′) +Uϕ,w′,−):The convex pooling is a weighted average
+with non-negative weights summing to 1. It is therefore non-decreasing in each input. Since the
+input(1− ˜Aw,w′)+Uϕ,w′ is linear and non-decreasing inUϕ,w′, the composition is non-decreasing.
+9
+
+[PAGE 10]
+(3) ForL ♢ϕ,w = conv-poolτ( ˜Aw,w′ +L ϕ,w′−1,+):By similar reasoning, conv-pool is non-
+decreasing in each input, and the input ˜Aw,w′ +L ϕ,w′−1is non-decreasing in both ˜Aw,w′ and
+Lϕ,w′.
+(4) ForU ♢ϕ,w = softmaxτ( ˜Aw,w′ +Uϕ,w′−1):Softmax is non-decreasing in each argument, and
+the input is non-decreasing inUϕ,w′.
+Theorem 1(Soundness of MLNN Bounds).Let an MLNN be initialized with a theoryΓ 0 =
+{(σ,L 0(σ),U 0(σ))}. IfP Γ0 is non-empty, then for any formulaϕand worldw, the bounds
+[Lϕ,w,Uϕ,w]computed by the MLNN after convergence satisfy:
+Lϕ,w≤inf
+p∈PΓ0
+p(Sϕ,w)andU ϕ,w≥sup
+p∈PΓ0
+p(Sϕ,w)
+Proof.The proof extends the logic of Lemma 1 and Theorem 2 from the LNN supplementary
+material by showing that each update step preserves the set of consistent probabilistic models
+PΓ. This property has been established for classical connectives; we must check that it holds
+for the modal operators as defined in Section 3.1. For anyp∈P Γ, we know by induction that
+Lϕ,w′≤p(S ϕ,w′)≤U ϕ,w′.
+ForL □ϕ,w = softmin(L):By classical modal semantics,p(S □ϕ,w) = minw′:R(w,w′)p(Sϕ,w′)for
+crisp accessibility. For weighted accessibility, this generalizes to a weighted minimum. The sound
+bound satisfiesinfp(S □ϕ,w)≥min w′p(Sϕ,w′)≥min w′Lϕ,w′. Sincesoftmin(L)≤min(L), we
+haveL □ϕ,w≤min w′Lϕ,w′≤infp(S □ϕ,w). This bound issound.
+ForU □ϕ,w = conv-pool(U,−U):The sound bound requiressupp(S □ϕ,w)≤min w′p(Sϕ,w′)≤
+minw′Uϕ,w′. A convex poolingconv-pool(U) = PwiUi (withPwi = 1,w i≥0) is always
+greater than or equal tomin(U). Thus,U □ϕ,w ≥min w′Uϕ,w′ ≥supp(S □ϕ,w). This bound is
+sound.
+ForL ♢ϕ,w = conv-pool(L,L):By modal semantics,p(S ♢ϕ,w) = max w′:R(w,w′)p(Sϕ,w′).
+The sound bound requiresinfp(S ♢ϕ,w)≥max w′p(Sϕ,w′)≥max w′Lϕ,w′. A convex pooling
+conv-pool(L) =PwiLi is always less than or equal tomax(L). Thus,L ♢ϕ,w≤max w′Lϕ,w′≤
+infp(S ♢ϕ,w). This bound issound.
+ForU ♢ϕ,w = softmax(U):The sound bound requiressupp(S ♢ϕ,w)≤max w′p(Sϕ,w′)≤
+maxw′Uϕ,w′. Sincesoftmax(U)≥max(U), we haveU ♢ϕ,w≥max w′Uϕ,w′ ≥supp(S ♢ϕ,w).
+This bound issound.
+Behavior asτ→0:In the limitτ→0,softmin τ →minandsoftmax τ →max. The bounds
+become tight, recovering classical (crisp) modal semantics. For any fixedτ >0, the bounds remain
+sound but may be looser than the crisp case.
+A complete proof with all intermediate steps is provided in Appendix A.1.
+4.2 CONVERGENCE OFMLNN INFERENCE
+Theorem 2(Convergence of MLNN Inference).For a finite set of propositions and a finite set of
+worlds, the MLNN Upward-Downward inference algorithm converges to a fixed point.
+Proof.The proof relies on the monotonic nature of the bound update operations, established in
+Lemma 1. The network consists of a finite set of neuronsk, each storing truth bounds[L k,Uk].
+The Upward-Downward algorithm Riegel et al. (2020) is an iterative application of bound update
+functionsfk.
+Each update functionfk (for∧,∨,→,□,♢) is a composition of monotonic functions. The base LNN
+operators are known to be monotonic Riegel et al. (2020). By Lemma 1, the new modal operators,
+softmin,softmax, andconv-pool, composed with the accessibility weights ˜A, are also monotonic
+with respect to their inputs. Therefore, the entire update function for any bound is monotonic.
+During inference, each lower boundL k forms a non-decreasing sequence,L (t+1)
+k ≥L (t)
+k , which
+is bounded above by 1. Simultaneously, each upper boundU k forms a non-increasing sequence,
+10
+
+[PAGE 11]
+U(t+1)
+k ≤U (t)
+k , which is bounded below by 0. By the monotone convergence theorem, each of these
+bounded monotonic sequences must converge to a limit. Since the number of bounds in the network
+is finite, the joint state of all bounds must converge to a global fixed point.
+4.3 EXPRESSIVITY ANDGUARANTEES OF THELEARNABLERELATION
+The parametrized accessibility relationA θ is a particularly powerful feature for interoperability,
+allowing us to maintain the classification strength of neural networks while adhering to symbolic
+structures. This capability is theoretically grounded in the Universal Approximation Theorem Cy-
+benko (1989); Hornik (1991), which posits that a neural network with sufficient capacity (as used
+forA θ) can approximate the characteristic function of any arbitrary accessibility relationR. This
+flexibility allows the MLNN to inductively discover the appropriate modal logic system (e.g.,T,S4,
+S5) that best explains the data by minimizing contradiction.
+This learning can be guided. We can enforce specific modal axioms by adding regularization terms
+to the contradiction loss that penalize violations of the corresponding relational properties. For
+example, the axiomT,□ϕ→ϕ, requires the relation to be reflexive (wRw). This can be encouraged
+by a regularization loss:
+LT =
+|W|X
+i=1
+(1−A θ(wi,wi))2 (4)
+MinimizingLT forces each diagonal term toward 1, directly encouraging reflexivity.
+Similarly, axiom4,□ϕ→□□ϕ, requires transitivity. This can be encouraged by:
+L4 =
+X
+i,j
+max(0,(A 2
+θ)ij−Aθ(wi,wj))2 (5)
+which enforces a soft version of transitivity where a direct pathAθ(wi,wj)must be at least as strong
+as any two-step path(A 2
+θ)ij.
+An optional symmetry regularizer for axiomBcan also be applied:
+LS =
+X
+i<j
+(Aθ(wi,wj)−A θ(wj,wi))2 (6)
+By combining these regularizers with weights(λT,λ 4,λS),Aθ can be trained to learn a relation that
+is a soft approximation of anS4(reflexive, transitive) orS5(equivalence) relation.
+Trade-offs in Axiomatic RegularizationIt is important to be precise about the guarantees pro-
+vided by these regularizers. Asλ T → ∞, the learnedAθ approaches a relation that minimizes
+LT , but this is balanced against the task loss and contradiction loss. The regularizers providesoft
+guidance, not hard constraints.
+Empirical Analysis of Axiomatic RegularizationWe analyzed the trade-off between task per-
+formance and axiomatic compliance by applying three distinct modal regularizers—Reflexivity (T),
+Transitivity (4), and Symmetry (B)—to the synthetic ring task. We swept the regularization weight
+λ∈[0,10]for each axiom.
+As summarized in Table 7, we observe a consistent ”tug-of-war” across all three logical constraints.
+Atλ= 0, the model prioritizes the ground-truth ring structure (minimizing MSE) while violating
+the axioms (highϵ). Asλincreases to 10.0, the model successfully minimizes the axiomatic errors
+(ϵR,ϵ 4,ϵB) but incurs a penalty in structure MSE. Notably, Symmetry (B) is the easiest to satisfy
+(ϵB→0.00), while Reflexivity (T) faces the strongest resistance from the data topology (ϵR plateaus
+at 0.461).
+In practice, we observe that:
+1. For moderateλvalues, the model finds a balance that approximately satisfies axioms while
+fitting the data.
+11
+
+[PAGE 12]
+2. Very highλvalues can harm task performance if the “correct” relation for the task does not
+strictly satisfy the axiom.
+3. The learned theory is constrained by the expressive power of the axioms and the informa-
+tion available in the data.
+The guarantees are therefore about logical consistency with the specified axioms (soundness relative
+to the soft constraints), not about semantic “correctness” or completeness in an absolute sense.
+4.4 COMPLEXITYANALYSIS
+Proposition 1(Computational Complexity).The computational cost for a single modal neuron (□
+or♢) in an MLNN scales asO(|W|)for a fixed sparse accessibility relation, orO(|W| 2)if a dense
+learnable relationA θ is explicitly materialized. The complexity for one full inference pass over a
+network withNformulae is therefore bounded byO(N·|W| 2)in the naive dense case.
+While this quadratic scaling appears restrictive, the MLNN framework fundamentally bypasses this
+bottleneck throughmetric learningparameterizations. Rather than enumerating pairwise links in a
+staticN×Nmatrix, the accessibility relation can be defined intensionally via a kernel function or
+geometric distance over latent state embeddingsϕ:W→R d (whered≪|W|). This shift moves
+the problem from relational enumeration to representation learning, reducing the parameter space to
+O(|W|·d).
+We empirically validate this linear scaling behavior in Section 5.6, demonstrating that the metric
+parameterization enables training on graphs withN= 20,000nodes on a single GPU, whereas the
+dense formulation fails due to memory constraints atN= 10,000.
+In this geometric regime, retrieving accessible worlds transforms from a row-scan to a nearest-
+neighbor search, allowing the use of approximate search algorithms (e.g., Locality Sensitive Hash-
+ing) to reduce runtime complexity toO(|W|log|W|)or even linear time. Although the scale of
+the multi-agent scenarios in this study did not necessitate this optimization, allowing us to compute
+the full exact relation, this theoretical property ensures that MLNNs remain viable for tasks with
+massive state spaces, provided the accessibility relation exhibits underlying geometric structure.
+5 EXPERIMENTS
+We conducted a series of experiments to validate the deductive reasoning, inductive learning, and
+combined capabilities of MLNNs across diverse problem domains. As no canonical benchmarks
+exist for evaluating differentiable modal reasoning with a learnable accessibility relation, we con-
+struct a set of reference tasks by adapting existing datasets and logical puzzles so that the underlying
+queries are genuinely modal (involving necessity, possibility, or epistemic structure) rather than
+purely propositional. Each task is designed to isolate a particular capability: enforcing fixed sym-
+bolic constraints (Sections 5.1, 5.2 and 5.7) and learning relational structure from data (Sections 5.3,
+5.4, and 5.5). Section 5.7 specifically evaluates the framework’s ability to navigate non-convex
+optimization landscapes with rigid, predefined rules. Our goal is not to establish state-of-the-art per-
+formance on these datasets, but to provide clear, controlled studies of when and how modal structure
+matters. Accordingly, we report comparisons against (i) ablated variants of our architecture (e.g.,
+without modality or without a learnable accessibility relation) and (ii) standard neural baselines
+with identical propositional backbones (e.g., a BiLSTM), so that any observed differences can be
+attributed to the modal components.
+Statistical ReportingUnless otherwise noted, all quantitative results report mean±standard de-
+viation over 5 independent runs with different random seeds. We specify hyperparameters in Ap-
+pendix A. For key comparisons, we report 95% confidence intervals and perform paired t-tests where
+appropriate.
+5.1 CASESTUDY: ENFORCINGSYMBOLICCONSTRAINTS OVERSTATISTICALPRIORS
+This experiment investigates the MLNN’s capacity to act as a mechanism for enforcing user-defined
+policies over a statistical model. While deep learning models like LSTMs maximize likelihood based
+12
+
+[PAGE 13]
+on data distribution, safety-critical applications often require adherence to explicit rules regardless
+of that distribution. We utilize Part-of-Speech (POS) tagging as a proxy task to demonstrate this
+control, defining a set of rigid logical constraints (e.g., tagging a determiner followed by a verb: ‘the
+/ DET go / VERB‘) to test the framework’s ability to override statistical patterns.
+Motivation and Real-World RelevanceThis case study is intentionally stylized: starting from a
+standard POS-tagging setup, we impose a set of deliberately rigid grammatical constraints to create a
+setting where modal policies explicitly conflict with natural data statistics. While the specific axioms
+are simplified, the underlying capability—enforcing user-defined constraints that override learned
+statistical patterns—has direct applications in safety-critical domains. For instance, in medical NLP,
+one might enforce constraints like “a drug dosage must always be followed by a unit” or in legal
+document processing, “a contract clause must not contradict the preamble.” The POS task serves as
+a controlled proxy for these scenarios.
+MethodologyWe compared a baseline BiLSTM tagger against a structurally-aware MLNN tag-
+ger. The MLNN used the same BiLSTM architecture as its “proposer” network (the ‘Real’ world)
+but was augmented with two additional, specialized latent worlds: a ‘Pessimistic’ world (w 1), de-
+signed to penalize violations of necessity (□) axioms, and an ‘Exploratory’ world (w2) to add noise.
+Both models were trained on the same supervised data, but the MLNN’s loss function was a weighted
+sum of the standard supervised loss and the logical contradiction loss,L total =L task +βL contra. We
+sweptβ∈{0,0.1,0.3,0.5,0.9,1.0}to trace the trade-off between statistical accuracy and logical
+consistency.
+The MLNN guardrail functions by creating a multi-world Kripke structure where the accessi-
+bility relations allow modal axioms to inspect alternative possibilities. For example, the axiom
+□¬(DETi∧VERB i+1)is evaluated by checking the truth bounds across all accessible worlds
+(includingw 1, where penalties are active). The resulting contradiction loss,L contra, penalizes the
+model’s ‘Real’ world propositions if they lead to a system-wide logical inconsistency, effectively
+steering the BiLSTM proposer away from outputting tags that violate the policy, even if those tags
+are statistically probable.
+We tested the scalability of this approach with sets of 3, 6, and 10 axioms. It is important to note
+that these axioms are deliberately rigid simplifications of grammar (detailed in Appendix A.3).
+Results and EvaluationThe results, summarized in Table 2, demonstrate the MLNN’s capability
+to enforce constraints. The baseline BiLSTM (β= 0) achieved high token-level accuracy (99.38%
+±0.02%) by closely fitting the natural language data, but consequently committed thousands of
+violations against our rigid axiom set (2000.07±45.3 per 10k tokens).
+Asβincreased, the MLNN prioritized the logical policy over the data distribution. In the 10-axiom
+experiment, increasingβto 1.0 reduced the number of policy violations by36.8%. Crucially, this
+compliance came at the cost of overall accuracy (dropping to 91.49%±0.31%), which serves as a
+quantitative measure of the ”Cost of Alignment”. This trade-off, plotted in Figure 3, confirms that
+the logic component is strong enough to suppress learned statistical patterns (such as intervening ad-
+jectives flagged by simplified axioms) to satisfy the user’s constraints. This effect was even stronger
+in the 6-axiom experiment, yielding a49.6%reduction in violations. The per-axiom breakdown is
+shown in Figure 2.
+Table 2: Analysis of MLNN as a constraint enforcement mechanism. We report metrics for the
+10-axiom setting, sweeping the contradiction loss weightβ. Results show mean±std over 5 runs.
+The drop in Overall Accuracy reflects the model diverging from the data distribution to satisfy the
+strict logical policy.
+Model (10 Axioms) Overall Acc. (%) Policy Violations / 10k Violation Reduction ECE (%)
+Baseline (Non-modal,β= 0.0) 99.38±0.02 2000.07±45.3 - 0.49±0.03
+MLNN (β= 0.1) 96.98±0.15 1984.24±52.1 0.7% 1.69±0.08
+MLNN (β= 0.3) 96.31±0.22 1807.10±48.7 9.3% 1.94±0.11
+MLNN (β= 1.0) 91.49±0.31 1264.26±61.2 36.8% 4.59±0.24
+13
+
+[PAGE 14]
+ADJ -> OtherADP -> VERB
+ADP -> not NOUN
+DET -> DETDET -> VERBNOUN -> NOUN
+PRON -> not VERB
+VERB -> VERBPRON -> DET
+VERB -> CONJ -> ADJ
+102
+103
+104
+Violation Count (Log Scale)
+4686
+1189
+20575
+152
+1677
+8414
+2772
+6774
+165
+37
+1846
+637
+12718
+54
+973
+7573
+493
+4881
+80
+26
+Baseline ( = 0.0)
+MLNN ( = 1.0)
+Figure 2: Per-axiom violation counts (log scale)
+for the 10-axiom experiment, comparing the
+baseline BiLSTM with the MLNN guardrail
+(β= 1.0). The MLNN significantly reduces
+violations for all targeted axioms.
+13001400150016001700180019002000
+T argeted Errors / 10k T okens
+92.5
+95.0
+97.5Overall Accuracy (%)
+= 0.0
+= 0.1
+ = 0.3
+= 0.5
+= 0.9
+ = 1.0
+Accuracy vs. Logical Coherence Trade-off (10-Axiom)
+Figure 3: Trade-off between Data Fidelity (Ac-
+curacy) and Policy Adherence (Logic) in the 10-
+axiom task. As the logical contradiction weight
+(β) increases, the model sacrifices raw accuracy
+to strictly enforce the user-defined constraints.
+5.2 REASONING FORLOGICALINDETERMINACY
+This experiment tests a key capability of MLNNs: robustly detecting ambiguous or out-of-scope
+inputs by executing user-defined logical rules, rather than failing unpredictably. Standard classifiers
+operate under a “closed-world assumption,” forcing a choice between the classes they were trained
+on. We demonstrate how an MLNN can be designed to explicitly handle “open-world” ambiguity
+by reasoning about its own logical definitions.
+Motivation and Task Design JustificationThis experiment is designed as a controlled probe of
+logical indeterminacy rather than a realistic dialect-identification benchmark. We tasked a model
+with classifying English sentences as American (AmE) or British (BrE). The challenge arises with
+“Neutral” sentences—those containing either no dialectal indicators (e.g., “The cat sat on the mat”)
+or a contradictory mix of both (e.g., “My favorite lorry has a new color”). A standard classifier
+trained only on clear AmE/BrE examples will fail catastrophically, as it has no concept of “Neutral”
+and will assign one of the two labels based on spurious statistical noise.
+While this specific task is synthetic, the underlying capability has practical applications. In safety-
+critical classification (e.g., medical diagnosis), a system should abstain when inputs fall outside
+its training distribution rather than making confident but unreliable predictions. Unlike statistical
+uncertainty quantification methods like Conformal Prediction, which provide coverage guarantees
+based on calibration data, MLNNs enablesemanticabstention based on user-defined logical rules.
+This means the abstention criterion is interpretable and can be specified a priori (e.g., “abstain if
+symptoms are contradictory”) rather than learned post-hoc from held-out data.
+MethodologyWe compared three models: (1) A baseline BiLSTM classifier. (2) The same BiL-
+STM classifier augmented with Conformal Prediction (CP), providing a strong statistical abstention
+baseline. We used a non-conformity score of1−max(softmax)and set the error rateα= 0.05. (3)
+An MLNN-based reasoner. All models that required training were trained only on sentences clearly
+labeled as AmE or BrE (1,771 sentences).
+To isolate and test the framework’s core deductive capabilities, the MLNN in this experiment uses a
+fixed, user-defined Kripke model. This model is simulated by applying different certainty thresholds
+to the output of a pre-trained “expert” network, effectively creating multiple “worlds” of belief.
+The reasoning system consists of two key stages. First, theValuation Functionis realized by a
+pre-trained BiLSTM. For any given sentence, this network analyzes the text and outputs continuous
+truth bounds in[0,1]for two atomic propositions: ‘HasAmE‘ and ‘HasBrE‘. For example, for
+the sentence “My favorite truck...”, it might output a high value for ‘HasAmE‘ and a low one for
+‘HasBrE‘. Second, this output feeds into aKripke Model & Axiomsstage. The MLNN reasoner
+is not trained; instead, it applies a fixed deductive logic. It simulates a three-world Kripke model
+(Real, Skeptical, Credulous) by applying different certainty thresholds to the predictor’s scores. A
+proposition is considered necessarily true (□P) if its score exceeds 0.9, and possibly true (♢P) if its
+score exceeds 0.1. These derived modal truth values are then used to evaluate the final classification
+axioms, such as:□(HasAmE)∧¬♢(HasBrE)→IsAmE, and the abstention rule(♢(HasAmE)∧
+14
+
+[PAGE 15]
+0.0 0.2 0.4 0.6 0.8 1.0
+Coverage (1 - Abstention Rate)
+0.00
+0.25
+0.50
+0.75
+1.00
+Selective Risk
+(1 - Accuracy on non-abstained)
+Risk-Coverage Curve (Dialect T ask)
+BiLSTM + Conformal Prediction (CP)
+Modal MLNN Reasoner (Fixed Point)
+Figure 4: Risk-Coverage curve comparing CP
+with the rule-based MLNN Reasoner on dialect
+task. The CP model’s performance (blue line)
+shows a trade-off of coverage and risk as thresh-
+old varies. The MLNN operates at a single,
+fixed point (red circle) achieving near-perfect
+selective accuracy (low risk).
+0 5 10 15 20 25 30
+Epoch
+0.00
+0.25
+0.50
+Contradiction Loss
+(Lcontradiction)
+0.0
+0.5
+1.0
+Accessibility Weight (A )
+MLNN Training: Lcontradiction and A  vs. Epoch
+Lcontradiction
+A [0, 1] (A,t0  B,t0)
+A [0, 0] (A,t0  A,t0)
+Figure 5: MLNN training dynamics for the epis-
+temic learning task. As the Contradiction Loss
+(green) decreases, the model is forced to learn
+a new epistemic link. The targeted accessibility
+weightAθ[0,1](blue) increases from 0 to≈1.0
+to satisfy the axiom. A control weight,A θ[0,0]
+(red, dashed), remains unchanged.
+♢(HasBrE))∨(¬♢(HasAmE)∧¬♢(HasBrE))→IsNeutral. The class with the highest final truth
+value is chosen.
+Results and EvaluationThe results, shown in Table 3, demonstrate a qualitative difference in
+behavior. The baseline BiLSTM, as predicted, failed completely on the Neutral class, achieving 0%
+recall and forcing guesses based on statistical noise, resulting in an overall accuracy of just 2.6%.
+The Conformal Prediction baseline, a robust statistical method for abstention, performed better but
+was still unable to reliably identify all Neutral sentences. While its abstentions were precise (98%
+precision), it achieved only 34% recall on the unseen Neutral class.
+The MLNN reasoner, in contrast, achieved the designed detection of unknown inputs. It correctly
+executed its logical axioms, classifying all 9,207 unseen Neutral sentences correctly for a recall of
+100%. This highlights a key strength of the framework: the MLNN allows a user to define the logic
+of abstention semantically (e.g., “abstain if A and B are true”), rather than relying on a post-hoc
+statistical uncertainty threshold. This provides a framework for building systems that know what
+they do not know, based on explicit rules. The risk-coverage curve in Figure 4 further illustrates
+this: while CP provides a smooth trade-off between statistical accuracy and coverage, the MLNN’s
+rule-based approach operates at a single, logically-defined point of near-zero risk (high accuracy on
+non-abstained items) by correctly identifying all logically indeterminate data as per its rules.
+Table 3: Performance on the 3-class dialect task (AmE, BrE, Neutral). All models were trained only
+on AmE/BrE data. P/R/F1 refer to Precision, Recall, and F1-Score for each class. Results show
+mean over 5 runs (std<0.01 for all metrics).
+Model AmE (P/R/F1) BrE (P/R/F1) Neutral (P/R/F1) Overall Acc.
+Baseline BiLSTM .03/.97/.05 .03/.34/.06 .00/.00/.00 2.6%
+BiLSTM + CP (α= 0.05) .03/.78/.06 .00/.00/.00 .98/.34/.51 35.1%
+MLNN Reasoner 1.00/.72/.84 1.00/.58/.73 .99/1.00/1.00 99.1%
+5.3 LEARNINGEPISTEMICRELATIONS ANDEVALUATINGCOMPOSITEOPERATORS
+MotivationThis controlled toy model isolates the inductive aspect of our framework: learning an
+epistemic accessibility relation and evaluating nested modal operators in a minimal setting where
+the ground truth is known. A core claim of the MLNN framework is its ability to inductively learn
+the structure of modal logic, particularly the accessibility relationA θ, by minimizing logical con-
+tradictions. Furthermore, the framework proposes a method for evaluating complex, nested modal
+formulae involving different logical systems (e.g., temporal and epistemic, see Section 3.5). This
+experiment provides a focused demonstration of these two capabilities in a controlled setting.
+MethodologyWe constructed a simple spacetime Kripke model with two agents (A, B) over three
+discrete time steps(t0,t 1,t 2), resulting in 6 “spacetime” states. A single proposition, ‘isOnline’, was
+defined with varying truth values across these states. The model was given a fixed temporal relation
+15
+
+[PAGE 16]
+Rtemporal (encoding the flow of time) and a learnable epistemic relationA θ, which was initialized to
+be “siloed” (agents only see themselves). The training objective was to resolve a single, targeted
+logical contradiction: we asserted the axiom that “Agent A att 0 must consider itpossiblethat the
+system is online” (♢ epistemic(isOnline)ats 0). This was a contradiction becauses 0 was initially
+isolated and ‘isOnline’ was False in its own state. The model could only resolve this by learning a
+new epistemic link. Full details of the model, states, and axiom are in Appendix A.6.
+Results and EvaluationThe training successfully resolved the contradiction, validating the induc-
+tive learning claim. As shown in Figure 5, the contradiction loss converged to near-zero (0.003±
+0.001 over 5 runs). This was driven by the targeted modification of theAθ matrix: the model learned
+the specific accessibility link froms 0 (Agent A,t 0) tos 1 (Agent B,t 0), where ‘isOnline’ was True.
+This specific weightA θ[0,1]increased from 0.0 to 0.99±0.01, while unrelated weights remained
+unchanged (mean change<0.02), demonstrating the localized nature of the gradient updates. Post-
+training evaluation confirmed the model’s resulting logical coherence. It correctly satisfied the train-
+ing axiom, deduced the related “knows” formula (K(isOnline)) as False, and successfully evaluated
+both standard temporal operators and complex, nestedK(G(isOnline))formulae. A generalization
+check further confirmed that the training did not corrupt the epistemic isolation of unrelated states.
+DiscussionThis experiment, while simple, validates two key aspects of the MLNN framework.
+First, it demonstrates that the learnable accessibility relationA θ can indeed be modified via gradi-
+ent descent on a contradiction loss to discover relational structures required by logical axioms. The
+model effectively learned an inter-agent dependency (A’s knowledge depending on B’s state) without
+direct supervision, purely from a logical constraint. Second, it confirms the mechanism for evaluat-
+ing composite modal operators by nested computation, allowing different logical systems (temporal,
+epistemic) defined by distinct accessibility matrices to interact correctly within the unified spacetime
+Kripke model.
+5.4 CASESTUDY INREALDIPLOMACYGAMES: LEARNINGEPISTEMICTRUST
+This case study uses real Diplomacy game logs as a qualitatively richer source of epistemic structure.
+The task is designed to probe whether MLNNs can recover interpretable patterns of “who trusts
+whom”, not to compete with specialized Diplomacy agents.
+To validate our framework’s ability to model complex epistemic states from real-world data, we
+apply the MLNN to game logs from the “in-the-wild” domain of Diplomacy Bakhtin et al. (2022).
+This domain provides a rich testbed for multi-agent systems defined by unstructured natural lan-
+guage negotiation, hidden information, and strategic deception. Our objective is to demonstrate that
+an MLNN can inductively recover interpretable social structures (alliances, distrust, and deception)
+purely by minimizing logical contradictions between agents’ communicated intent and their sub-
+sequent actions. It demonstrates how MLNNs transform communication from natural text into a
+logical mechanism.
+Comparison with Graph Inference Techniques
+Methodological Pipeline: Self-Supervised Logical ConsistencyWe model the game as a Kripke
+structure where the accessibility relationA θ (representing trust) is latent and must be learned. The
+learning process is driven by a self-supervised objective that detects discrepancies between word
+and deed (Figure 10).
+The pipeline begins by embedding the dialogue history between agents using a pre-trained trans-
+former. This embedding is passed through a neural head to estimate a scalar truth valueP intent∈
+[0,1], representing the probability of cooperative intent. Based on the pragmatic structure of
+the game, we treat the existence of private negotiation as aprima facieassertion of cooperation
+(P≈1.0). Simultaneously, we extract the ground-truth physical actionsQ action from the game logs,
+flagging moves as either hostile (Q= 0.0) or cooperative (Q= 1.0).
+The core of the framework is the enforcement of the consistency axiom□(Intent→Action). This
+modal formula asserts that if an agent signals cooperation, it is necessarily true that their actions
+will align with that signal relative to the trust level. The MLNN computes the logical contradiction
+loss for this operator. If an agent professes cooperation (P≈1.0) but performs a hostile action
+16
+
+[PAGE 17]
+→ENG GER FRA AUS ITA RUS TUR
+ENG 1.0 0.98 0.0 0.0 0.0 0.0 0.0
+GER 0.95 1.0 0.0 0.0 0.0 0.0 0.0
+FRA 0.0 0.73 1.0 0.0 0.0 0.0 0.0
+AUS 0.60 0.0 0.0 1.0 0.0 0.0 0.0
+ITA 0.36 0.0 0.0 0.0 1.0 0.0 0.0
+RUS 0.0 0.0 0.0 0.0 0.0 1.0 0.0
+TUR 0.65 0.0 0.0 0.0 0.0 0.0 1.0
+(a)The Bunker(Game 433761).
+High mutual trust between
+ENG/GER; low trust elsewhere.
+→ENG GER FRA AUS ITA RUS TUR
+ENG 1.0 0.0 0.0 0.0 0.0 0.0 0.65
+GER 0.0 1.0 0.67 0.0 0.0 0.0 0.0
+FRA 0.0 0.0 1.0 0.0 0.0 0.0 1.00
+AUS 0.0 0.0 0.0 1.0 0.0 0.0 0.62
+ITA 0.0 0.0 0.44 0.0 1.0 0.0 0.0
+RUS 0.0 0.0 0.76 0.0 0.0 1.0 0.0
+TUR 0.0 0.0 0.95 0.0 0.0 0.0 1.0
+(b)Stable Alliance(Game
+435086). High trust triad between
+FRA, RUS, and TUR.
+→ENG GER FRA AUS ITA RUS TUR
+ENG 1.0 0.0 0.0 0.0 0.0 0.0 0.72
+GER 0.0 1.0 0.0 0.0 0.0 0.0 0.19
+FRA 0.0 0.0 1.0 0.0 0.0 0.0 0.24
+AUS 0.0 0.0 0.0 1.0 0.0 0.0 0.39
+ITA 0.0 0.0 0.0 0.0 1.0 0.0 0.93
+RUS 0.0 0.0 0.0 0.0 0.0 1.0 0.65
+TUR 0.0 0.0 0.0 0.0 0.99 0.03 1.0
+(c)The Betrayal(Game 434170).
+Asymmetric trust: RUS trusts TUR
+(0.65), TUR distrusts RUS (0.03).
+Figure 6: Learned Epistemic Accessibility (A θ) matrices for three distinct game scenarios. Rows
+represent the ”Trustor” and columns the ”Trustee”. Green cells indicate high learned trust, red cells
+indicate low trust. The model inductively recovers different social topologies—isolation, stable
+cooperation, and asymmetric deception—without supervision.
+(Q= 0.0), the implication evaluates to false, generating a high contradiction error. To minimize this
+loss, the gradient descent updates the only free variable in the system: the learnable accessibility
+matrixA θ. The model effectively learns to suppress the accessibility weightA i→j (reducing trust)
+to resolve the logical contradiction, thereby identifying deception without explicit supervision.
+Experimental SetupWe selected three distinct games to test the model’s ability to recover dif-
+ferent topological “fingerprints” of social dynamics. Scenario A (“The False Bunker”) features a
+deceptive dyad between England and Germany, where one partner adopted a predatory isolationist
+strategy. Scenario B (“The Grand Alliance”) provides a contrast with a stable, board-spanning co-
+operative triad (France, Russia, Turkey). Finally, Scenario C (“The Asymmetric Feud”) challenges
+the model with a complex dynamic of coercion and deceit, where Russia is forced into a dependency
+loop with a hostile Turkey.
+Results and AnalysisThe MLNN successfully recovered the distinct topological signatures of all
+three games (over 5 runs each, with learnedA θ values stable to±0.03), demonstrating a robust
+capacity to map structural dependencies even when they diverge from expressed sentiment (Figure
+6).
+InScenario A (Game 433761), the model learned a tight block-diagonal structure for England and
+Germany, with near-perfect accessibility weights (0.95±0.02and0.98±0.01). While ground
+truth reveals this was a predatory relationship, since England eventually consumed Germany, the
+model correctly identified theinformational isolationrequired for such a betrayal. By suppressing
+external links (<0.05), the model successfully characterized the dyad as a closed-loop system. This
+result highlights that high accessibility weights in our framework capturestructural couplingand
+high-stakes dependency, effectively flagging the relationship as critical regardless of the underlying
+benevolent or malevolent intent.
+InScenario B (Game 435086), the model accurately identified the stable “Grand Alliance” (France-
+Russia-Turkey). Unlike the sparse Bunker scenario, the model maintained high accessibility links
+across the triad: France links to Turkey (1.00±0.00), Turkey to France (0.95±0.02), and Russia to
+France (0.76±0.04). This confirms the model’s ability to recover healthy, multi-polar cooperation
+where communicative acts consistently align with on-board actions, allowing the contradiction loss
+to be minimized without severing topological links.
+InScenario C (Game 434170), the model demonstrated its most nuanced capability: distinguish-
+ing betweenoperational dependenceand reciprocal trust. The matrix reveals a stark asymmetry:
+Turkey’s link to Russia was correctly pruned to near-zero (0.03±0.01), reflecting Turkey’s active
+betrayal and pivot to a new ally, Italy (0.99±0.01). Conversely, the model assigned a significant
+weight from Russia to Turkey (A RUS→TUR = 0.65±0.05). While textual sentiment was hostile,
+this weight accurately reflects theground-truth structural reality: Russia, though aware of the be-
+trayal, was forced to coordinate with Turkey for survival. Thus, the model successfully peered past
+the “noise” of the angry dialogue to map the unidirectional operational dependency that defines the
+victim’s role in a coercion scenario.
+17
+
+[PAGE 18]
+ConclusionBy enforcing modal consistency between communicated intent and physical action,
+this study demonstrates that MLNNs function as a “social x-ray,” recovering relational structures like
+alliances and betrayals without ground-truth labels, relying solely on the minimization of logical
+contradictions. The main byproduct of this formulation is the explicit revelation of these latent
+relationships, offering a robust mechanism for interpretable AI in multiagent systems. It particularly
+shows that logical contradiction is a sufficient supervision signal for mapping epistemic states in
+complex, adversarial environments.
+5.5 CASESTUDY: TEMPORALCONSISTENCY ANDDECEPTION INNEGOTIATION
+While the Diplomacy case study (Section 5.4) demonstrates the recovery of trust based on action
+consistency, human negotiation requires maintaining consistency over time. To test if MLNNs can
+reason aboutreputation, i.e. detecting when an agent’s history contradicts their current honesty, we
+evaluated the framework on the CASINO dataset Chawla et al. (2021).
+Agent Behavior Trust (A θ)
+Consistent Honest 0.696±0.03
+Current Liar 0.062±0.02
+Reformed Liar0.178±0.04
+Modal Penalty-74.4%
+Table 4: Impact of History on
+Trust. The ”Reformed Liar” is
+penalized despite current honesty.
+Results show mean±std over 5
+runs.
+0.0 0.2 0.4 0.6 0.8 1.0
+Learned Trust (A )
+Density
+Consistent Honest Reformed Liar Current Liar
+Figure 7: Distribution of Learned Trust. The ”Reformed Liar”
+(Orange) occupies a ”probationary” zone, distinct from Honest
+agents (Green), proving the logic assesses history.
+Methodology: Temporal Reputational LogicUnlike standard classifiers that treat every utter-
+ance as an isolated snapshot, we model the negotiation as a temporal Kripke structure. We define a
+set of worldsW={w t,wt−1}representing the agent’s current and immediate past statements. The
+accessibility relationA θ represents the agent’sTrustworthiness. We enforce aTemporal Necessity
+axiom:
+Aθ =⇒□(Claim↔GroundTruth)(7)
+Implemented via the differentiable□neuron (Equation 1), this axiom asserts that if an agent is
+trusted (Aθ ≈1), they must be truthful inallaccessible worlds—both now and in the past. The
+model minimizes a hybrid loss combining a task regression (fitting the current data) and the logical
+contradiction loss (enforcing historical consistency).
+Results: The ”Reputational Penalty”The results confirm that the MLNN actively reasons over
+the agent’s history. We analyzed trust scores across three agent behaviors: (1) Consistent Honest,
+(2) Current Liar, and (3) Reformed Liar (an agent who lied previously but is telling the truth now).
+As shown in Table 4, the model assigns high trust (0.696±0.03) to consistently honest agents and
+near-zero trust (0.062±0.02) to active liars. Crucially, the Reformed Liar receives a significantly
+suppressed trust score (0.178±0.04). A standard non-modal model, seeing only the current honest
+statement, would likely rate this agent similarly to the Honest group. The MLNN, however, applies a
+”Modal Penalty”: the□operator aggregates the falsity from the past worldw t−1, creating a logical
+contradiction that forcesAθ down. This demonstrates that the framework functions as a valid logical
+guardrail, enforcing the axiom that trust requires consistency over time.
+Qualitative Analysis of DeceptionBeyond structural reputation, the learned accessibility head
+(Aθ) also recovered linguistic indicators of deceit. Similar to the static baseline, the temporal model
+flagged ”semantic over-justification” as a sign of untrustworthiness. Honest agents typically stated
+clear, cooperative intents (e.g.,“I don’t know, you said you’re worried about having enough water
+too. I’m excited to make campfire... ”withA θ = 0.99), while low-trust utterances often contained
+elaborate fabrications to justify greed (e.g.,“Do you mind if I get one third of the water supplies? I
+might feel thirsty after hiking. ”withAθ = 0.00), validating known psychological cues of deception
+without explicit supervision.
+18
+
+[PAGE 19]
+5.6 SCALABILITYANALYSIS: THE“SYNTHETICDIPLOMACY” RING
+The synthetic “Diplomacy ring” serves as both a diagnostic benchmark and a scalability testbed.
+We construct a minimal multi-agent environment where the ground-truth accessibility structure is
+known, allowing us to directly test whether MLNNs can recover it purely from logical constraints,
+and measure how performance scales with the number of agents.
+MotivationWhile real-world Diplomacy logs provide rich linguistic data, they lack a verifiable
+ground truth for trust. This makes it impossible to quantitatively measure if the model learned the
+correctrelational structure. Additionally, we need to empirically validate the scalability claims from
+Section 4.
+MethodologyWe construct a synthetic environment governed by a known ground-truth Kripke
+structure in the form of a directed ring graph. The scenario consists ofNagents arranged in a
+ring, where each Agentiobserves a specific set of facts but requires a “Beacon” that is exclusively
+possessed by Agenti+ 1. The model is trained on two specific modal constraints: Consistency
+(□), defined as□(Facts→Agreement), which dictates that an agent must not trust neighbors who
+contradict their direct observations; and Expansion (♢), defined as♢(Beacon), which requires an
+agent to trust at least one neighbor who possesses the necessary Beacon. This setup establishes a
+verifiable objective where, purely by minimizing logical contradictions, the learnable accessibility
+matrixAθ is expected to recover the underlying directed ring structure.
+Scalability Experiment ResultsTo empirically validate the computational complexity bounds
+(Proposition 1), we evaluated the MLNN on the synthetic ring task with the number of agentsW
+ranging from 20 to 20,000. We compared the standard Dense parameterization (a full|W|×|W|
+learnable matrix) against the Metric learning parameterization (Aθ(i,j) =σ(h T
+i hj)with embedding
+dimensiond= 64). We report parameter count, peak GPU memory usage, training duration (500
+epochs), and structural accuracy.
+1. Parameter Efficiency (O(N 2)vsO(N)).The results confirm the quadratic bottleneck of the
+Dense approach. As shown in Table 5, atN= 10,000worlds, the Dense model required instan-
+tiating 100 million parameters, whereas the Metric model required only 1.28 million parameters, a
+reduction of nearly two orders of magnitude. This linear scaling behavior allowed the Metric model
+to successfully train on theN= 20,000configuration (2.56M parameters), while the Dense model
+could not be initialized due to excessive resource requirements.
+2. Memory and Computational Wall.Peak GPU memory usage tracked parameter growth. While
+both models were efficient at small scales (N≤200), the divergence became substantial at scale. At
+N= 10,000, the Dense model consumed 3.8 GB of memory compared to the Metric model’s 2.7
+GB. Crucially, atN= 20,000, the Metric model remained trainable on a single T4 GPU (consuming
+10.7 GB), demonstrating the viability of MLNNs for large-scale multi-agent systems.
+3. Convergence and Accuracy.Both architectures achieved 100% Ring Accuracy and near-zero
+Mean Squared Error (MSE) against the ground truth structure for all successful runs. This validates
+the effectiveness of the“Distrust Prior”initialization (bias≈−5.0), which successfully prevented
+the optimization from collapsing into local minima even in highly sparse graphs. The Metric model
+recovered the exact directed ring topology purely from the logical contradiction loss, proving that
+the inductive bias of geometric embeddings is compatible with discrete logical constraints.
+5.7 SUDOKU AS AMULTI-WORLDCONSTRAINTSATISFACTIONPROBLEM
+To demonstrate the scalability and flexibility of MLNNs in rigid constraint environments, we apply
+the framework to solve the ”AI Escargot,” one of the world’s most difficult Sudoku puzzles. We treat
+the9×9grid not as a single image, but as a Kripke modelM=⟨W,R,V⟩containing|W|= 81
+worlds, where each world represents a cell.
+MethodologyUnlike traditional solvers that use backtracking, the MLNN approaches the puzzle
+as a differentiable energy minimization task. The accessibility relationRis fixed to represent the
+Sudoku graph: two worldsw i,wj are connected (wiRwj) if they share a row, column, or3×3
+19
+
+[PAGE 20]
+Table 5: Scalability Comparison. The Metric parameterization scales linearly, enabling training at
+N= 20,000where Dense fails (OOM).
+Worlds (N) Mode Parameters Peak Mem (MB) Time (s) Ring Acc
+200 Dense (O(N 2)) 40,000 17.79 0.97 100.0%
+Metric (O(N)) 25,601 17.62 1.18 100.0%
+1,000 Dense 1,000,000 56.27 1.48 100.0%
+Metric 128,001 45.37 1.64 100.0%
+5,000 Dense 25,000,000 976.37 29.23 100.0%
+Metric 640,001 695.69 26.88 100.0%
+10,000 Dense 100,000,000 3,836.48 114.71 100.0%
+Metric 1,280,001 2,705.13 106.71 100.0%
+20,000 Dense>400M (OOM)– – –
+Metric2,560,001 10,728.48 428.30 100.0%
+subgrid. We define nine atomic propositions{p1,...,p 9}, wherepk represents the truth of the value
+kbeing in a specific cell.
+We enforce three primary modal and logical axioms:
+1.Modal Contradiction: V9
+k=1(pk→¬♢p k). This necessity axiom asserts that if a valuek
+is true in worldw, it must be false in all other accessible worlds (row, column, and box).
+2.Uniqueness:∀w∈W, P9
+k=1Lpk,w = 1.0. This ensures each world (cell) converges to
+exactly one value.
+3.Crystallization:We minimize the entropy of the truth boundsH=− P(plogp)to force
+the soft-logic probabilities into crisp[0,1]assignments as the temperatureτis annealed.
+Parallel Universe SimulationTo avoid local minima in the non-convex landscape of the AI Es-
+cargot puzzle, we simulate 512 ”parallel universes” (independent MLNN instances) simultaneously
+using a batch-parallel architecture. Each universe is initialized with high-variance random logits.
+Learning is driven entirely by the minimization of the logical contradiction lossL contra, which
+penalizes overlaps of the same digit within the accessibility structure.
+ResultsThe simulation exhibits a distinct ”phase transition” or crystallization effect characteristic
+of the MLNN Upward-Downward algorithm. As the temperatureτis annealed from2.0to0.1, the
+collective energy (Best Energy) across the 512 parallel universes—representing the magnitude of
+logical contradictions, drops significantly from an initial 433.68 to near zero levels.
+In the experiment conducted on the ”AI Escargot” puzzle, the system successfully identified a
+valid solution at Epoch 3312, with the best-performing universe reaching a contradiction energy
+of0.1000. This final state represents a logically consistent interpretation of the Sudoku theory,
+where the minimization ofL contra ensures that the truth bounds[L,U]satisfy all specified modal
+constraints across theW= 81worlds.
+Post-training validation confirmed that the resulting valuation functionVadheres to the fundamental
+modal duality♢ϕ≡¬□¬ϕ, with all rows, columns, and subgrids containing unique digits. This
+confirms that MLNNs can perform complex deductive reasoning in rigid discrete spaces by treating
+relational rules as fixed accessibility structures.
+6 DISCUSSION ANDCONCLUSION
+We have introduced Modal Logical Neural Networks, a framework that successfully extends the
+neurosymbolic paradigm to modal logic. The framework’s primary strength is its ability to act as a
+differentiable “logical guardrail” by performing deductive reasoning over a set of possible worlds.
+This ensures that while we utilize the learning capabilities of neural networks, we maintain strict
+20
+
+[PAGE 21]
+Table 6: Differentiable Constraint Satisfaction: Solving the AI Escargot Puzzle via Contradiction-
+Driven Energy Minimization in a 512-Universe MLNN Simulation
+(1) Initial World State (Clues) (2) Converged World State (Solution)
+1 · · · · 7 · 9 ·
+· 3 · · 2 · · · 8
+· · 9 6 · · 5 · ·
+· · 5 3 · · 9 · ·
+· 1 · · 8 · · · 2
+6 · · · · 4 · · ·
+3 · · · · · · 1 ·
+· 4 · · · · · · 7
+· · 7 · · · 3 · ·
+1 6 2 8 5 7 4 9 3
+5 3 4 1 2 9 6 7 8
+7 8 9 6 4 3 5 2 1
+4 7 5 3 1 2 9 8 6
+9 1 3 5 8 6 7 4 2
+6 2 8 7 9 4 1 3 5
+3 5 6 4 7 8 2 1 9
+2 4 1 9 3 5 8 6 7
+8 9 7 2 6 1 3 5 4
+adherence to logical consistency, effectively providing interpretability by design. This architecture
+is also flexible, offering an inductive capability via a neurally parameterized accessibility relation
+(Aθ). This allows the MLNN to perform deduction within a user-defined logical system, while also
+providing the option to inductively learn the structure of that system from data. Our theoretical
+analysis confirms that this framework is sound, its inference process is guaranteed to converge, and
+its learnable relation is expressive.
+The experimental results validate the versatility of this approach. While our experiments do not
+aim to outperform highly optimized, purely statistical models on raw accuracy, they demonstrate
+an alternative capability: the enforcement of logical coherence. The resolution of the AI Escargot
+puzzle (Section 5.7) specifically highlights how MLNNs can replace traditional backtracking with
+differentiable energy minimization, successfully finding consistent world valuations in the presence
+of 81 interconnected worlds and 27 group constraints. We have shown that MLNNs can achieve
+designed detection of the unknown by executing rules, a task where standard statistical approaches
+fail. Furthermore, our results show that MLNNs can act as a differentiable “guardrail,” significantly
+reducing targeted grammatical errors in a sequence model, with a controllable trade-off against raw
+accuracy. Additionally, we demonstrated the capacity to perform inductive learning on existing
+SOTA datasets, as seen in the CaSiNo experiment where the model reverse-engineered the linguistic
+cues of deceptive argumentation.
+The key contribution is a methodology for integrating modal logic into deep learning, allowing for
+the definition of complex, soft constraints. This can be done with fixed, user-defined rules or, as
+demonstrated, via a learnable accessibility relation, which allows domain experts to specify abstract
+rules (e.g., “grammatical correctness,” “safe behavior”) and have the model learn a specific, data-
+driven interpretation of that logic. This paradigm is relevant for increasing the reliability of AI in
+safety-critical systems.
+6.1 LIMITATIONS
+This work has clear limitations, which we address transparently.
+Computational ComplexityThe primary computational bottleneck is theO(|W| 2)cost of dense
+relational matrices. However, as detailed in Section 4 and demonstrated in Table 5, this is a solvable
+implementation constraint rather than a theoretical bound; scaling to tens of thousands of worlds is
+achievable by adopting the metric learning parameterization, which enables sub-quadratic retrieval
+via approximate nearest neighbor search.
+Sensitivity to Axiom MisspecificationIf an axiom is logically incorrect (e.g., ‘DET→NOUN’),
+the guardrail will enforce this incorrect rule, actively harming task performance. The model is only
+as sound as the knowledge provided to it.
+Mitigation strategies:Several approaches can reduce this risk:
+21
+
+[PAGE 22]
+1.Axiom validation via expert feedback:Before deployment, have domain experts review
+the logical axioms for correctness. The interpretability of MLNNs makes this feasible.
+2.Soft axiom weighting:Instead of treating all axioms equally, learn individual weightsα i
+for each axiom’s contribution toL contra. Axioms that consistently harm task performance
+will receive lower weights.
+3.Tolerance for soft violations:Modify the contradiction loss to use a margin:L ′
+contra =
+max(0,L−U−ϵ)for some toleranceϵ >0. This allows “almost consistent” states to
+have zero loss.
+4.Axiom learning from data:In settings with sufficient labeled data, the axioms themselves
+could be treated as hypotheses to be refined, though this is beyond the scope of the current
+work.
+Overfitting ofA θ The potential forA θ to overfit “relational artifacts” in the data exists. For
+example, if two agents in the Diplomacy task coincidentally always communicated before attacking
+a third,A θ might learn a spurious “trust” link that is correlational, not causal. Our permutation test
+was a first step to check for this, but more thorough investigation is needed.
+Mitigation strategies:
+1.Dropout on accessibility weights:Apply dropout toA θ during training to prevent over-
+reliance on any single link.
+2.Bayesian parameterization:ModelA θ as a distribution rather than point estimate, using
+variational inference or Monte Carlo dropout to quantify uncertainty.
+3.Spectral regularization:Add regularization on the singular values ofA θ to encourage
+low-rank, interpretable structures.
+4.Axiomatic regularization:As described in Section 4.3, regularizers for reflexivity, transi-
+tivity, or symmetry can guideAθ toward known modal axiom systems.
+Continuous State SpacesThe current framework is limited to discrete worlds. Extending to con-
+tinuous state spaces (e.g., continuous time, continuous belief states) would significantly broaden
+applicability.
+Future directions:
+1.Neural ODEs for temporal accessibility:ParameterizeA T
+θ (t,t′)as a function learned by
+a Neural ODE, enabling continuous-time modal reasoning.
+2.Attention mechanisms for world selection:Use attention over a continuous embedding
+space to softly select “accessible” regions, avoiding discrete world enumeration.
+3.Gaussian processes for accessibility:ModelA θ as a Gaussian process over world pairs,
+providing uncertainty quantification and smooth interpolation.
+We leave these extensions as promising directions for future work.
+Further investigation into the model’s robustness to noisy or partially incorrect axioms is a valuable
+direction. In conclusion, MLNNs represent a methodological step toward integrating sophisticated,
+nonclassical reasoning into end-to-end differentiable models. By bridging deep learning and modal
+logic, this framework paves the way for a new class of AI systems that are more expressive, inter-
+pretable, and aligned with certain forms of structured reasoning.
+REFERENCES
+Anastasios N Angelopoulos and Stephen Bates. A gentle introduction to conformal prediction and
+distribution-free uncertainty quantification.arXiv preprint arXiv:2107.07511, 2021.
+Anton Bakhtin, Noam Brown, Emily Dinan, Gabriele Farina, Colin Flaherty, Daniel Fried, Andrew
+Goff, Jonathan Gray, Hengyuan Hu, et al. Human-level play in the game of diplomacy by com-
+bining language models with strategic reasoning. InScience, volume 378, pages 1067–1074,
+2022.
+22
+
+[PAGE 23]
+Pablo Barcel ´o, Egor V Kostylev, Mikael Monet, Jorge P ´erez, Juan Reutter, and Juan Pablo Silva.
+The logical expressiveness of graph neural networks. InInternational conference on learning
+representations, 2020.
+Kushal Chawla, Jaysa Ramirez, Rene Clever, Gale Lucas, Jonathan May, and Jonathan Gratch.
+Casino: A corpus of campsite negotiation dialogues for automatic negotiation systems. InPro-
+ceedings of the 2021 Conference of the North American Chapter of the Association for Computa-
+tional Linguistics: Human Language Technologies, pages 3167–3185, 2021.
+George Cybenko. Approximation by superpositions of a sigmoidal function.Mathematics of control,
+signals and systems, 2(4):303–314, 1989.
+Luc De Raedt, Angelika Kimmig, Hannu Toivonen, and M Veloso. Problog: A probabilistic pro-
+log and its application in link discovery. InIJCAI 2007, Proceedings of the 20th international
+joint conference on artificial intelligence, pages 2462–2467. IJCAI-INT JOINT CONF ARTIF
+INTELL, 2007.
+Thorsten Engesser, Thibaut Le Marre, Emiliano Lorini, Franc ¸ois Schwarzentruber, and Bruno
+Zanuttini. A simple integration of epistemic logic and reinforcement learning. InProceedings
+of the 24th International Conference on Autonomous Agents and Multiagent Systems (AAMAS
+2025), pages 686–694, 2025. To appear; page range approximate.
+Ronald Fagin, Joseph Y Halpern, Yoram Moses, and Moshe Y Vardi.Reasoning about knowledge.
+MIT press, 1995.
+Artur S. d’Avila Garcez, Lu ´ıs C. Lamb, and Dov M. Gabbay. Connectionist modal logic: Repre-
+senting modalities in neural networks.Theoretical Computer Science, 371(1-2):34–53, 2007. doi:
+10.1016/j.tcs.2006.10.023.
+Kurt Hornik. Approximation capabilities of multilayer feedforward networks.Neural networks, 4
+(2):251–257, 1991.
+Weilin Luo, Hai Wan, Jianfeng Du, Xiaoda Li, Yuze Fu, Rongzhen Ye, and Delong Zhang. Teaching
+LTL f satisfiability checking to neural networks. InProceedings of the Thirty-First International
+Joint Conference on Artificial Intelligence (IJCAI-22), pages 3292–3298, 2022. doi: 10.24963/
+ijcai.2022/457.
+Pierre Nunn and Franc ¸ois Schwarzentruber. A modal logic for explaining some graph neural net-
+works.arXiv preprint arXiv:2307.05150, 2023. doi: 10.48550/arXiv.2307.05150.
+Matthew Richardson and Pedro Domingos. Markov logic networks. InMachine learning, vol-
+ume 62, pages 107–136. Springer, 2006.
+Ryan Riegel, Naweed Khan, Haifeng Qian, Udit Sharma, Sumit Neelam, Alexander Gray, Ndi-
+vhuwo Makondo, Ronald Fagin, Shajith Ikbal, Ankita Likhyani, et al. Logical neural networks.
+arXiv preprint arXiv:2006.13155, 2020.
+Luciano Serafini and Artur d’Avila Garcez. Logic tensor networks: Deep learning and logical
+reasoning from data and knowledge.arXiv preprint arXiv:1606.04422, 2016.
+23
+
+[PAGE 24]
+A APPENDIX
+Table 7: Unified Trade-off Analysis for Axioms T, 4, and B. Columns show the Axiomatic Error (ϵ)
+vs. Task MSE as regularization (λ) increases. Greendenotes low error; Reddenotes high error.
+Reg. Axiom T (Reflexivity) Axiom 4 (Transitivity) Axiom B (Symmetry)
+λ ϵR↓MSE↓ ϵ4↓MSE↓ ϵB↓MSE↓
+0.0 0.960 0.023 0.039 0.023 0.035 0.023
+0.1 0.555 0.042 0.039 0.023 0.035 0.023
+0.5 0.476 0.050 0.037 0.024 0.034 0.023
+1.0 0.468 0.051 0.036 0.026 0.032 0.023
+5.0 0.462 0.051 0.026 0.035 0.016 0.029
+10.0 0.461 0.052 0.018 0.041 0.000 0.035
+A.1 COMPLETEPROOFS
+This section provides complete, self-contained proofs of the main theoretical results.
+A.1.1 PROOF OFLEMMA1 (MONOTONICITY OFMODALOPERATORS)
+We prove each part of the lemma in detail.
+Part (1):L □ϕ,w is monotonically non-decreasing in eachLϕ,w′.
+The lower bound for the necessity operator is:
+L□ϕ,w = softminτ((1− ˜Aw,w′) +Lϕ,w′)w′∈W
+The softmin function is defined as:
+softminτ(x1,...,x n) =−τlog
+nX
+i=1
+exp(−xi/τ)
+Taking the partial derivative with respect toxj:
+∂softminτ
+∂xj
+= exp(−xj/τ)Pn
+i=1 exp(−xi/τ) ≥0
+This is always non-negative since it is a ratio of positive quantities. Therefore, softmin is non-
+decreasing in each argument.
+SinceL □ϕ,w is a composition of softmin with the linear function(1− ˜Aw,w′) +Lϕ,w′, which has
+coefficient+1forL ϕ,w′, we have:
+∂L□ϕ,w
+∂Lϕ,w′
+= ∂softmin
+∂xw′
+·1≥0
+Parts (2)-(4)follow by analogous reasoning, using the fact that softmax and convex pooling are also
+non-decreasing in their arguments.
+A.1.2 DETAILEDPROOF OFTHEOREM1 (SOUNDNESS)
+We provide a more detailed proof with explicit definitions.
+Setup:LetΓ 0 ={(σ k,L 0(σk,w),U 0(σk,w))}k,w be the initial theory. LetGbe the set of all
+classical Kripke interpretationsg:Formulas×W→{T,F}.
+24
+
+[PAGE 25]
+Definition (Consistent Probabilistic Model):A probability distributionpoverGis consistent with
+Γ0 if for all formulasσand worldsw:
+L0(σ,w)≤p({g∈G:g(σ,w) =T})≤U 0(σ,w)
+Claim:Each update step preserves consistency.
+Proof for□operator:
+For the lower bound, we need to show that ifp∈P Γ, then:
+L□ϕ,w≤inf
+p∈PΓ
+p(S□ϕ,w)
+By classical modal semantics with weighted accessibility:
+p(S□ϕ,w) =p
+
+ \
+w′: ˜Aw,w′>0
+Sϕ,w′
+
+
+For any consistentp:
+p(S□ϕ,w)≥min
+w′
+p(Sϕ,w′)≥min
+w′
+Lϕ,w′
+Sincesoftminτ(x)≤min(x)for allτ >0:
+L□ϕ,w = softminτ((1− ˜Aw,w′) +Lϕ,w′)≤min
+w′
+Lϕ,w′≤p(S □ϕ,w)
+The inequalitysoftminτ(x)≤min(x)follows from the log-sum-exp inequality.
+Limit behavior asτ→0:
+lim
+τ→0
+softminτ(x) = min(x)
+lim
+τ→0
+softmaxτ(x) = max(x)
+Thus, in the limit, the bounds become tight and recover classical modal semantics.
+A.2 ADDITIONALILLUSTRATIVEEXAMPLE: THEROYALSUCCESSION
+To motivate our approach, we designed a simple, illustrative scenario called the “Royal Succession
+Problem.” This problem is to provide a clear contrast between a standard, statistical-correlative
+approach (like a GNN/KGE) and the logical-deductive capabilities of an MLNN.
+The Scenario and Challenge.We model a simple royal succession with a critical rule that cannot
+be learned from a single snapshot in time. The logical structure of the problem is as follows:
+•Entities:We have three entities: the Monarch Charles (C), and two potential heirs, William
+(W) and Harry (H).
+•The Rule:A personYis the heir to the monarchXonly if they are the monarch’s child
+ANDthey mustnecessarilybe alive.
+•The Catch:In the present moment, both William and Harry are alive. However, there
+exists a possible future scenario where William is not alive, whereas Harry remains alive in
+all considered scenarios.
+The term “necessarily” is a modal concept. As described in Section 3, this requires a Kripke model
+M=⟨W,R,V⟩to define truth relative to a set of “possible worlds.” For this problem, we define a
+simple model (visualized in Figure 8) where the worlds represent different states in time:
+•W={w Present,w Future A,w Future B}
+25
+
+[PAGE 26]
+•Ris the accessibility relation, defining the flow of time. From the present, all future worlds
+are accessible:
+R={(w Present,w Present),(w Present,w Future A),(w Present,w Future B)}
+•Vis the valuation function defining facts in each world. Critically, we set
+V(isAlive(W),w Future A) =False, while the proposition is true in all other worlds.
+A correct reasoning system must use this entire Kripke structure to determine the heir inw Present.
+The GNN/KGE (Statistical) Approach.We first simulate a standard GNN/KGE model, which
+operates on a single, static knowledge graph. This model’s task is to learn entity and relation embed-
+dings to perform link prediction. For this, we generate a training graphGcontaining only the facts
+from the single worldw Present. The entities in this graph are{C,W,H}, and the relations (triples)
+include facts like(W,childOf,C),(H,childOf,C),(W,isAlive,True), and(W,isFirstBorn,True).
+wPresent
+isAlive(W) = True
+isAlive(H) = True
+wFuture A
+isAlive(W) = False
+isAlive(H) = True
+wFuture B
+isAlive(W) = True
+isAlive(H) = True
+R
+Figure 8: A visualization of the Kripke modelM=⟨W,R,V⟩used by the MLNN to solve the
+Royal Succession problem. The nodes represent the set of possible worldsW, includingw Present,
+wFuture A, andw Future B. The valuationsV(the facts) in each world are shown, with the critical fact
+‘isAlive(W) = False‘ located inw Future A. The edges represent the accessibility relationR. When the
+MLNN’s□-neuron (Necessity) evaluates the formula□isAlive(W)fromw Present, it aggregates truth
+values from all worlds accessible viaR. BecauseRprovides access tow Future A, the neuron finds
+the False value, forcing the entire modal proposition to evaluate to False and allowing the MLNN to
+deduce the correct logical conclusion.
+To create a clear contrast, we introduce a spurious correlation into this training set: the model’s only
+example for the ‘isHeir’ relation is the single fact(W,isHeir,C). The GNN/KGE is then trained on
+this small graph. During training, it learns to associate the features ofW(including ‘isFirstBorn’)
+with the ‘isHeir’ relation.
+The architectural limitation, and the reason for its failure, is that the GNN’s entire universe is this
+single graphG. It has no mechanism to represent, access, or query the other “possible worlds”
+wFuture A orw Future B. The modal axiom isHeir(Y)→□isAlive(Y)is inexpressible, as the□operator
+(which requires checking all accessible worlds) is undefined in this single-graph framework. The
+GNN’s task is simply to predict links based on the statistical patterns it has seen. When queried
+for isHeir(W,C), it correctly identifies the strong (though spurious) correlation it was trained on
+and confidently predicts the link (Score≈1.0). It is architecturally blind to the invalidating fact
+isAlive(W) =False inw Future A, which is essential for the logical deduction. This is not a “failure”
+of the GNN, but an illustration that it is the wrong tool for a modal reasoning task.
+The MLNN Approach.The MLNN, in contrast, is explicitly designed to instantiate the Kripke
+modelM. Instead of being trained on data patterns, it is given the logical axioms of the problem,
+which act as a “logical guardrail”. The critical axioms are:
+1. isMonarch(X)∧childOf(Y,X)→isHeir(Y,X)
+2. isHeir(Y,X)→□isAlive(Y)
+The□symbol is implemented by the necessity neuron. To evaluate□isAlive(W)atw Present, this
+neuron aggregates the truth of isAlive(W)from all accessible worlds:{w Present,w Future A,w Future B}.
+The MLNN performs a correct deduction. BecauseV(isAlive(W),w Future A) =False, the□neu-
+ron’s output for□isAlive(W)is a value near 0.0 (False). This creates a logical contradiction with
+26
+
+[PAGE 27]
+Axiom 2, which would state isHeir(W)→False. The MLNN’s objective is to minimizeL contra.
+The optimizer’s only way to resolve this contradiction is to adjust the learnable truth bounds of the
+premise, setting isHeir(W)to a value near 0.0.
+Conversely, since isAlive(H)is True in all accessible worlds,□isAlive(H)evaluates to True, satis-
+fying the axiom and allowing isHeir(H)to become True. This example demonstrates the MLNN’s
+function: it is not guessing based on past data but performing a differentiable deduction over a
+multi-world model to find an answer that is logically consistent with the specified rules.
+A.3 IMPROVINGGRAMMATICALCOHERENCE VIALOGICALCONSTRAINTSDETAILS
+Architecture and TrainingThe models for the POS task use a baseline LSTM tagger as the core
+proposer network. This model consists of:
+• An embedding layer with embedding dimensionE DIM = 64.
+• A bidirectional LSTM with hidden dimensionH DIM = 128
+• A linear output layer mapping the concatenated LSTM hidden states (128×2 = 256) to
+the target size.
+The baseline tagger is then extended by MLNN tagger that wraps this baseline model, using its
+output as the ’Real’ world. It creates two additional latent worlds (∥W∥= 3) and uses a learnable
+accessibility matrixAθ defined as3×3matrix normalized by sigmoid to make sure accessibility is
+always≤1.
+All models were trained for 32 epochs using Adam optimizer with a learning rate of0.001. The
+supervised loss weight wasα= 0.1, and the logical contradiction loss weightβwas swept.
+PerformanceAcross the 10-axiom MLNN experiments, the average time per epoch was approxi-
+mately 27-28 seconds. The Peak GPU Memory usage was stable at 0.22-0.27 GB.
+10-Axiom SetThe 10 axioms used in the experiment (as defined in the ‘calculate losses‘ function
+of the notebook) are:
+1.□¬(DET i∧VERBi+1): A determiner cannot be immediately followed by a verb.
+2. ADJi→♢(NOUN i+1∨ADJi+1): An adjective should possibly be followed by a noun or
+another adjective.
+3.□¬(VERB i∧CONJi+1∧ADJi+2): A verb-conjunction-adjective sequence is forbidden.
+4.□¬(ADP i∧VERBi+1): An adposition (e.g., ’of’, ’in’) cannot be followed by a verb.
+5.□¬(PRON i∧DETi+1): A pronoun cannot be followed by a determiner.
+6. PRONi→♢(VERB i+1): A pronoun should possibly be followed by a verb.
+7.□¬(NOUN i∧NOUN i+1): A noun cannot be followed by another noun (a heuristic to
+prevent common errors).
+8.□¬(VERB i∧VERBi+1): A verb cannot be followed by another verb (a heuristic).
+9. ADPi→♢(NOUN i+1): An adposition should possibly be followed by a noun.
+10.□¬(DET i∧DETi+1): A determiner cannot be followed by another determiner.
+A.4 POS TASK: ERRORANALYSIS
+The MLNN guardrail successfully reduced all 10 targeted error types. It is important to note that
+these ”violations” often arise because the Baseline model assigns a grammatically plausible but
+technically ”loose” tag (e.g., tagging a participle as a VERB) which conflicts with the strict logical
+axioms. The MLNN enforces consistency by steering the model toward tags that satisfy the rules
+(e.g., changing VERB to ADJ in adjectival contexts).
+27
+
+[PAGE 28]
+Axiom 6: PRONi→♢(VERB i+1)This axiom states that a pronoun should possibly be followed
+by a verb. The corresponding error, ‘PRON→¬VERB‘, measures how often this is violated.
+•Baseline (β= 0.0):Committed2,772violations.
+•MLNN (β= 1.0):Committed493violations.
+•Result:A reduction of82.2%, the most significant of any axiom.
+Baseline False Positives (Analysis of Violations):
+•... "I/PRON told/VERB him/PRON who/PRON I/PRON was/VERB..."
+Analysis:The Baseline tagged ‘who‘ asPRON. Since ‘him‘ (PRON) is followed by ‘who‘
+(PRON) rather than aVERB, the specific bigram ‘him-who‘ triggers a violation.
+•... "He/PRON drank/VERB and/CONJ handed/VERB it/PRON
+back/ADV ."
+Analysis:The Baseline tagged ‘back‘ asADV. The axiom requires a possible verb after ‘it‘
+(PRON); the presence of an adverb triggers the violation.
+Axiom 1:□¬(DET i∧VERBi+1)This axiom forbids a determiner from being immediately fol-
+lowed by a verb. The baseline frequently violates this by tagging valid past participles as VERB
+rather than ADJ.
+•Baseline (β= 0.0):Committed1,677violations.
+•MLNN (β= 1.0):Committed973violations.
+•Result:A reduction of42.0%.
+Baseline False Positives (Analysis of Violations):
+•... "to/ADP studies/NOUN of/ADP a/DET selected/VERB
+American/ADJ..."
+Analysis:Grammatically, ‘selected‘ functions here as an adjective. However, the Baseline
+tagged it asVERB. This creates the forbidden sequenceDET(‘a‘)→VERB(‘selected‘).
+•... "Ah/PRT ,/. that/DET is/VERB simple/ADJ ."
+Analysis:Here, ‘that‘ functions as a Demonstrative Pronoun, but the Baseline tagged it as
+DET. This triggers the forbiddenDET→VERBsequence.
+Axiom 9: ADPi→♢(NOUN i+1)This axiom states an adposition (like ’of’, ’in’, ’with’) should
+possibly be followed by a noun. The error ‘ADP→¬NOUN‘ captures violations. This highlights
+the ”mis-specified axiom” risk, where strict logic may flag valid intervening adjectives.
+•Baseline (β= 0.0):Committed20,575violations.
+•MLNN (β= 1.0):Committed12,718violations.
+•Result:A reduction of38.2%.
+Baseline False Positives (Analysis of Violations):
+•... "He/PRON met/VERB with/ADP enthusiastic/ADJ
+audience/NOUN..."
+Analysis:The Baseline correctly identified ‘enthusiastic‘ asADJ. However, the strict
+axiom looked for an immediateNOUNafter theADP(‘with‘). The intervening adjective
+caused the violation.
+•... "things/NOUN like/ADP the/DET Mambo/NOUN ."
+Analysis:Similar to above, the axiom flagged the sequenceADP(‘like‘)→DET(‘the‘)
+because it expected an immediate noun.
+A.5 REASONING FORLOGICALINDETERMINACYDETAILS
+A.5.1 ARCHITECTURE ANDTRAINING
+The models for the logical indeterminacy task are constructed as follows:
+28
+
+[PAGE 29]
+Proposition Predictor:The core component that serves as the valuation function is an LSTM
+proposition predictor. It consists of an embedding layer (vocabulary size to dimension 100), a bidi-
+rectional LSTM (hidden dimension 128), and a final linear layer that maps the 256-dimensional
+concatenated hidden states to two output logits. A sigmoid function is applied to these logits to
+produce the soft truth values for the propositions ‘HasAmE‘ and ‘HasBrE‘.
+MLNN Reasoner:The modal MLNN reasoner in this experiment contains no trainable parame-
+ters. It is a fixed deductive reasoner. Its logic simulates a simple three-world Kripke model (Real,
+Skeptical, Credulous) by applying different certainty thresholds to the predictor’s output scores.
+• A proposition is considered necessarily true (□P) if its score exceeds 0.9 (satisfying the
+’Skeptical’ world).
+• A proposition is considered possibly true (♢P) if its score exceeds 0.1 (satisfying the ’Cred-
+ulous’ world).
+Baseline Models:The vanilla LSTM baseline uses the same architecture as the predictor but with
+an output layer mapping to two classes (AmE/BrE). The Conformal Prediction model wraps this
+trained baseline.
+The Proposition Predictor was pre-trained for 8 epochs, and the baseline LSTM was trained for 3
+epochs. Both used the ‘Adam‘ optimizer with a learning rate of 0.001.
+Runtime and PerformanceThe experiment was run on a single NVIDIA T4 GPU.
+•Predictor Pre-training:Training the LSTM proposition predictor for 8 epochs on the full
+corpus took approximately 56 minutes, with an average epoch time of around 7 minutes.
+•Baseline Training:Training the vanilla LSTM for 3 epochs on the binary subset took
+approximately 20 seconds.
+•MLNN Reasoner Training:The MLNN reasoner itself has no learnable parameters in this
+configuration and required no training time, as confirmed by the log (”Skipping training.”).
+Its forward pass is a fast, deterministic computation.
+A.6 LEARNINGEPISTEMICRELATIONS ANDEVALUATINGCOMPOSITEOPERATORS
+DETAILS
+This appendix provides the specific implementation details and quantitative results for the epistemic
+learning experiment.
+A.6.1 KRIPKEMODELSETUP
+The Kripke model for this experiment is visualized in Figure 9. The model is defined over 6 space-
+time states,S=W×T, representing two agents (A, B) at three discrete time steps (t 0,t 1,t 2).
+The figure shows the ground-truth valuation for the single proposition ‘isOnline’, which is False in
+statess 0 ands 3 and True in all other states. The diagram also depicts the accessibility relations
+(see Legend): the fixed temporal relation,R temporal, which connects states across time, and the initial
+”siloed” epistemic relation,A θ (Initial), where each state only accesses itself. The figure highlights
+the final state after training, including the single, crucial epistemic linkA θ[0,1](Learned) that the
+model acquired to resolve the logical contradiction.
+A.6.2 AXIOM ANDTRAINING
+The training objective was to satisfy the single axiom♢ epistemic(isOnline)[s0]≥1.0. This axiom,
+stating ”Agent A att 0 must consider it possible that the system is online,” was a contradiction with
+the initial siloedA θ, resulting in a loss of∼0.67. The model was trained for 32 epochs with an
+Adam optimizer (learning rate 0.5) on this contradiction loss. The training successfully resolved
+the contradiction as shown in Figure 5, with the contradiction loss converging to near-zero as the
+targeted accessibility weightAθ[0,1]increased from 0.0 to 0.99.
+29
+
+[PAGE 30]
+s0 (A, t 0)
+isOnline: F
+Aθ (Initial)
+s1 (B, t 0)
+isOnline: T
+Aθ[0,1] (Learned)
+s2 (A, t 1)
+isOnline: T
+Atemporal
+s4 (A, t 2)
+isOnline: T
+Atemporal
+Aθ (Initial)
+s5 (B, t 2)
+isOnline: T
+Atemporal
+Aθ (Initial)
+Atemporal
+s3 (B, t 1)
+isOnline: F
+Aθ (Initial)
+AtemporalAθ (Initial) Aθ (Initial)
+Legend
+Initial Epistemic (A θ) -------
+Learned Epistemic (A θ[0,1]) ———
+Fixed T emporal (Atemporal) ———
+Figure 9: Final Kripke Model After Learning (Sec 5.3). The diagram shows the 6 spacetime states
+and their isOnline ground truth. The initial ”siloed” epistemic relation (Aθ) is shown as blue dashed
+loops, while the fixed temporal relation (Rtemporal) is in gray. The single, crucial linkAθ[0,1], learned
+to resolve the logical contradiction, is highlighted as a solid red arrow.
+A.6.3 FINALLEARNEDMATRIX
+The resultingA θ matrix demonstrates the learned link froms 0 tos 1, with other weights remaining
+unchanged from the initial ”siloed” identity matrix.
+Table 8: Final Learned Epistemic Accessibility (Aθ)
+s0 s1 s2 s3 s4 s5
+(A,t0) (B,t 0) (A,t 1) (B,t 1) (A,t 2) (B,t 2)
+s0 (A,t0) 1.00 0.99 0.00 0.00 0.00 0.00
+s1 (B,t0) 0.00 1.00 0.00 0.00 0.00 0.00
+s2 (A,t1) 0.00 0.00 1.00 0.00 0.00 0.00
+s3 (B,t1) 0.00 0.00 0.00 1.00 0.00 0.00
+s4 (A,t2) 0.00 0.00 0.00 0.00 1.00 0.00
+s5 (B,t2) 0.00 0.00 0.00 0.00 0.00 1.00
+A.6.4 QUANTITATIVEEVALUATION
+Post-training, the model’s logical consistency was evaluated:
+30
+
+[PAGE 31]
+•Epistemic Logic (ats 0):The training axiom♢ epistemic(isOnline)[s0]evaluated to True
+(Bounds: [0.99, 0.99]), satisfying the constraint. The related formulaK(isOnline)[s 0]
+(soft-min) correctly evaluated to False (Bounds: [0.00, 0.00]), as Agent A now saw both its
+own False (0.0) state and Agent B’s True (1.0) state, making the proposition possible, but
+not necessary (”known”).
+•Temporal Logic:Using the fixedR temporal,G(isOnline)[s 0](soft-min) evaluated to False
+(Bounds: [0.00, 0.00]) because ‘isOnline‘ is False ats 0 ands 3.F(isOnline)[s 0](soft-max)
+evaluated to True (Bounds: [1.00, 1.00]) becauses0 can ”see”s 1, where ‘isOnline‘ is True.
+G(isOnline)[s4]evaluated to a fuzzy True (Bounds: [0.86, 0.86]) as the only states visible
+froms 4 ares 4 ands 5, where ‘isOnline‘ is True in both.
+•Composite Logic (ats 0):The nested operatorK(G(isOnline))[s 0]was evaluated. The
+innerG(isOnline)formula first produced a truth vector for all 6 states: ‘[0.00, 0.00, 0.00,
+0.00, 0.86, 0.86]‘. The outerKoperator then used thelearnedA θ ats 0 to compute:
+soft-min((1−A θ[0,0]) +G[s 0],(1−A θ[0,1]) +G[s 1],...)≈soft-min((1−1.00) +
+0.00,(1−0.99) + 0.00,...)≈0.0. The formula correctly evaluated to False (Bounds:
+[0.00, 0.00]).
+•Generalization Check (ats 2):We checkedK(isOnline)ats 2 (Agent A,t 1) to ensure
+its isolation was not corrupted. The model correctly evaluated it to True (Bounds: [0.89,
+0.89]), ass 2 (where ‘isOnline‘ is True) only sees itself (A θ[2,2]≈1.0). This confirmed
+the training fors 0 was localized.
+A.7 CASESTUDY INREALDIPLOMACYGAMES: LEARNINGEPISTEMICTRUST
+This appendix details the self-supervised pipeline used to extract latent trust networks from raw
+Diplomacy game logs. The framework utilizes a differentiable architecture to minimize the logical
+contradiction between an agent’s messages and their ground-truth orders.
+A.7.1 DATAPROCESSING ANDGROUNDTRUTH
+The pipeline converts raw game JSON logs into logical training instances of
+(Context,Ground Truth).
+Action Extraction (Ground Truth)The system parses the “orders” object for each phase using
+regular expressions to identify the Unit Type, Origin, and Destination (e.g., “F KIE - DEN”). To
+ground these actions into relational logic, the system queries the game state to determine territory
+ownership.
+•Hostile Action:If an agent orders a move into a territory currently owned by another
+player (e.g., Germany moves to London, owned by England, note that ownership of cities is
+specified in file too), the Ground Truth propositionP(Attack GER→ENG)is set to True (1.0).
+This serves as the falsifying consequent for the consistency check if trust was assumed.
+•Cooperative Action:Moves that support another agent or target neutral territories agreed
+upon in text are implicitly treated as consistent with cooperation.
+Message Encoding (Context)We extract all private messages exchanged in a given phase and
+group them by directed dyad (Sender→Recipient). The text is encoded using the all-MiniLM-L6-
+v2 sentence transformer (d= 384). To generate a fixed-size input for the accessibility network, we
+compute the mean embedding of all messages in the exchange.
+A.7.2 NEURALARCHITECTURE ANDLOSS
+The MLNN architecture consists of a learnable accessibility head and a static differentiable logic
+layer.
+Accessibility Head (Aθ)The accessibility relation is parameterized as a Feed-Forward Network
+consisting of two linear layers with ReLU activations (Linear(384, 128)→ReLU→Linear(128,
+64)→ReLU→Linear(64, 1)). The output logit is passed through a sigmoid activation to produce
+31
+
+[PAGE 32]
+{
+"phase": "S1901M",
+"messages": [
+{
+"sender": "ENGLAND",
+"recipient": "GERMANY",
+"message": "Hey Germany! Do you wanna open to Den and then bounce Russia in Swe?"
+},
+{
+"sender": "GERMANY",
+"recipient": "ENGLAND",
+"message": "okay. that’s what I have in"
+}
+],
+"orders": {
+"GERMANY": [
+"F KIE - DEN", // Fleet moves from Kiel to Denmark (Neutral/Compliant)
+"A MUN - RUH", // Army moves from Munich to Ruhr
+"A BER - KIE" // Army moves from Berlin to Kiel
+],
+"ENGLAND": [
+"F LON - NTH",
+"F EDI - NWG",
+"A LVP - EDI"
+]
+}
+}
+Figure 10: Grounded Input Example (Diplomacy): Training instances couple negotiation history
+with ground-truth actions (where ’F’ denotes Fleet and ’A’ denotes Army). In this example from
+Game 433761 Bakhtin et al. (2022), Germany’s execution of the move “F KIE - DEN” physi-
+cally fulfills the verbal agreement with England. This alignment satisfies the consistency axiom
+□(Message→Action), minimizing the contradiction loss and reinforcing the learnable epistemic
+accessibility weightA GER→ENG.
+the final trust weightA ij∈[0,1]. We initialize the bias term to a negative value (-2.0) to encode a
+prior of distrust.
+Consistency Loss CalculationThe model evaluates the modal formula□(Intent→Action).
+Using the differentiable implicationI(a,b) = 1−a+ab, the necessity operator calculates the
+degree to which the action supports the intent given the trust level. The total loss is a weighted sum
+of the contradiction loss and a sparsity regularization term:
+Ltotal =L contra +λ sparsity·||Aθ||1
+whereλ sparsity = 0.05encourages the model to find the minimal trust structure required to explain
+the data.
+Training DetailsThe model was trained for 400 epochs using the Adam optimizer with a learning
+rate of 0.01. We employed a temperature parameterτ= 0.1for the softmin/softmax operators to
+control the sharpness of the logical aggregation.
+A.8 CASINOEXPERIMENTDETAILS
+Data Processing and SchemaWe utilized the CaSiNo dataset Chawla et al. (2021), which con-
+sists of 1,030 negotiation dialogues. Unlike the Diplomacy dataset, CaSiNo provides rich metadata
+regarding the participants’ private utility functions (e.g., whether they prioritize Food, Water, or
+Firewood). We mapped these qualitative preferences to numeric ground-truth values: ‘Low’→0.0,
+‘Medium’→0.5, and ‘High’→1.0.
+To enable the MLNN to reason about consistency, we implemented a heuristic claim parser that
+estimates the agent’s public stance from their utterance text. The parser scans for markers of high
+need (e.g., ”need”, ”vital”, ”my”) to assign a claim value of1.0, and markers of concession (e.g.,
+”you take”, ”don’t need”) for a claim value of0.0.
+Architecture and HyperparametersThe MLNN architecture for this task mirrors the Diplomacy
+setup but operates on single utterances rather than aggregated phase messages.
+•Embedding:‘all-MiniLM-L6-v2‘ (frozen).
+32
+
+[PAGE 33]
+•Trust Head:Linear(384, 64)→ReLU→Linear(64, 1)→Sigmoid.
+•Optimizer:Adam, Learning Rate =0.005.
+•Training:150 Epochs, Batch Size = 32. Seed = 42.
+•Loss:β= 0.2 (see Equation 3).
+Qualitative Analysis of DeceptionThe model’s performance relies on identifying linguistic over-
+justification. Below are additional examples of deceptive utterances (where the agent claimed high
+need for a low-priority item) that the model correctly assigned0.0trust to.
+Table 9: Qualitative examples of deceptive claims assigned0.0Trust by the MLNN.
+Deceptive Utterance Trust
+”I am ok with that if i get two waters, just incase i have to put out the fire :)” 0.00
+”I am not going to give you all the water. I am not backing down on this. What if our fire gets out of
+hand like you said. I will need at least one or we will not make a deal.”
+0.00
+”Well I didn”t bring any with me so I really need two. I am willing to give you 2 waters.:)” 0.00
+”okay how many waters do you need?” 0.00
+”two waters please my bad for the wording” 0.00
+33
+
+[PAGE 34]
+B NOTATION
+Table 10: Notation Summary used throughout the paper.
+Symbol Definition
+WA finite set of possible worlds.
+TA finite set of discrete time steps.
+SThe set of spacetime states,S=W×T.
+p,ϕAtomic propositions and logical formulae.
+[L,U]Lower and upper truth bounds for a formula,[L,U]⊆[0,1].
+RA crisp (binary) accessibility relation,R⊆W×W.
+Aθ A learnable, neurally parameterized accessibility matrix.
+˜AThe masked accessibility matrix used for aggregation.
+□,♢The modal operators for necessity and possibility.
+KaϕEpistemic necessity operator: “Agentaknowsϕ”.
+Gϕ,FϕTemporal necessity/possibility: “Globallyϕ”, “Finallyϕ”.
+τTemperature parameter for soft-min/soft-max operators.
+βHyperparameter weighting the contradiction loss.
+Ltask Task-specific loss (e.g., cross-entropy).
+Lcontra Loss penalizing states whereL>U.
+34

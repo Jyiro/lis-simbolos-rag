@@ -2,6 +2,57 @@
 
 Formato: `[AGREGADO]` `[MODIFICADO]` `[ELIMINADO]` `[DECISIÓN]`
 
+## v2.4 — 2026-09-09 (DeepDoc Research — Extracción Simbólica Empírica)
+
+### Contexto
+Se abandona el stack completo de RAGFlow por limitaciones de RAM. En su lugar, se construye un entorno de investigación propio (`deepdoc-research/`) que replica empíricamente el comportamiento del parser subyacente de DeepDoc (pdfplumber + pymupdf + pypdf), sin necesitar levantar el servidor completo.
+
+### [AGREGADO] `deepdoc-research/` — Carpeta de investigación autónoma
+- **`probe.py` (Fase 1):** Baseline con PDFs sintéticos (generados con `reportlab`). Extrae todos los símbolos con los tres extractores y calcula un CPR (Char Preservation Rate). Resultado: 100% para todos los símbolos en PDFs ideales.
+- **`probe_real.py` (Fase 2):** Análisis sobre el corpus real (`corpus-ragflow/`). Introduce la métrica **EAR (Extractor Agreement Rate)**: si los tres extractores no coinciden en el conteo de un símbolo, se marca discrepancia — sin necesidad de ground truth. Resultado: fallos críticos en los PDFs académicos reales.
+- **`phase3a_forensic.py` (Fase 3A):** Análisis forense del texto corrupto. Alinea manualmente el texto de `pypdf` (referencia) con `pdfplumber` (motor RAGFlow) para determinar **qué pone el extractor en lugar del símbolo perdido**.
+- **`phase3b_chunking.py` (Fase 3B):** Simula el chunking de tamaño fijo de RAGFlow (≈2000 chars, overlap 200). Mide cuántos símbolos que sí sobrevivieron la extracción quedan partidos entre chunks o pierden su contexto semántico.
+- **`phase3c_fonts.py` (Fase 3C):** Análisis de causa raíz via `fonttools`. Documenta por qué `pdfminer.six` (el motor de pdfplumber) falla en fuentes **CFF Type1 con MacRomanEncoding**.
+
+### [AGREGADO] Corpus de PDFs reales extendido a 4 documentos
+- `FirstOrderLogic_complete.pdf`
+- `ModalLogicFundamentally_complete.pdf`
+- `ModalLogicalNeuralNetworks_complete.pdf`
+- `abstract-algebra/AbstractAlgebra_cap1-3_symbols.pdf`
+
+### [AGREGADO] Dependencia: `fonttools==4.64.0`
+- Instalada en el virtualenv `.venv-ml` para la Fase 3C.
+
+### [DECISIÓN] Metodología EAR en lugar de CPR con ground truth
+- Se descartó generar ground truth a mano para los PDFs reales. En su lugar, el consenso entre tres extractores independientes actúa como proxy de "verdad". Si dos de tres concuerdan contra uno, se detecta la discrepancia sin necesidad de etiquetado manual.
+
+### Hallazgos Clave (Fase 2 + Fase 3A)
+
+| Símbolo | Doc | pdfplumber | pypdf | Tipo de Corrupción |
+|---|---|---|---|---|
+| `∑` (SUM) | AbstractAlgebra | 0 | 65 | Inyecta `(cid:9)` en línea anterior; operador desaparece de la ecuación |
+| `∏` (PRODUCT) | AbstractAlgebra | 0 | 19 | Inyecta `(cid:10)` en línea anterior; operador desaparece |
+| `⊨` (MODELS) | ModalLogicFundamentally | 0 | 2 | Sustituido por `(cid:15)` (código interno de glifo, no Unicode) |
+| `⊢` (TURNSTILE) | FirstOrderLogic | 640 | 640 | PyMuPDF solo ve 216 (instabilidad entre extractores, EAR 33.8%) |
+
+### Hallazgos Clave (Fase 3B — Chunking)
+
+- `⊢` (TURNSTILE) en FirstOrderLogic: **28 de 691 ocurrencias** (4.1%) caen en el borde de un chunk; **165 ocurrencias** (23.9%) quedan en chunks sin palabras clave de contexto semántico.
+- La doble pérdida (Fase 2: corrupción en extracción + Fase 3B: pérdida de contexto en chunking) opera en capas independientes y acumulativas.
+
+### Causa Raíz Identificada (Fase 3C)
+
+`pdfminer.six` (motor subyacente de `pdfplumber` y `DeepDoc`) aplica directamente el encoding `/MacRomanEncoding` declarado en el diccionario de fuente CFF Type1, en lugar de priorizar el mapa `ToUnicode CMap` embebido en la fuente. `pypdf` y `PyMuPDF` priorizan correctamente el CMap, resultando en extracción Unicode correcta. El tag `(cid:X)` es el síntoma visible de este bug de resolución de encoding.
+
+### Próximos Pasos Planificados
+
+| Prioridad | Acción | Complejidad | Impacto |
+|---|---|---|---|
+| Alta | **Post-procesador `(cid:X)`:** componente que carga el PDF con `fonttools`, construye el mapa `glifo_id → unicode` por fuente, y reemplaza los `(cid:X)` en el texto ya extraído. | Baja | Alto (fix inmediato para RAGFlow) |
+| Media | **Parche a `pdfminer.six`:** forzar prioridad del ToUnicode CMap sobre el `/Encoding` declarado cuando `fonttools` está disponible. Podría resultar en un PR al repo open source. | Media | Alto |
+| Alta | **PR a RAGFlow / DeepDoc:** agregar `fonttools` como dependencia + integrar el post-procesador en `deepdoc/parser/`. El benchmark EAR construido funciona como el bug report técnico que justifica el cambio. | Alta | Muy Alto |
+| Media | **Hybrid extractor fallback:** detectar tasa de `(cid:X)` por página; si supera umbral, re-extraer esa página con `pypdf` y hacer merge. Sin tocar `pdfminer`. | Media | Medio |
+
 ## v2.3 — 2026-08-27 (Integración RAGFlow)
 
 ### [AGREGADO] RAGFlow — Fase 3 del pipeline

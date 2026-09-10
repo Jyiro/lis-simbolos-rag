@@ -1,0 +1,374 @@
+{
+  "doc_id": "01_matematica",
+  "extractor": "pymupdf",
+  "per_symbol": {
+    "ARROW_RIGHT": {
+      "char": "→",
+      "codepoint": "U+2192",
+      "gt_count": 11,
+      "ex_count": 11,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "ELEM_OF": {
+      "char": "∈",
+      "codepoint": "U+2208",
+      "gt_count": 12,
+      "ex_count": 12,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "SUBSET": {
+      "char": "⊂",
+      "codepoint": "U+2282",
+      "gt_count": 8,
+      "ex_count": 8,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "INFINITY": {
+      "char": "∞",
+      "codepoint": "U+221E",
+      "gt_count": 27,
+      "ex_count": 27,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "PLUS_MINUS": {
+      "char": "±",
+      "codepoint": "U+00B1",
+      "gt_count": 1,
+      "ex_count": 1,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "LEQ": {
+      "char": "≤",
+      "codepoint": "U+2264",
+      "gt_count": 9,
+      "ex_count": 9,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "GEQ": {
+      "char": "≥",
+      "codepoint": "U+2265",
+      "gt_count": 7,
+      "ex_count": 7,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "NEQ": {
+      "char": "≠",
+      "codepoint": "U+2260",
+      "gt_count": 3,
+      "ex_count": 3,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "APPROX": {
+      "char": "≈",
+      "codepoint": "U+2248",
+      "gt_count": 5,
+      "ex_count": 5,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "PARTIAL": {
+      "char": "∂",
+      "codepoint": "U+2202",
+      "gt_count": 67,
+      "ex_count": 67,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "NABLA": {
+      "char": "∇",
+      "codepoint": "U+2207",
+      "gt_count": 7,
+      "ex_count": 7,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "CROSS": {
+      "char": "×",
+      "codepoint": "U+00D7",
+      "gt_count": 6,
+      "ex_count": 6,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "INTEGRAL": {
+      "char": "∫",
+      "codepoint": "U+222B",
+      "gt_count": 14,
+      "ex_count": 14,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "SUM": {
+      "char": "∑",
+      "codepoint": "U+2211",
+      "gt_count": 24,
+      "ex_count": 24,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "PRODUCT": {
+      "char": "∏",
+      "codepoint": "U+220F",
+      "gt_count": 3,
+      "ex_count": 3,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "SQRT": {
+      "char": "√",
+      "codepoint": "U+221A",
+      "gt_count": 7,
+      "ex_count": 7,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "REALS": {
+      "char": "ℝ",
+      "codepoint": "U+211D",
+      "gt_count": 19,
+      "ex_count": 19,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "INTEGERS": {
+      "char": "ℤ",
+      "codepoint": "U+2124",
+      "gt_count": 5,
+      "ex_count": 5,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "NATURALS": {
+      "char": "ℕ",
+      "codepoint": "U+2115",
+      "gt_count": 4,
+      "ex_count": 4,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "RATIONALS": {
+      "char": "ℚ",
+      "codepoint": "U+211A",
+      "gt_count": 6,
+      "ex_count": 6,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "COMPLEX": {
+      "char": "ℂ",
+      "codepoint": "U+2102",
+      "gt_count": 3,
+      "ex_count": 3,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "EQUIV": {
+      "char": "≡",
+      "codepoint": "U+2261",
+      "gt_count": 2,
+      "ex_count": 2,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "PROPTO": {
+      "char": "∝",
+      "codepoint": "U+221D",
+      "gt_count": 2,
+      "ex_count": 2,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "INTEGRAL2": {
+      "char": "∬",
+      "codepoint": "U+222C",
+      "gt_count": 1,
+      "ex_count": 1,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "CONTOUR_INT": {
+      "char": "∮",
+      "codepoint": "U+222E",
+      "gt_count": 2,
+      "ex_count": 2,
+      "cpr": 100.0,
+      "note": ""
+    },
+    "CBRT": {
+      "char": "∛",
+      "codepoint": "U+221B",
+      "gt_count": 3,
+      "ex_count": 3,
+      "cpr": 100.0,
+      "note": ""
+    }
+  },
+  "dangerous_pairs": {
+    "reals/letter-R": {
+      "original": "ℝ",
+      "substitution": "R",
+      "occurrences": 5,
+      "contexts": [
+        {
+          "line": 9,
+          "text": "en el contexto de arquitecturas RAG (Retrieval-Augmented Generation)."
+        },
+        {
+          "line": 16,
+          "text": "SECCIÓN 1 — TEXTO DE CONTROL"
+        },
+        {
+          "line": 42,
+          "text": "SECCIÓN 2 — CARACTERES AISLADOS"
+        },
+        {
+          "line": 55,
+          "text": "√       | Raíz cuadrada       | U+221A"
+        },
+        {
+          "line": 56,
+          "text": "∛       | Raíz cúbica         | U+221B"
+        }
+      ]
+    },
+    "naturals/letter-N": {
+      "original": "ℕ",
+      "substitution": "N",
+      "occurrences": 5,
+      "contexts": [
+        {
+          "line": 10,
+          "text": "Este documento NO es un texto académico real. Contiene casos de prueba"
+        },
+        {
+          "line": 16,
+          "text": "SECCIÓN 1 — TEXTO DE CONTROL"
+        },
+        {
+          "line": 42,
+          "text": "SECCIÓN 2 — CARACTERES AISLADOS"
+        },
+        {
+          "line": 47,
+          "text": "Símbolo | Nombre              | Unicode"
+        },
+        {
+          "line": 58,
+          "text": "∇       | Nabla               | U+2207"
+        }
+      ]
+    },
+    "rationals/letter-Q": {
+      "original": "ℚ",
+      "substitution": "Q",
+      "occurrences": 1,
+      "contexts": [
+        {
+          "line": 501,
+          "text": "P ∧ Q ⟺ ¬(¬P ∨ ¬Q)"
+        }
+      ]
+    },
+    "complex/letter-C": {
+      "original": "ℂ",
+      "substitution": "C",
+      "occurrences": 5,
+      "contexts": [
+        {
+          "line": 3,
+          "text": "Character Preservation Benchmark — Mathematics"
+        },
+        {
+          "line": 10,
+          "text": "Este documento NO es un texto académico real. Contiene casos de prueba"
+        },
+        {
+          "line": 16,
+          "text": "SECCIÓN 1 — TEXTO DE CONTROL"
+        },
+        {
+          "line": 42,
+          "text": "SECCIÓN 2 — CARACTERES AISLADOS"
+        },
+        {
+          "line": 50,
+          "text": "∬       | Integral doble      | U+222C"
+        }
+      ]
+    },
+    "leq/ascii": {
+      "original": "≤",
+      "substitution": "<=",
+      "occurrences": 1,
+      "contexts": [
+        {
+          "line": 445,
+          "text": "Par 7: ≤ (U+2264, menor o igual) vs. <= (dos caracteres ASCII)"
+        }
+      ]
+    },
+    "geq/ascii": {
+      "original": "≥",
+      "substitution": ">=",
+      "occurrences": 1,
+      "contexts": [
+        {
+          "line": 446,
+          "text": "Par 8: ≥ (U+2265, mayor o igual) vs. >= (dos caracteres ASCII)"
+        }
+      ]
+    },
+    "neq/ascii": {
+      "original": "≠",
+      "substitution": "!=",
+      "occurrences": 1,
+      "contexts": [
+        {
+          "line": 447,
+          "text": "Par 9: ≠ (U+2260, distinto de) vs. != (dos caracteres ASCII)"
+        }
+      ]
+    }
+  },
+  "domain_cpr": 100.0,
+  "symbols_lost": [],
+  "symbols_degraded": [],
+  "symbols_perfect": [
+    "ARROW_RIGHT",
+    "ELEM_OF",
+    "SUBSET",
+    "INFINITY",
+    "PLUS_MINUS",
+    "LEQ",
+    "GEQ",
+    "NEQ",
+    "APPROX",
+    "PARTIAL",
+    "NABLA",
+    "CROSS",
+    "INTEGRAL",
+    "SUM",
+    "PRODUCT",
+    "SQRT",
+    "REALS",
+    "INTEGERS",
+    "NATURALS",
+    "RATIONALS",
+    "COMPLEX",
+    "EQUIV",
+    "PROPTO",
+    "INTEGRAL2",
+    "CONTOUR_INT",
+    "CBRT"
+  ],
+  "total_gt_symbols": 258,
+  "total_ex_symbols": 258
+}

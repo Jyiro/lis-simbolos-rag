@@ -1,0 +1,404 @@
+[PAGE 1]
+4202
+nuJ
+52
+]OL.htam[
+2v33161.6042:viXra
+First-order Logic with
+Being a Thesis Modal Operator
+Marcin Łyczak
+Abstract
+We introducesyntactic modal operator ✷⊢⊢⊢ for being a thesis into first-
+orderlogic. Thislogic isamodernrealization ofR.Carnap’sold ideason
+modality,aslogicalnecessity(J.Symb.Logic,1946)[1].Weplaceitwithin
+the modern framework of quantified modal logic with variable domains.
+Weprovethecompleteness theorem usinga propertyof akindof normal
+form,andthefactthatinthecanonicalframe,therelationonallmaximal
+consistentsets,R={hΓ,∆i:∀A(✷⊢⊢⊢A∈Γ=⇒A∈∆)},isauniversalrela-
+tion(bothareunprovableinknownquantifiedmodallogics).Thestrength
+ofthe✷⊢⊢⊢ operatorisaproperextensionofmodallogicS5.Usingcomplete-
+ness, weprovethat satisfiability in amodelof ✷⊢⊢⊢A underarbitrary valua-
+tionimpliesthatAisathesisofformulatedlogic.Sowecansyntactically
+define logical entailment and consistency. Our semantics differ from S.
+Kripke’s standard one [3] in syntax, semantics, and interpretation of the
+necessity operator. We also have free variables, contrary to Kripke’s and
+Carnap’sapproaches,butournotionofsubstitutionisnon-standard(vari-
+ablesinsidemodalitiesarenotfree).All✷⊢⊢⊢-freefirst-orderthesesareprov-
+able,aswellastheBarcanformulaanditsconverse.Ourspecificthesesare
+✷⊢⊢⊢A → ∀xA, ¬✷⊢⊢⊢ (x = y), ¬✷⊢⊢⊢ ¬(x = y), ¬✷⊢⊢⊢ P(x), ¬✷⊢⊢⊢ ¬P(x). We also
+have ✸⊢⊢⊢∃xA(x) → ✸⊢⊢⊢A(y/x), and ∀x✷⊢⊢⊢ A(x) → ✷⊢⊢⊢A(y/x), if A is a ✷⊢⊢⊢-free
+formula.
+Key words: R. Carnap, being a thesis operator; proper extension of S5
+1 Introduction
+In 1946, R. Carnap formulated the modal functional calculus (MFC), which is
+a versionof quantified modal logic with an operator intended to express logical
+necessity [1]. Carnap’s logic is not a typical modal quantified logic. It does not
+containfreevariables,isstrongerthanS5(formulaslike¬✷∃xFxareprovable),
+andidentityholdsonlybetweenthesamevariablesorconstants,althoughiden-
+tical objects are necessarily identical. In short, MFC is far from contemporary
+first-order modal logic. Its models were built from sets of atomic formulas and
+their negations. There is no valuation and interpretation of predicates. Differ-
+ences and similarities to Kripke’s semantics can be found in [4]. Recently, two
+important results on Carnap’s logic have been published. M. Cresswell proved
+1
+
+[PAGE 2]
+thecompletenessofavariantofCarnap’saxiomatization,keepingCarnap’sorig-
+inalsemanticsalmostuntouched[2].M.Madowsformulatedmodernnon-modal
+semantics for Carnap’s logic, together with a correspondingtableau system [5].
+Madows interpreted logical necessity in a first-order structures as a quantifica-
+tion over all (parametrically definable) subsets of the domain of the structure.
+We believe that his approach can be considered a faithful modern representa-
+tion of Carnap’s approach to logical necessity. Carnap’s necessity, as well as
+the necessities from the two cited works, actually does not express being a
+first-order thesis. For example, formulas like ✷A → ∀xA, ¬✷∃xy(x 6= y), and
+¬✷∃xy(x=y)shouldbe provableifweweretothink of✷asalogicalnecessity.
+As far as we know, there is no formalized versionof Carnap’s ideas in the liter-
+ature where logical necessity explicitly expresses being a first-order thesis. We
+aim to build a first-order modal logic with an operator expressing first-order
+thesesandinterpretitinavariantofvariabledomainsemantics.Forsimplicity,
+we do not introduce function symbols and constants. To show that our modal-
+ity ✷ ⊢⊢⊢ is factually correct, we prove that the satisfiability of any formula ✷ ⊢⊢⊢A
+in any model implies its logical validity and being a thesis, as we prove the
+completeness theorem.
+2 Language and its semantics
+Let L(∀,✷ ⊢⊢⊢) be a first-order language with identity and the modal operator ✷ ⊢⊢⊢,
+built with a set of predicates Pred = {Pi} , and a set of variables Var,
+j i∈I,j∈J
+withx rangingoverthem. The languageL(∀,✷ ⊢⊢⊢) allowsarbitraryiterationsand
+is an ordinary language of quantified modal logic. The difference is that the
+operator ✷ ⊢⊢⊢ is read as is a thesis (or eventually is logically necessary). Other
+logical symbols are defined in the usual way, and the dual operator ✸ ⊢⊢⊢ =:¬✷ ⊢⊢⊢¬
+is read as is consistent (or eventually is logically possible).
+We say that a formula is ✷ ⊢⊢⊢-free when it does not contain any modalities. We
+denote the set of the ✷ ⊢⊢⊢-free first order theses as FOL.
+Let C be the class of all first-order structures with variable domains, i.e.,
+A=hW,{D } ,Ii,
+w w∈W
+whereW isanon-empty domainofpossible worlds; D isthe domainofobjects
+w
+of the world w; and I is an interpretation function that for any Pn∈Pred and
+j
+w∈W, assigns n-ary pairs of objects of the world, i.e., I(Pn,w)⊆Dn.
+j w
+Valuation in a given structure is world-dependent and is any function v that
+assigns,forany variableandpossible worldofthe structure,anobjectfromthe
+domain of the world, i.e., v(x,w)∈D .
+w
+Avariantofvaluation vinaworld w,whichmapsxtoa∈D andhasallother
+w
+values like v on allother variablesand worldsexcept possibly at the variablex,
+is denoted as va(w).
+x
+For any structure A = hW,{D } ,Ii, belonging to C, world w ∈ W, and
+w w∈W
+2
+
+[PAGE 3]
+valuation v on A, we define satisfaction:
+A,v,w |=Pn(x ,...,x )⇐⇒hv(x ,w),...,v(x ,w)i∈I(Pn,w);
+j 1 n 1 n j
+A,v,w |=x=y ⇐⇒v(x,w)=v(y,w);
+A,v,w |=¬A⇐⇒A,v,w 6|=A;
+A,v,w |=A→B ⇐⇒A,v,w 6|=A or A,v,w |=B;
+A,v,w |=∀xA⇐⇒A,va(w),w |=A, for every a∈D ;
+x w
+A,v,w |=✷ ⊢⊢⊢A⇐⇒A,v′,w′ |=A, for every v′ in A and w′ ∈W.
+We write A|=A when A,v,w |=A for every v,w in A.
+For now, the ✷ ⊢⊢⊢ operator does not yet express being a first-order thesis. To
+changethis,wehaveto narrowthe classC to its propersubclassUC⊂C,which
+fulfills the following condition:
+A∈UC⇐⇒(A|=A=⇒∀ B∈CB |=A), for any ✷ ⊢⊢⊢ -free formula A. (UC)
+The class UC ⊆ C is called universal, and its members are called universal
+structures.Let us comment on the class UC in which we will interpret the logic
+we aim to build:
+• Any universal structure, i.e., fulfilling condition (UC), can falsify any ✷ ⊢⊢⊢-
+free formula that is not a first-order thesis.
+• Any universal structure has an infinite domain of possible worlds W and
+an infinite domain of objects S{D } .
+w w∈W
+• There are universal structures with countable domains of worlds and in-
+dividuals.
+• Two universalstructures maybe non-isomorphicandhavedifferent prop-
+erties.
+For any formula A∈L(∀,✷ ⊢⊢⊢), we say that:
+A is logically valid iff A|=A for any A∈UC.
+3 Formal system for being a thesis operator
+It is a well-known fact that every proper extension of modal logic S5 is either
+not closed under the substitution rule or is closed under substitution but is
+characterized by a single frame with a finite domain, i.e., a frame with a fixed
+number of possible worlds [6]. Given that our models are infinite (for worlds
+and objects), we will formulate slightly different notions of free variable and
+substitution than the standard one. Our new notions and their counterparts
+from first-order logic are equivalent for formulas without ✷ ⊢⊢⊢, but they differ for
+formulas with ✷ ⊢⊢⊢ to the one known from quantified modal logic.
+3
+
+[PAGE 4]
+The system FOL✷ ⊢⊢⊢, for first-order logic with a thesis operator, is defined as
+the smallest set that contains all instantiations of all tautologies of classical
+logic, and the following schemes of axioms:
+✷ ⊢⊢⊢(A→B)→(✷ ⊢⊢⊢A→✷ ⊢⊢⊢B), (K)
+✷ ⊢⊢⊢A→A, (T)
+¬✷ ⊢⊢⊢A→✷ ⊢⊢⊢¬✷ ⊢⊢⊢ A, (5)
+∀xxxA→A(yyy/
+xxx
+), where A(yyy/
+xxx
+) is ∀✷ ⊢⊢⊢-free substitution, (∀1)
+∀xxx(A→B)→(A→∀xxxB), ifxxx is not a ∀✷ ⊢⊢⊢-free variable in A, (∀2)
+x=x, (ID)
+x=y∧A(x)→A(y// x ), if A is a ✷ ⊢⊢⊢ -free formula, (=)
+✷ ⊢⊢⊢A→∀xxxA, (mix)
+¬✷ ⊢⊢⊢A, if A∈/ FOL. (!)
+The set FOL✷ ⊢⊢⊢ is closed under the following rules:
+A∈FOL✷ ⊢⊢⊢ =⇒✷ ⊢⊢⊢A∈FOL✷ ⊢⊢⊢, (RG)
+A→B,A∈FOL✷ ⊢⊢⊢ =⇒B ∈FOL✷ ⊢⊢⊢. (MP)
+The (mix) schema states that logicaltheses concernallobjects.The generaliza-
+tion rule for universal quantifier A∈FOL✷ ⊢⊢⊢ =⇒∀xA ∈FOL✷ ⊢⊢⊢ is derivable from
+(RG) and (mix). (!) with (RG) guaranteethat ✷ ⊢⊢⊢A∈FOL✷ ⊢⊢⊢ or ¬✷ ⊢⊢⊢ A∈FOL✷ ⊢⊢⊢, for
+anymodality-freeformulaA,butaswe showlateritisa caseofanyformulaA.
+An occurrence of a variable x in a formula A is ∀✷ ⊢⊢⊢-bound if x is in the scope
+ofquantifieror xoccur inthe formulaA inrangeof✷ ⊢⊢⊢ operator.Otherwise,the
+occurrence is ∀✷ ⊢⊢⊢-free.
+Avariablexis∀✷ ⊢⊢⊢-free intheformulaAifithasatleastone∀✷ ⊢⊢⊢-freeoccurrence.
+A∀✷ ⊢⊢⊢-freesubstitutionA(y/
+x
+)is the simultaneousreplacementofevery∀✷ ⊢⊢⊢-free
+occurrence of x by y in A, provided that y is substitable for a x in A; where
+variable y is substitable for ∀✷ ⊢⊢⊢-free occurrence of x in a formula A, if y is not
+captured by a quantifier when it replaces x.
+Let us note that:
+• In ¬✷ ⊢⊢⊢Px∧∃x(Px) both occurrences of x are ∀✷ ⊢⊢⊢-bound.
+• In a formula Px∧✸ ⊢⊢⊢¬Px the first occurrence of a variable x is ∀✷ ⊢⊢⊢-free
+while the second occurrence is y is ∀✷ ⊢⊢⊢-bound.
+• If A = Px ∧ ✸ ⊢⊢⊢(Px ∧ ¬Py) then correct ∀✷ ⊢⊢⊢-substitution are:
+A(y/
+x
+)=Py∧✸ ⊢⊢⊢(Px∧¬Py) and A(z/
+x
+)=Pz∧✸ ⊢⊢⊢(Px∧¬Py).
+• IfA=Px∧✸ ⊢⊢⊢(Px∧¬Py))thenthefollowingisnotcorrect∀✷ ⊢⊢⊢-substitution:
+A(x/
+y
+)=Py∧✸ ⊢⊢⊢(Py∧¬Py).
+4
+
+[PAGE 5]
+4 Soundness and completeness
+We start with the satisfaction theorem.
+Theorem 1. If A∈FOL✷ ⊢⊢⊢, then A is logically valid.
+Proof. The logical validity of (mix) follows directly from the satisfaction con-
+ditions for ✷ ⊢⊢⊢ and ∀. We show only the proof of the logical validity of the ax-
+ioms from schema (!), since the rest of the cases are routine. We assume that
+¬✷ ⊢⊢⊢ A is not logically valid for some A ∈/ FOL. Thus, we have A,v,w |= ✷ ⊢⊢⊢A
+for some A ∈ UC, v, and w from the domain of A. Now, by satisfaction we
+have A,v,w |= A for every v,w in A, and so A |= A. Thus, since A is ✷ ⊢⊢⊢-free,
+condition (UC) guarantee that in any structure B ∈ C we have B |= A. Given
+A ∈/ FOL and the completeness of FOL, we know that there exists an ordinary
+first-orderstructureF andavaluationv suchthatAis notsatisfiedinF under
+v.Thus,thereisastructureB ∈C(e.g.,analogoustoF andv withonepossible
+world w) such that B,v,w6|=A, which gives a contradiction.
+Now we prove the completeness of FOL✷ ⊢⊢⊢.
+Thedefinitionsof(FOL✷ ⊢⊢⊢-)consistency and(FOL✷ ⊢⊢⊢-)maximalconsistency inFOL✷ ⊢⊢⊢
+are standard. A set Γ of formulas is ∃-saturated if for any formula ¬∀xxxA ∈ Γ,
+there exists a variableyyy and a ∀✷ ⊢⊢⊢-free substitution such that ¬A(yyy/
+xxx
+)∈Γ.
+In a standard way, we can prove the following lemma
+Lemma1. ForanyFOL✷ ⊢⊢⊢-consistentsetΣ,thereexistsasetΓ suchthatΣ⊆Γ
+and Γ is ∃-saturated maximal FOL✷ ⊢⊢⊢-consistent with the usual properties:
+FOL✷ ⊢⊢⊢ ⊆Γ, (Γ ⊢ )
+A∈Γ⇐⇒¬A6∈Γ, (Γ )
+¬
+A→B ∈Γ⇐⇒A6∈Γ or B ∈Γ. (Γ )
+→
+Since ✷ ⊢⊢⊢ is a normal modality we also know that
+Lemma 2. If Γ is a FOL✷ ⊢⊢⊢-consistentset and✸ ⊢⊢⊢A∈Γ, then {B:✷ ⊢⊢⊢B ∈Γ}∪{A}
+is also a FOL✷ ⊢⊢⊢-consistent set.
+Now we introduce a kind of normal form of formulas:
+D is an elementary disjunction iff D :=A∨✸ ⊢⊢⊢B∨✷ ⊢⊢⊢C
+1
+∨...∨✷ ⊢⊢⊢C
+n
+,
+for some ✷ ⊢⊢⊢ -free formulas A,B,C 1 ,...C n ;
+F is a conjunctive form iff F is a conjunction of elementary disjunctions.
+Let MC be the family of all ∃-saturated maximal FOL✷ ⊢⊢⊢-consistent sets.
+Lemma 3. For any maximal FOL✷ ⊢⊢⊢-consistent sets Γ,∆∈MC, ✷ ⊢⊢⊢-free formula
+A, and any elementary disjunction D:
+∀
+Γ,∆∈MC
+(✷ ⊢⊢⊢A∈Γ⇐⇒✷ ⊢⊢⊢A∈∆); (i)
+∀
+Γ,∆∈MC
+(✸ ⊢⊢⊢A∈Γ⇐⇒✸ ⊢⊢⊢A∈∆); (ii)
+∀
+Γ,∆∈MC
+(✷ ⊢⊢⊢D ∈Γ⇐⇒✷ ⊢⊢⊢D ∈∆). (iii)
+5
+
+[PAGE 6]
+Proof. We start with (i) and for any ✷ ⊢⊢⊢-free formula A and maximal
+FOL✷ ⊢⊢⊢-consistent sets Γ,∆ we assume indirectly that ✷ ⊢⊢⊢A ∈ Γ, and ✷ ⊢⊢⊢A ∈/ ∆.
+Since ∆ is a maximal consistent set we have ✸ ⊢⊢⊢¬A ∈ ∆ by (Γ
+¬
+). The latter
+using Lemmas 2 and 1 gives that there is a maximal consistent set ∆ ∈ MC
+0
+suchthat ¬A∈∆ 0 , andnextA∈/ ∆ 0 .From(Γ ⊢ ) we knowthatFOL✷ ⊢⊢⊢ ⊆∆ 0 , so
+A ∈/ FOL✷ ⊢⊢⊢, since A ∈/ ∆
+0
+. The latter applying axiom (!) gives ¬✷ ⊢⊢⊢ A ∈ FOL✷ ⊢⊢⊢,
+since A is ✷ ⊢⊢⊢-free. Having ¬✷ ⊢⊢⊢A∈FOL✷ ⊢⊢⊢ we apply again (Γ ⊢ ) but this time to Γ
+and obtain ¬✷ ⊢⊢⊢ A∈Γ which gives a contradiction with the first assumption.
+For (ii) we just use (i) with A/¬A and apply Γ of Lemma 1.
+⊢
+For(iii)weassumeindirectlythat✷ ⊢⊢⊢D ∈Γ,and✷ ⊢⊢⊢D ∈/ ∆,forsomeΓ,∆∈MC.
+✷ ⊢⊢⊢D ∈/ ∆ gives✸ ⊢⊢⊢¬D ∈∆by (Γ
+¬
+) soapplying Lemma2 there is amaximalcon-
+sistentset∆
+0
+∈MC suchthatD ∈/ ∆
+0
+.LetD :=A∨✸ ⊢⊢⊢B∨✷ ⊢⊢⊢C
+1
+∨...∨✷ ⊢⊢⊢C
+n
+,since
+Disanelementarydisjunction.WehaveA∈/ ∆
+0
+and¬✸ ⊢⊢⊢B,¬✷ ⊢⊢⊢C
+1
+,...,¬✷ ⊢⊢⊢C
+n
+∈
+∆ , by maximal consistency of ∆ and classicallogic.This using (i) and (ii) of
+0 0
+Lemma 3 ¬✸ ⊢⊢⊢B,¬✷ ⊢⊢⊢ C 1 ,...,¬✷ ⊢⊢⊢ C n ∈∆ 0 implies
+(⋆): ∀ ζ∈MC (¬✸ ⊢⊢⊢B,¬✷ ⊢⊢⊢ C 1 ,...,¬✷ ⊢⊢⊢ C n ∈ζ),
+since B,C
+j≥n
+is ✷ ⊢⊢⊢-free formula. The first assumption ✷ ⊢⊢⊢D ∈ Γ, using
+D :=A∨✸ ⊢⊢⊢B∨✷ ⊢⊢⊢C
+1
+∨...∨✷ ⊢⊢⊢C
+n
+, gives us ✷ ⊢⊢⊢(A∨✸ ⊢⊢⊢B∨✷ ⊢⊢⊢C
+1
+∨...∨✷ ⊢⊢⊢C
+n
+) ∈Γ.
+The latter entails ✷ ⊢⊢⊢A∨✸ ⊢⊢⊢B∨✷ ⊢⊢⊢C 1 ∨...∨✷ ⊢⊢⊢C n ∈Γ because a S5 property of ✷ ⊢⊢⊢
+(✷ ⊢⊢⊢(A∨✷ ⊢⊢⊢B) ↔ (✷ ⊢⊢⊢A∨✷ ⊢⊢⊢B)) and maximal consistency of Γ. Thus using (⋆) we
+obtain ✷ ⊢⊢⊢A ∈ Γ. Having ✷ ⊢⊢⊢A ∈ Γ we obtain ✷ ⊢⊢⊢A ∈ ∆
+0
+with the use of (i) from
+Lemma3,becauseAis✷ ⊢⊢⊢-freeformula.However,✷ ⊢⊢⊢A∈∆
+0
+withearlierobtained
+A∈/ ∆ implies that ∆ is not consistent set.
+0 0
+To provethat every L(∀,✷ ⊢⊢⊢) formula has equivalentconjunctive formwe use
+thefactthat✷ ⊢⊢⊢ haspropertiesofmodallogicS5,andsomespecificFOL✷ ⊢⊢⊢ theses.
+Lemma 4. The following formulas are provable in FOL✷ ⊢⊢⊢:
+✷ ⊢⊢⊢(A∨✷ ⊢⊢⊢B)↔(✷ ⊢⊢⊢A∨✷ ⊢⊢⊢B); (1a)
+∃x✷ ⊢⊢⊢A↔∀x✷ ⊢⊢⊢A↔✷ ⊢⊢⊢A; (1b)
+∃x✸ ⊢⊢⊢A↔∀x✸ ⊢⊢⊢A↔✸ ⊢⊢⊢A; (1c)
+∀x(A∨✷ ⊢⊢⊢B)↔(∀xA∨✷ ⊢⊢⊢B). (1d)
+Thefirstone,aswementionedintheProofofLemma3,isprovableinmodal
+logicS5,thusalsoinFOL✷ ⊢⊢⊢.Thenextthreearenotprobableinknownquantifier
+modallogics.Weomitelementaryderivationsof(1b)-(1d)inFOL✷ ⊢⊢⊢ andusethem
+to show that the logic FOL✷ ⊢⊢⊢ has a property of equivalent conjunctive form.
+Lemma 5. For any A∈L(∀,✷ ⊢⊢⊢) there is a conjunctive form equivalent to A.
+Proof. Proof by induction on A. The boolean steps are standard. Let A= ✷ ⊢⊢⊢B
+and B′ = B 1 ∧ ...∧ B n be conjunctive form of B. ✷ ⊢⊢⊢ is a normal modality
+thus A ↔ ✷ ⊢⊢⊢B
+1
+∧...∧✷ ⊢⊢⊢B
+n
+and (1a) guarantees that every ✷ ⊢⊢⊢B
+i
+have equiv-
+alent elementary disjunction, thus A has an equivalent conjunctive form. Let
+A = ∀xB and B′ = B ∧ ... ∧ B be a conjunctive form of B. We have
+1 n
+A ↔ ∀xB ∧...∧∀xB and (1d) guarantees that every ∀xB have equivalent
+1 n i
+elementary disjunction, thus A has an equivalent conjunctive form.
+6
+
+[PAGE 7]
+Let R={hΓ,∆i:∀ A∈L(∀, ✷ ⊢⊢⊢) (✷ ⊢⊢⊢A∈Γ=⇒A∈∆)} be accessibility relation in MC.
+Theorem 2. (MC,R) is a modal frame with a universal relation.
+Proof. We assume indirectly that R is not universal. Let ✷ ⊢⊢⊢A ∈ Γ and A ∈/ ∆
+forsomeΓ,∆∈MC.AccordingtoLemma5,weknowthatAhasanequivalent
+conjunctiveformconsistingofelementarydisjunctions,denotedasD ∧...∧D .
+1 n
+Since ✷ ⊢⊢⊢ is a normal modality, ✷ ⊢⊢⊢A ∈ Γ gives ✷ ⊢⊢⊢D 1 ∧...∧✷ ⊢⊢⊢D n ∈ Γ. From the
+secondassumption,wehave¬D ∨...∨¬D ∈∆.Therefore,byLemma1,there
+1 n
+is an elementary disjunction D
+i
+such that D
+i
+∈/ ∆. We already have ✷ ⊢⊢⊢D
+i
+∈ Γ.
+Using (iii) of Lemma 3, we conclude that ∀ ζ∈MC ✷ ⊢⊢⊢ D i ∈ ζ, since D i is an
+elementarydisjunction.Thus,✷ ⊢⊢⊢D
+i
+∈∆andconsequentlyD
+i
+∈∆,whichmeans
+that ∆ is not consistent, since D ∈/ ∆.
+i
+We didnotfindquantifiermodallogicswhereananalogofthe abovelemma
+would hold.
+As an immediate consequence of the above lemma, we obtain that
+Lemma 6. For any A∈L(∀,✷ ⊢⊢⊢), and Γ,∆∈MC: ✷ ⊢⊢⊢A∈Γ⇐⇒✷ ⊢⊢⊢A∈∆.
+Now, for any Γ∈MC, we define the relation ∼ ={hx,yi:x=y ∈Γ}, which is
+Γ
+equivalencerelationbyaxiomsforidentityandconstructthecanonicalstructure
+AMC =hMC,{D } ,IMCi as usual, i.e., D ={[x] :x∈Var}, and next
+Γ Γ∈MC Γ ∼Γ
+IMC,andvMC onAMC aredefinedrespectively.So canonicalvaluationvMC in
+anypossibleworlddonotdependonchoiceofrepresentatives fortheequivalence
+classes.
+Now, in non trivial case A=✷ ⊢⊢⊢B we use axiom (mix), and inductively prove
+Lemma 7. AMC,vMC,Γ|=A⇐⇒A∈Γ, for any A∈L(∀,✷ ⊢⊢⊢) and Γ∈MC.
+Using proved lemmas its easy to prove that
+Theorem 3. If A is logically valid, then A∈FOL✷ ⊢⊢⊢.
+5 Conclusion
+In the end, we show that the satisfability of ✷ ⊢⊢⊢A in any model implies that
+A ∈ FOL✷ ⊢⊢⊢. The final theorem demonstrates that identifying the modality ✷ ⊢⊢⊢
+with the operator of being a thesis (and only a thesis) is substantively correct.
+Theorem 4. If there is a model on universal structure A ∈ UC such that
+A,w,v |=✷ ⊢⊢⊢A then A∈FOL✷ ⊢⊢⊢, for any formula A.
+Proof. We assume indirectly that there is a formula A, a structure A ∈ UC, a
+valuation v, and a world w from the domain of possible worlds of A such that
+A,v,w |=✷ ⊢⊢⊢A, and that A∈/ FOL✷ ⊢⊢⊢. Using the second assumption and the com-
+pleteness of FOL✷ ⊢⊢⊢ from Theorem 3 we have that there is a maximal consistent
+set ∆∈MC such that A∈/ ∆. We define a set Γ={B ∈L(∀,✷ ⊢⊢⊢):A,v,w |=B}
+that is maximal consistent, i.e., Γ ∈ MC. The defined maximal consistent set,
+with the first assumption, gives ✷ ⊢⊢⊢A ∈ Γ. However, ✷ ⊢⊢⊢A ∈ Γ and A ∈/ ∆ cannot
+both be true because of Theorem 2 on Krpike frame from MC.
+7
+
+[PAGE 8]
+References
+[1] Carnap, R., (1946) “Modalities and Quantification”, The Journal of Sym-
+bolic Logic, 11(2): 33-64
+[2] Cresswell,M.,(2014)“TheCompletenessofCarnap’sPredicateLogic”,Aus-
+tralasian Journal of Logic, 11(1): 46-61
+[3] Kripke,S.,(1963)“SemanticalConsiderationsonModalLogic”,ActaPhilo-
+sophica Fennica 16:83-94
+[4] Leitgeb, H., Carus, A., (2020) “Rudolf Carnap” (Supplement F. Se-
+mantics), The Stanford Encyclopedia of Philosophy, E. Zalta (ed.)
+https://plato.stanford.edu/entries/carnap/semantics.html#InteSema
+[5] Meadows,T.,(2012)“RevisingCarnap’sSemanticConceptionofModality”,
+Studia Logica, 100(3): 497–515
+[6] Scroggs,S. J., (1951) “Extensions of the Lewis System S5”, The Journal of
+Symbolic Logic, 16(2): 112–120
+8

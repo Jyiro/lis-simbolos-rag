@@ -294,3 +294,111 @@ No hace falta tocar ningún otro archivo.
 - Explicar brevemente el área / tópico para ver si varían los resultados.
 - Explicaciones técnicas de diferencias entre las familias de modelos, benchmarks de qué tanto siguen instrucciones.
 - Mantener un ojo para la regresión de los modelos: detección de problemas en los chunks.
+
+---
+
+## DeepDoc Research — Setup (Investigación Empírica de Extracción Simbólica)
+
+Esta carpeta (`deepdoc-research/`) es un módulo de investigación independiente que **no requiere RAGFlow ni ningún LLM**. Analiza empíricamente cómo los extractores de PDF subyacentes (pdfplumber, PyMuPDF, pypdf) preservan o corrompen símbolos matemáticos, replicando el comportamiento de DeepDoc/RAGFlow sin necesitar levantar el servidor.
+
+### Dependencias
+
+```bash
+# Dentro del entorno virtual del proyecto (.venv-ml)
+pip install pdfplumber pymupdf pypdf fonttools
+```
+
+O de un tirón con el requirements de este módulo:
+
+```bash
+pip install -r deepdoc-research/requirements.txt
+```
+
+> **Nota:** `fonttools` es necesario solo para la Fase 3C (análisis de font encoding). Las Fases 1, 2, 3A y 3B funcionan sin ella.
+
+### requirements.txt para deepdoc-research
+
+```
+pdfplumber>=0.11
+pymupdf>=1.24
+pypdf>=4.0
+fonttools>=4.60
+reportlab>=4.2        # solo para generar los PDFs sintéticos de Fase 1
+```
+
+### Ejecución paso a paso
+
+```bash
+# Desde la raíz del proyecto
+cd lis-interpretacion-simbolos-rag/
+
+# Fase 1 — Baseline con PDFs sintéticos (genera PDFs y extrae símbolos)
+.venv-ml\Scripts\python.exe deepdoc-research\probe.py
+# Output: deepdoc-research/summary_report.md
+
+# Fase 2 — EAR sobre PDFs reales del corpus
+.venv-ml\Scripts\python.exe deepdoc-research\probe_real.py
+# Output: deepdoc-research/real_report.md
+#         deepdoc-research/real_pdfs/<doc>/pdfplumber_extracted.txt
+#         deepdoc-research/real_pdfs/<doc>/pypdf_extracted.txt
+#         deepdoc-research/real_pdfs/<doc>/pymupdf_extracted.txt
+#         deepdoc-research/real_pdfs/<doc>/ear_analysis.json
+#         deepdoc-research/real_pdfs/<doc>/disagreements.json
+
+# Fase 3A — Análisis forense de corrupción (¿qué pone pdfplumber en lugar del símbolo?)
+.venv-ml\Scripts\python.exe deepdoc-research\phase3a_forensic.py
+# Output: deepdoc-research/forensic_report.md
+
+# Fase 3B — Simulación de chunking y pérdida de contexto
+.venv-ml\Scripts\python.exe deepdoc-research\phase3b_chunking.py
+# Output: deepdoc-research/chunking_report.md
+
+# Fase 3C — Análisis de font encoding (causa raíz del bug en pdfminer)
+.venv-ml\Scripts\python.exe deepdoc-research\phase3c_fonts.py
+# Output: deepdoc-research/fonts_report.md
+```
+
+> En Linux/macOS reemplazar `.venv-ml\Scripts\python.exe` por `.venv-ml/bin/python3`.
+
+### Corpus requerido
+
+Los scripts de Fase 2/3 esperan PDFs en:
+
+```
+dataset-ragflow/corpus-ragflow/
+├── FirstOrderLogic_complete.pdf
+├── ModalLogicFundamentally_complete.pdf
+├── ModalLogicalNeuralNetworks_complete.pdf
+└── abstract-algebra/
+    └── AbstractAlgebra_cap1-3_symbols.pdf
+```
+
+### Outputs generados
+
+```
+deepdoc-research/
+├── summary_report.md       ← Fase 1: CPR 100% en PDFs sintéticos (baseline)
+├── real_report.md          ← Fase 2: Tabla EAR cruzada por documento y símbolo
+├── forensic_report.md      ← Fase 3A: Evidencia de corrupción (cid:X) con alineación de texto
+├── chunking_report.md      ← Fase 3B: % de símbolos en borde/sin contexto tras chunking
+├── fonts_report.md         ← Fase 3C: Causa raíz del bug MacRomanEncoding en pdfminer.six
+└── real_pdfs/
+    └── <documento>/
+        ├── pdfplumber_extracted.txt
+        ├── pymupdf_extracted.txt
+        ├── pypdf_extracted.txt
+        ├── ear_analysis.json
+        └── disagreements.json
+```
+
+### Hallazgos principales
+
+| Símbolo | Documento | pdfplumber | pypdf | EAR | Corrupción detectada |
+|---|---|---|---|---|---|
+| `∑` | AbstractAlgebra | 0 | 65 | 0.0% | Tag `(cid:9)` — operador eliminado de la ecuación |
+| `∏` | AbstractAlgebra | 0 | 19 | 0.0% | Tag `(cid:10)` — operador eliminado |
+| `⊨` | ModalLogicFundamentally | 0 | 2 | 0.0% | Reemplazado por `(cid:15)` |
+| `⊢` | FirstOrderLogic | 640 | 640 | 33.8% | PyMuPDF ve solo 216 (inestabilidad entre extractores) |
+
+**Causa raíz:** `pdfminer.six` (motor de `pdfplumber` y `DeepDoc`) aplica `MacRomanEncoding` directamente en fuentes CFF Type1 en lugar de priorizar el `ToUnicode CMap` embebido. `pypdf` y `PyMuPDF` resuelven correctamente el CMap. El tag `(cid:X)` es el síntoma visible de este bug.
+
