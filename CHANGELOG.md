@@ -38,11 +38,23 @@ Se abandona el stack completo de RAGFlow por limitaciones de RAM. En su lugar, s
 ### Hallazgos Clave (Fase 3B — Chunking)
 
 - `⊢` (TURNSTILE) en FirstOrderLogic: **28 de 691 ocurrencias** (4.1%) caen en el borde de un chunk; **165 ocurrencias** (23.9%) quedan en chunks sin palabras clave de contexto semántico.
-- La doble pérdida (Fase 2: corrupción en extracción + Fase 3B: pérdida de contexto en chunking) opera en capas independientes y acumulativas.
+- La doble pérdida (Fase 2: corrupción en extracción + Fase 3B: pérdida de contexto semántico en chunking) opera en capas independientes y acumulativas.
 
-### Causa Raíz Identificada (Fase 3C)
+### Causa Raíz Identificada (Fase 3C) — Hipótesis Inicial (2026-09-09)
 
 `pdfminer.six` (motor subyacente de `pdfplumber` y `DeepDoc`) aplica directamente el encoding `/MacRomanEncoding` declarado en el diccionario de fuente CFF Type1, en lugar de priorizar el mapa `ToUnicode CMap` embebido en la fuente. `pypdf` y `PyMuPDF` priorizan correctamente el CMap, resultando en extracción Unicode correcta. El tag `(cid:X)` es el síntoma visible de este bug de resolución de encoding.
+
+### [REVISIÓN] Causa Raíz — Diagnóstico más preciso (2026-09-17)
+
+> La hipótesis anterior era parcialmente correcta pero incompleta. Tras inspeccionar el código fuente de pdfminer.six, se identificó el mecanismo de fallo principal:
+
+`to_unichr()` en pdfminer **ya intenta primero el ToUnicode CMap** — la prioridad en sí no es el bug principal. El problema real es que los **nombres de glifo TeX** (`summationdisplay`, `productdisplay`, `square`, etc.) **no están en el Adobe Glyph List (AGL)** que usa pdfminer en su `glyphname2unicode`. Cuando una fuente Computer Modern declara `/Differences: [9 /summationdisplay ...]`, pdfminer llama a `name2unicode("summationdisplay")`, no lo encuentra, lanza `PDFKeyError`, y el slot cid=9 queda vacío → `(cid:9)`.
+
+Ambos mecanismos de fallo coexisten según el PDF:
+1. **Nombres TeX ausentes del AGL** (principal) — aplica a CMEX, LASY, CMSY
+2. **Prioridad de encoding incorrecta** (secundario) — aplica a fuentes sin ToUnicode CMap explícito
+
+**Fix identificado:** Monkey-patch que inyecta la TeX Glyph List en `pdfminer.glyphlist.glyphname2unicode`. Especificación completa en `deepdoc-research/plan_patch.md`.
 
 ### Próximos Pasos Planificados
 

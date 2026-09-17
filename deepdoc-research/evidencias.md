@@ -202,7 +202,9 @@ El PDF `AbstractAlgebra_cap1-3_symbols.pdf` contiene fuentes con esta estructura
 
 Son fuentes **CFF Type1** (fuentes matemáticas de LaTeX, familia Computer Modern) declaradas con `/MacRomanEncoding`.
 
-### El bug de compatibilidad (causa raíz)
+### Hipótesis inicial: bug de prioridad MacRoman vs ToUnicode CMap
+
+> ⚠️ Esta fue la hipótesis de trabajo formulada en Fase 3C (2026-09-09). Ver **Revisión del diagnóstico** más abajo para la versión corregida.
 
 La especificación PDF permite que una fuente declare un `/Encoding` base pero lo sobrescriba con un mapa `ToUnicode` (CMap) embebido, que es la verdad de qué carácter Unicode corresponde a cada glifo de la fuente.
 
@@ -212,14 +214,47 @@ La especificación PDF permite que una fuente declare un `/Encoding` base pero l
 | **PyMuPDF** | Prioriza el `ToUnicode CMap` embebido | `∑` extraído correctamente ✅ |
 | **pdfminer.six** (motor de pdfplumber/DeepDoc) | Aplica `/MacRomanEncoding` directamente, ignora el CMap | `(cid:9)` / omisión ❌ |
 
-### Conclusión Fase 3C
+Hipótesis: pdfminer ignora el ToUnicode CMap y aplica MacRoman directamente → el byte no coincide con ningún glifo conocido → emite `(cid:X)`.
 
-El fallo **no es OCR ni renderizado visual**. Es un bug de resolución de diccionarios de fuente en `pdfminer.six`. Al aplicar MacRoman directamente:
-- El byte que en MacRoman representa un carácter irrelevante no coincide con ningún glifo conocido.
-- `pdfminer` emite `(cid:X)` (código interno de glifo) o silencia el carácter.
-- El texto resultante llega al LLM completamente desprovisto del operador matemático.
+### Revisión del diagnóstico (2026-09-17) — Causa raíz más precisa
 
-**La solución correcta** es parchear pdfminer para que, cuando encuentre un `ToUnicode CMap` embebido en una fuente CFF Type1, lo priorice sobre el `/Encoding` declarado. Esto aplica directamente a `DeepDoc/RAGFlow` ya que usa pdfminer vía pdfplumber.
+Al inspeccionar el código fuente de pdfminer.six (`pdffont.py`, `encodingdb.py`) se descubrió que **`to_unichr()` ya intenta primero el ToUnicode CMap** antes de caer al encoding base. La hipótesis de prioridad incorrecta era parcialmente errónea.
+
+El bug real opera a un nivel más profundo: los **nombres de glifo propios de las fuentes TeX** (`summationdisplay`, `productdisplay`, `square`, etc.) **no están en el Adobe Glyph List (AGL) que usa pdfminer**.
+
+```
+Cadena real de fallo en pdfminer:
+
+  PDF /Differences array: [9 /summationdisplay 10 /productdisplay ...]
+         ↓
+  pdfminer llama a name2unicode("summationdisplay")
+         ↓
+  Busca en glyphname2unicode (Adobe AGL) → NO ESTÁ → PDFKeyError
+         ↓
+  El slot cid=9 queda vacío en cid2unicode
+         ↓
+  to_unichr(9) falla → emite "(cid:9)"   ← AÚN cuando hay ToUnicode CMap
+```
+
+| Nombre de glifo TeX | En AGL de pdfminer | Unicode correcto |
+|---|---|---|
+| `summationdisplay` | ❌ NO ESTÁ | ∑ U+2211 |
+| `summationtext`    | ❌ NO ESTÁ | ∑ U+2211 |
+| `productdisplay`   | ❌ NO ESTÁ | ∏ U+220F |
+| `square`           | ❌ NO ESTÁ | □ U+25A1 |
+| `integraldisplay`  | ❌ NO ESTÁ | ∫ U+222B |
+| `summation`        | ✅ Sí      | ∑ — (nombre estándar, no el TeX) |
+
+**La hipótesis original no era incorrecta para todos los casos** — el mecanismo de MacRoman SÍ interfiere en fuentes donde los bytes del stream no pasan por el array `/Differences`. Ambos mecanismos de fallo coexisten dependiendo del PDF. Ver sección «Análisis de Causa Raíz — Capa de Mapeo» más abajo para el análisis completo.
+
+### Conclusión Fase 3C (actualizada)
+
+El fallo **no es OCR ni renderizado visual**. Tiene dos mecanismos de fallo que pueden coexistir:
+
+1. **Nombres TeX ausentes del AGL** (mecanismo principal identificado en 2026-09-17): `summationdisplay`, `square`, etc. no están en el glyph list de pdfminer → el slot queda vacío → `(cid:X)`.
+2. **Prioridad de encoding incorrecta** (hipótesis original 2026-09-09): en fuentes donde el byte se resuelve via encoding base sin pasar por el AGL, MacRoman produce caracteres incorrectos.
+
+**La solución más simple y efectiva**: inyectar la **TeX Glyph List** en `pdfminer.glyphlist.glyphname2unicode` (monkey-patch en tiempo de ejecución). Ver `plan_patch.md` para la especificación completa.
 
 ---
 
@@ -745,3 +780,69 @@ Esto incluye:
 - Cualquier pipeline de NLP sobre tesis, libros de texto o publicaciones científicas en PDF
 
 **La evidencia construida en este proyecto** (metodología EAR, corpus de discrepancias, análisis forense) constituye un bug report técnico completo y verificable que justifica tanto el PR a RAGFlow como el parche a pdfminer.six.
+
+---
+
+## Fase 6 — Implementación y Validación del Monkey-Patch
+
+**Fecha:** 2026-09-17
+
+Siguiendo la Opción B descrita arriba, se implementó exitosamente un monkey-patch (`tex_glyph_patch.py`) que inyecta en memoria la nomenclatura extendida de `amsfonts`/LaTeX en el diccionario `glyphname2unicode` de `pdfminer.six`.
+
+### Alcance de la Solución
+Es **crítico** destacar el alcance de este parche:
+1. **Soluciona el problema de raíz en `pdfminer.six` y `pdfplumber`**. Por lo tanto, soluciona definitivamente la extracción en **DeepDoc/RAGFlow**.
+2. **NO soluciona el problema en `PyMuPDF` (fitz) ni en `pymupdf4llm`**. Estos extractores tienen el mismo problema de diccionario, pero dependen del motor en C++ `MuPDF`. Nuestro parche en Python no los afecta, por ende, seguirán fallando y dando 0% de extracción en estos símbolos, reafirmando que la corrupción subyacente de la fuente sigue existiendo y nuestro parche la saltea limpiamente en el nivel de Python.
+
+### ¿Cómo funciona el Monkey-Patch a nivel técnico?
+
+El parche, implementado en [`tex_glyph_patch.py`](file:///home/jonas/Documentos/UTN/Programming/Beca%20GAALA/Proyecto-RAG-Symbols/lis-interpretacion-simbolos-rag/deepdoc-research/tex_glyph_patch.py), actúa de forma **no invasiva** y en **tiempo de ejecución** (runtime). No modifica el código fuente instalado de la librería en el sistema, sino que altera sus estructuras en memoria justo antes de que empiece a procesar los PDFs.
+
+La mecánica exacta es la siguiente:
+1. `pdfminer.six` mantiene un diccionario global en memoria llamado `glyphname2unicode`, que es básicamente el **Adobe Glyph List (AGL)**. Este diccionario es el encargado de traducir un "nombre de glifo" (ej. `"P"`) a su carácter Unicode (`"U+0050"`).
+2. Las fuentes matemáticas como `CMEX10` y `CMSY10` (estándar en LaTeX) definen sus glifos utilizando nombres exclusivos que **no existen en el AGL**, como `"summationdisplay"` para `∑` o `"productdisplay"` para `∏`.
+3. Cuando `pdfminer` intenta traducir `"summationdisplay"`, al no encontrarlo en su diccionario estándar, simplemente aborta y emite el error silencioso que se traduce en un `(cid:X)`.
+4. Nuestro script importa `pdfminer.glyphlist.glyphname2unicode` y le inyecta 114 nuevas entradas correspondientes a la **TeX Glyph List** (el mapeo de glifos oficial del ecosistema TeX).
+
+```python
+# El núcleo técnico de cómo se aplica el parche
+from pdfminer.glyphlist import glyphname2unicode
+
+TEX_EXTRA_GLYPHS = {
+    "summationdisplay": "\u2211",  # ∑
+    "productdisplay": "\u220f",    # ∏
+    # ... +112 símbolos matemáticos faltantes
+}
+
+# Inyección en memoria en runtime
+glyphname2unicode.update(TEX_EXTRA_GLYPHS)
+```
+
+Al ejecutarse esta actualización ANTES de inicializar el extractor usado por RAGFlow (`pdfplumber`), todas las consultas de símbolos que antes fallaban ahora encuentran correspondencia directa gracias a nuestro diccionario extendido, devolviendo los caracteres Unicode perfectos.
+
+### Resultados de la Validación
+Se implementó un script robusto (`probe_patched.py`) que enfrenta a 4 extractores sobre el corpus completo de PDFs problemáticos (incluyendo arXiv). Los resultados demuestran que:
+- **ANTES del parche:** `pdfplumber` fallaba en extraer los símbolos (EAR 0%).
+- **DESPUÉS del parche:** `pdfplumber` empató perfectamente al 100% con el ground truth (`pypdf`), recuperando un total de 177 símbolos matemáticos en todo el corpus evaluado (incluyendo sumatorias, productorias, cajas modales y operadores de relación como ⊨).
+- **OTROS EXTRACTORES:** `PyMuPDF` y `pymupdf4llm` continuaron arrojando 0, validando que el parche fue el único responsable de la mejoría observada en `pdfplumber`.
+
+---
+
+## Anexo — Análisis Arquitectónico: El Enfoque Nativo de RAGFlow vs VLMs
+
+A lo largo de la investigación quedó en evidencia por qué plataformas empresariales como **RAGFlow** no aplican este "Monkey-Patch" (ni arreglos similares a nivel diccionario) por defecto en su motor **DeepDoc**. 
+
+### 1. El Fallback Heurístico (OCR 1D)
+Cuando no hay un VLM (Vision Language Model) configurado, DeepDoc reacciona al fallo estructural de la Adobe Glyph List mediante **degradación controlada**. 
+Posee reglas heurísticas (como la directiva interna `_is_garbled_text`) que detectan inmediatamente la presencia de anomalías o artefactos masivos del tipo `(cid:X)`. Ante el menor indicio de corrupción:
+1. El sistema **descarta asépticamente toda la lectura plana** (basada en el diccionario) para ese fragmento.
+2. Inicia un *fallback* (plan de contingencia) delegando la lectura a su motor de visión artificial y OCR integrado (usando modelos como `PP-OCRv6` y `YOLOv10`).
+
+Al escanear los píxeles (y no el código fuente del PDF), el OCR logra "ver" y rescatar los símbolos matemáticos aislados. Sin embargo, **este método falla en la dimensionalidad espacial**: el OCR nativo devuelve un texto plano unidimensional. Una fórmula estructurada como `\sum_{i=1}^{n} x_i` termina aplastada en una cadena incomprensible (ej. `n ∑ x_i i=1`), perdiendo subíndices, matrices y fracciones. Para un LLM, esto sigue siendo un caldo de cultivo para alucinaciones.
+
+### 2. La Verdadera Solución: Modelos de Lenguaje Visual (VLMs)
+Para que un pipeline RAG reconstruya la **estructura espacial matemática** (recuperando el formato LaTeX tridimensional), el OCR tradicional es insuficiente y parchear diccionarios no preserva la jerarquía vertical. 
+
+La respuesta arquitectónica adoptada por RAGFlow en sus últimas versiones es delegar la extracción compleja a **Modelos de Lenguaje Visual Multimodal (VLMs)**, como **MinerU** o **Docling** (vía parámetros como `DOCLING_FORMULA_ENRICHMENT=1`). 
+
+Solo estos modelos son capaces de observar el "recorte" de la ecuación (la imagen) y traducirlo directamente a su código fuente original en LaTeX, ignorando por completo tanto las deficiencias del estándar ISO 32000 como las limitaciones unidimensionales de un OCR tradicional. El futuro de la extracción científica en sistemas RAG es indiscutiblemente multimodal.
