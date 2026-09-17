@@ -6,3 +6,4 @@ pymupdf>=1.24
 pypdf>=4.0
 fonttools>=4.60       # Fase 3C: análisis de font encoding (causa raíz del bug)
 reportlab>=4.2        # Fase 1: generación de PDFs sintéticos para baseline
+pymupdf4llm>=0.0.17   # Fase 4: evaluación de markdown extraction

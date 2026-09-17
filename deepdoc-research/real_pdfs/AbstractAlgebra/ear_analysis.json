@@ -7,7 +7,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 0
+        "pypdf": 0,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 0,
@@ -20,7 +21,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 0
+        "pypdf": 0,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 0,
@@ -33,7 +35,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 0
+        "pypdf": 0,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 0,
@@ -46,7 +49,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 0
+        "pypdf": 0,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 0,
@@ -59,7 +63,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 0
+        "pypdf": 0,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 0,
@@ -72,7 +77,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 0
+        "pypdf": 0,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 0,
@@ -85,12 +91,13 @@
       "counts": {
         "pdfplumber": 156,
         "pymupdf": 156,
-        "pypdf": 156
+        "pypdf": 156,
+        "pymupdf4llm": 119
       },
-      "min_count": 156,
+      "min_count": 119,
       "max_count": 156,
-      "ear": 100.0,
-      "status": "perfect"
+      "ear": 76.3,
+      "status": "discrepancy"
     },
     "IFF": {
       "char": "↔",
@@ -98,7 +105,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 0
+        "pypdf": 0,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 0,
@@ -111,7 +119,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 0
+        "pypdf": 0,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 0,
@@ -124,7 +133,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 0
+        "pypdf": 0,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 0,
@@ -137,7 +147,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 0
+        "pypdf": 0,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 0,
@@ -150,7 +161,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 0
+        "pypdf": 0,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 0,
@@ -163,7 +175,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 0
+        "pypdf": 0,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 0,
@@ -176,7 +189,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 0
+        "pypdf": 0,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 0,
@@ -189,12 +203,13 @@
       "counts": {
         "pdfplumber": 24,
         "pymupdf": 24,
-        "pypdf": 24
+        "pypdf": 24,
+        "pymupdf4llm": 6
       },
-      "min_count": 24,
+      "min_count": 6,
       "max_count": 24,
-      "ear": 100.0,
-      "status": "perfect"
+      "ear": 25.0,
+      "status": "discrepancy"
     },
     "ELEM_OF": {
       "char": "∈",
@@ -202,12 +217,13 @@
       "counts": {
         "pdfplumber": 361,
         "pymupdf": 361,
-        "pypdf": 361
+        "pypdf": 361,
+        "pymupdf4llm": 300
       },
-      "min_count": 361,
+      "min_count": 300,
       "max_count": 361,
-      "ear": 100.0,
-      "status": "perfect"
+      "ear": 83.1,
+      "status": "discrepancy"
     },
     "NOT_ELEM": {
       "char": "∉",
@@ -215,7 +231,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 0
+        "pypdf": 0,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 0,
@@ -228,12 +245,13 @@
       "counts": {
         "pdfplumber": 48,
         "pymupdf": 48,
-        "pypdf": 48
+        "pypdf": 48,
+        "pymupdf4llm": 38
       },
-      "min_count": 48,
+      "min_count": 38,
       "max_count": 48,
-      "ear": 100.0,
-      "status": "perfect"
+      "ear": 79.2,
+      "status": "discrepancy"
     },
     "SUBSETEQ": {
       "char": "⊆",
@@ -241,7 +259,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 0
+        "pypdf": 0,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 0,
@@ -254,7 +273,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 0
+        "pypdf": 0,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 0,
@@ -267,12 +287,13 @@
       "counts": {
         "pdfplumber": 23,
         "pymupdf": 23,
-        "pypdf": 23
+        "pypdf": 23,
+        "pymupdf4llm": 12
       },
-      "min_count": 23,
+      "min_count": 12,
       "max_count": 23,
-      "ear": 100.0,
-      "status": "perfect"
+      "ear": 52.2,
+      "status": "discrepancy"
     },
     "UNION": {
       "char": "∪",
@@ -280,7 +301,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 0
+        "pypdf": 0,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 0,
@@ -293,7 +315,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 0
+        "pypdf": 0,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 0,
@@ -306,7 +329,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 0
+        "pypdf": 0,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 0,
@@ -319,7 +343,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 0
+        "pypdf": 0,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 0,
@@ -332,7 +357,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 0
+        "pypdf": 0,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 0,
@@ -345,7 +371,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 0
+        "pypdf": 0,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 0,
@@ -358,7 +385,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 0
+        "pypdf": 0,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 0,
@@ -371,7 +399,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 65
+        "pypdf": 65,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 65,
@@ -384,7 +413,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 19
+        "pypdf": 19,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 19,
@@ -397,11 +427,12 @@
       "counts": {
         "pdfplumber": 61,
         "pymupdf": 61,
-        "pypdf": 62
+        "pypdf": 62,
+        "pymupdf4llm": 43
       },
-      "min_count": 61,
+      "min_count": 43,
       "max_count": 62,
-      "ear": 98.4,
+      "ear": 69.4,
       "status": "discrepancy"
     },
     "INFINITY": {
@@ -410,12 +441,13 @@
       "counts": {
         "pdfplumber": 12,
         "pymupdf": 12,
-        "pypdf": 12
+        "pypdf": 12,
+        "pymupdf4llm": 8
       },
-      "min_count": 12,
+      "min_count": 8,
       "max_count": 12,
-      "ear": 100.0,
-      "status": "perfect"
+      "ear": 66.7,
+      "status": "discrepancy"
     },
     "LEQ": {
       "char": "≤",
@@ -423,12 +455,13 @@
       "counts": {
         "pdfplumber": 59,
         "pymupdf": 59,
-        "pypdf": 59
+        "pypdf": 59,
+        "pymupdf4llm": 29
       },
-      "min_count": 59,
+      "min_count": 29,
       "max_count": 59,
-      "ear": 100.0,
-      "status": "perfect"
+      "ear": 49.2,
+      "status": "discrepancy"
     },
     "GEQ": {
       "char": "≥",
@@ -436,12 +469,13 @@
       "counts": {
         "pdfplumber": 11,
         "pymupdf": 11,
-        "pypdf": 11
+        "pypdf": 11,
+        "pymupdf4llm": 9
       },
-      "min_count": 11,
+      "min_count": 9,
       "max_count": 11,
-      "ear": 100.0,
-      "status": "perfect"
+      "ear": 81.8,
+      "status": "discrepancy"
     },
     "NEQ": {
       "char": "≠",
@@ -449,7 +483,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 0
+        "pypdf": 0,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 0,
@@ -462,12 +497,13 @@
       "counts": {
         "pdfplumber": 52,
         "pymupdf": 52,
-        "pypdf": 52
+        "pypdf": 52,
+        "pymupdf4llm": 32
       },
-      "min_count": 52,
+      "min_count": 32,
       "max_count": 52,
-      "ear": 100.0,
-      "status": "perfect"
+      "ear": 61.5,
+      "status": "discrepancy"
     },
     "EQUIV": {
       "char": "≡",
@@ -475,12 +511,13 @@
       "counts": {
         "pdfplumber": 3,
         "pymupdf": 3,
-        "pypdf": 3
+        "pypdf": 3,
+        "pymupdf4llm": 2
       },
-      "min_count": 3,
+      "min_count": 2,
       "max_count": 3,
-      "ear": 100.0,
-      "status": "perfect"
+      "ear": 66.7,
+      "status": "discrepancy"
     },
     "PARTIAL": {
       "char": "∂",
@@ -488,12 +525,13 @@
       "counts": {
         "pdfplumber": 2,
         "pymupdf": 2,
-        "pypdf": 2
+        "pypdf": 2,
+        "pymupdf4llm": 0
       },
-      "min_count": 2,
+      "min_count": 0,
       "max_count": 2,
-      "ear": 100.0,
-      "status": "perfect"
+      "ear": 0.0,
+      "status": "discrepancy"
     },
     "NABLA": {
       "char": "∇",
@@ -501,7 +539,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 0
+        "pypdf": 0,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 0,
@@ -514,12 +553,13 @@
       "counts": {
         "pdfplumber": 454,
         "pymupdf": 454,
-        "pypdf": 454
+        "pypdf": 454,
+        "pymupdf4llm": 349
       },
-      "min_count": 454,
+      "min_count": 349,
       "max_count": 454,
-      "ear": 100.0,
-      "status": "perfect"
+      "ear": 76.9,
+      "status": "discrepancy"
     },
     "BETA": {
       "char": "β",
@@ -527,12 +567,13 @@
       "counts": {
         "pdfplumber": 112,
         "pymupdf": 112,
-        "pypdf": 112
+        "pypdf": 112,
+        "pymupdf4llm": 68
       },
-      "min_count": 112,
+      "min_count": 68,
       "max_count": 112,
-      "ear": 100.0,
-      "status": "perfect"
+      "ear": 60.7,
+      "status": "discrepancy"
     },
     "GAMMA": {
       "char": "γ",
@@ -540,12 +581,13 @@
       "counts": {
         "pdfplumber": 12,
         "pymupdf": 12,
-        "pypdf": 12
+        "pypdf": 12,
+        "pymupdf4llm": 10
       },
-      "min_count": 12,
+      "min_count": 10,
       "max_count": 12,
-      "ear": 100.0,
-      "status": "perfect"
+      "ear": 83.3,
+      "status": "discrepancy"
     },
     "LAMBDA": {
       "char": "λ",
@@ -553,12 +595,13 @@
       "counts": {
         "pdfplumber": 8,
         "pymupdf": 8,
-        "pypdf": 8
+        "pypdf": 8,
+        "pymupdf4llm": 6
       },
-      "min_count": 8,
+      "min_count": 6,
       "max_count": 8,
-      "ear": 100.0,
-      "status": "perfect"
+      "ear": 75.0,
+      "status": "discrepancy"
     },
     "MU": {
       "char": "μ",
@@ -566,7 +609,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 0
+        "pypdf": 0,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 0,
@@ -579,7 +623,8 @@
       "counts": {
         "pdfplumber": 3,
         "pymupdf": 3,
-        "pypdf": 3
+        "pypdf": 3,
+        "pymupdf4llm": 3
       },
       "min_count": 3,
       "max_count": 3,
@@ -592,7 +637,8 @@
       "counts": {
         "pdfplumber": 1,
         "pymupdf": 1,
-        "pypdf": 1
+        "pypdf": 1,
+        "pymupdf4llm": 1
       },
       "min_count": 1,
       "max_count": 1,
@@ -605,7 +651,8 @@
       "counts": {
         "pdfplumber": 4,
         "pymupdf": 4,
-        "pypdf": 4
+        "pypdf": 4,
+        "pymupdf4llm": 4
       },
       "min_count": 4,
       "max_count": 4,
@@ -618,12 +665,13 @@
       "counts": {
         "pdfplumber": 47,
         "pymupdf": 47,
-        "pypdf": 47
+        "pypdf": 47,
+        "pymupdf4llm": 40
       },
-      "min_count": 47,
+      "min_count": 40,
       "max_count": 47,
-      "ear": 100.0,
-      "status": "perfect"
+      "ear": 85.1,
+      "status": "discrepancy"
     },
     "GAMMA_UP": {
       "char": "Γ",
@@ -631,7 +679,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 0
+        "pypdf": 0,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 0,
@@ -644,7 +693,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 0
+        "pypdf": 0,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 0,
@@ -657,7 +707,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 0
+        "pypdf": 0,
+        "pymupdf4llm": 0
       },
       "min_count": 0,
       "max_count": 0,
@@ -670,12 +721,13 @@
       "counts": {
         "pdfplumber": 49,
         "pymupdf": 49,
-        "pypdf": 49
+        "pypdf": 49,
+        "pymupdf4llm": 27
       },
-      "min_count": 49,
+      "min_count": 27,
       "max_count": 49,
-      "ear": 100.0,
-      "status": "perfect"
+      "ear": 55.1,
+      "status": "discrepancy"
     }
   },
   "discrepancies": [
@@ -687,7 +739,8 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 65
+        "pypdf": 65,
+        "pymupdf4llm": 0
       }
     },
     {
@@ -698,27 +751,233 @@
       "counts": {
         "pdfplumber": 0,
         "pymupdf": 0,
-        "pypdf": 19
+        "pypdf": 19,
+        "pymupdf4llm": 0
+      }
+    },
+    {
+      "name": "PARTIAL",
+      "char": "∂",
+      "codepoint": "U+2202",
+      "ear": 0.0,
+      "counts": {
+        "pdfplumber": 2,
+        "pymupdf": 2,
+        "pypdf": 2,
+        "pymupdf4llm": 0
+      }
+    },
+    {
+      "name": "XOR",
+      "char": "⊕",
+      "codepoint": "U+2295",
+      "ear": 25.0,
+      "counts": {
+        "pdfplumber": 24,
+        "pymupdf": 24,
+        "pypdf": 24,
+        "pymupdf4llm": 6
+      }
+    },
+    {
+      "name": "LEQ",
+      "char": "≤",
+      "codepoint": "U+2264",
+      "ear": 49.2,
+      "counts": {
+        "pdfplumber": 59,
+        "pymupdf": 59,
+        "pypdf": 59,
+        "pymupdf4llm": 29
+      }
+    },
+    {
+      "name": "INTERSECT",
+      "char": "∩",
+      "codepoint": "U+2229",
+      "ear": 52.2,
+      "counts": {
+        "pdfplumber": 23,
+        "pymupdf": 23,
+        "pypdf": 23,
+        "pymupdf4llm": 12
+      }
+    },
+    {
+      "name": "PHI_UP",
+      "char": "Φ",
+      "codepoint": "U+03A6",
+      "ear": 55.1,
+      "counts": {
+        "pdfplumber": 49,
+        "pymupdf": 49,
+        "pypdf": 49,
+        "pymupdf4llm": 27
+      }
+    },
+    {
+      "name": "BETA",
+      "char": "β",
+      "codepoint": "U+03B2",
+      "ear": 60.7,
+      "counts": {
+        "pdfplumber": 112,
+        "pymupdf": 112,
+        "pypdf": 112,
+        "pymupdf4llm": 68
+      }
+    },
+    {
+      "name": "APPROX",
+      "char": "≈",
+      "codepoint": "U+2248",
+      "ear": 61.5,
+      "counts": {
+        "pdfplumber": 52,
+        "pymupdf": 52,
+        "pypdf": 52,
+        "pymupdf4llm": 32
+      }
+    },
+    {
+      "name": "INFINITY",
+      "char": "∞",
+      "codepoint": "U+221E",
+      "ear": 66.7,
+      "counts": {
+        "pdfplumber": 12,
+        "pymupdf": 12,
+        "pypdf": 12,
+        "pymupdf4llm": 8
+      }
+    },
+    {
+      "name": "EQUIV",
+      "char": "≡",
+      "codepoint": "U+2261",
+      "ear": 66.7,
+      "counts": {
+        "pdfplumber": 3,
+        "pymupdf": 3,
+        "pypdf": 3,
+        "pymupdf4llm": 2
       }
     },
     {
       "name": "SQRT",
       "char": "√",
       "codepoint": "U+221A",
-      "ear": 98.4,
+      "ear": 69.4,
       "counts": {
         "pdfplumber": 61,
         "pymupdf": 61,
-        "pypdf": 62
+        "pypdf": 62,
+        "pymupdf4llm": 43
+      }
+    },
+    {
+      "name": "LAMBDA",
+      "char": "λ",
+      "codepoint": "U+03BB",
+      "ear": 75.0,
+      "counts": {
+        "pdfplumber": 8,
+        "pymupdf": 8,
+        "pypdf": 8,
+        "pymupdf4llm": 6
+      }
+    },
+    {
+      "name": "IMPLIES",
+      "char": "→",
+      "codepoint": "U+2192",
+      "ear": 76.3,
+      "counts": {
+        "pdfplumber": 156,
+        "pymupdf": 156,
+        "pypdf": 156,
+        "pymupdf4llm": 119
+      }
+    },
+    {
+      "name": "ALPHA",
+      "char": "α",
+      "codepoint": "U+03B1",
+      "ear": 76.9,
+      "counts": {
+        "pdfplumber": 454,
+        "pymupdf": 454,
+        "pypdf": 454,
+        "pymupdf4llm": 349
+      }
+    },
+    {
+      "name": "SUBSET",
+      "char": "⊂",
+      "codepoint": "U+2282",
+      "ear": 79.2,
+      "counts": {
+        "pdfplumber": 48,
+        "pymupdf": 48,
+        "pypdf": 48,
+        "pymupdf4llm": 38
+      }
+    },
+    {
+      "name": "GEQ",
+      "char": "≥",
+      "codepoint": "U+2265",
+      "ear": 81.8,
+      "counts": {
+        "pdfplumber": 11,
+        "pymupdf": 11,
+        "pypdf": 11,
+        "pymupdf4llm": 9
+      }
+    },
+    {
+      "name": "ELEM_OF",
+      "char": "∈",
+      "codepoint": "U+2208",
+      "ear": 83.1,
+      "counts": {
+        "pdfplumber": 361,
+        "pymupdf": 361,
+        "pypdf": 361,
+        "pymupdf4llm": 300
+      }
+    },
+    {
+      "name": "GAMMA",
+      "char": "γ",
+      "codepoint": "U+03B3",
+      "ear": 83.3,
+      "counts": {
+        "pdfplumber": 12,
+        "pymupdf": 12,
+        "pypdf": 12,
+        "pymupdf4llm": 10
+      }
+    },
+    {
+      "name": "OMEGA",
+      "char": "ω",
+      "codepoint": "U+03C9",
+      "ear": 85.1,
+      "counts": {
+        "pdfplumber": 47,
+        "pymupdf": 47,
+        "pypdf": 47,
+        "pymupdf4llm": 40
       }
     }
   ],
   "summary": {
     "total_symbols_present": 23,
-    "perfect_agreements": 20,
-    "discrepancies_count": 3,
+    "perfect_agreements": 3,
+    "discrepancies_count": 20,
     "absent_count": 29,
-    "mean_ear_of_discrepancies": 32.8,
+    "mean_ear_of_discrepancies": 57.4,
     "worst_symbol": "SUM",
     "worst_ear": 0.0
   }

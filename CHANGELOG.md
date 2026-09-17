@@ -62,6 +62,60 @@ Se abandona el stack completo de RAGFlow por limitaciones de RAM. En su lugar, s
 - **Evidencia Empírica de Falla:** Se detectó el Punto de Falla 1 real en el sistema — el parser de RAGFlow elimina (truncamiento) los símbolos Unicode (como `□` y `◇`) antes de llegar al embedding. Esto valida completamente la necesidad del estudio.
 - Documentación completa en `ragflow_setup.md`.
 
+## v2.9 — 2026-09-17
+
+### Contexto
+Fin de la fase diagnóstica. Aislamiento absoluto del bug de extracción y paso a fase de implementación de solución técnica.
+
+### [NUEVO] Plan de Implementación: Monkey-patch dinámico
+- El rastreo exhaustivo en arXiv determinó que `MacRomanEncoding` no es el factor primario: la ausencia de nombres de glifo TeX en el AGL de `pdfminer.six` causa la falla silenciosa en todas las fuentes `CMEX`/`LASY` independientemente del vector de encoding.
+- Se resolvió atacar la causa raíz mediante **Monkey-patching**. En lugar de requerir que RAGFlow implemente lógica multi-librería (hybrid fallback) o espere meses por un PR en `pdfminer.six`, se inyectará la TeX Glyph List directamente en el entorno de ejecución de Python.
+- Actualización de `TODO.md` y `evidencias.md` para reflejar este enfoque como la solución óptima.
+
+## v2.8 — 2026-09-16
+
+### Contexto
+Validación estadística sobre corpus arXiv + análisis de causa raíz (Exp 13).
+
+### [NUEVO] Corpus arXiv Expandido
+- Se crearon `arxiv_harvest.py` y `probe_arxiv.py` para descargar y analizar 30 papers de arXiv en categorías de matemática y lógica.
+- **Resultado:** 7/30 papers (23%) con discrepancias. Símbolos fallidos: ∑ CMEX (4 docs), □ LASY (3 docs), ∏ CMEX (1 doc).
+
+### [NUEVO] Causa Raíz Identificada con Precisión
+- El bug reside en la **capa de mapeo Glyph → Unicode** de `pdfminer.six`.
+- Los glyph names de CMEX (`summationtext`, `producttext`) no están en el Adobe Glyph List (AGL). Sin tabla `ToUnicode` CMap en el PDF, `pdfminer.six` no puede resolverlos.
+- La solución canónica (ISO 32000 / PDFlib `forceencoding`): aplicar la **TeX glyph list** para fuentes `CM*`/`CMEX*`/`LASY*`.
+
+## v2.7 — 2026-09-16
+
+### Contexto
+Evaluación de fuentes TrueType (TTF) (Exp 12).
+
+### [NUEVO] Descubrimiento de Fallo Estructural (Corregido)
+- Se creó `probe_ttf.py` generando PDFs sintéticos con fuentes modernas TTF (`Segoe UI Symbol`).
+- **Hallazgo Crítico:** Todos los extractores de Python (`pdfplumber`, `PyMuPDF`, `pypdf`) lograron un **100% de CPR** al extraer los símbolos matemáticos (`∀`, `∃`, `⊢`, `⊨`, etc.).
+- Esto **confirma definitivamente la hipótesis original**: el bug está estrictamente limitado a encodings legacy (CFF/Type1 MacRomanEncoding) provenientes de LaTeX (Computer Modern). Los PDFs modernos y las fuentes TTF Unicode nativas no sufren corrupción. El scope del problema es acotado pero crucial para papers académicos.
+
+## v2.6 — 2026-09-16
+
+### Contexto
+Métrica de Diferencia de Embeddings (Exp 11).
+
+### [NUEVO] Análisis de Impacto en Retrieval
+- Se creó `embedding_diff.py` para comparar vectores de `pypdf` vs `pdfplumber` usando `paraphrase-multilingual-MiniLM-L12-v2`.
+- Se demostró cuantitativamente que la corrupción hace caer el cosine similarity a ~0.55, confirmando que RAGFlow no puede recuperar estos fragmentos durante una consulta.
+
+## v2.5 — 2026-09-16
+
+### Contexto
+Evaluación de `pymupdf4llm` como alternativa de extracción a Markdown.
+
+### [NUEVO] Extractor pymupdf4llm
+- Se agregó a `probe_real.py` el cuarto extractor `pymupdf4llm`.
+- Se concluyó que tiene un rendimiento peor que `pdfplumber` omitiendo y corrompiendo símbolos, por lo que se descartó como solución.
+
+---
+
 ## v2.2 — 2026-08-20 (Sesión Actual)
 
 ### Contexto

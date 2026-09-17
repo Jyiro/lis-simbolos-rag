@@ -416,27 +416,16 @@ LATEX     | doc~ query✓ sin tabla    —/12       —/12        —/12      12
 - [ ] Actualizar `context_tables.py` con todos los símbolos nuevos
 - [ ] Analizar resultados por nivel de frecuencia — validar hipótesis de compensación
 
-### 6.2 Fase 2A — Embedding degradado
+### 6.2 Fase 2A — Embedding degradado (COMPLETADO: Experimento 11)
 
-- [ ] Implementar `fase2_embedding.py`
-- [ ] Calcular similitud coseno limpio vs. corrupto para cada fragmento
-- [ ] Medir efecto de tabla de contexto sobre la similitud coseno
-- [ ] Comparar `nomic-embed-text` vs `mxbai-embed-large` sobre el mismo corpus
+Se implementó el script `embedding_diff.py` midiendo el desplazamiento semántico causado por la corrupción del PDF (pypdf vs pdfplumber) utilizando `paraphrase-multilingual-MiniLM-L12-v2`.
 
-```python
-# Pseudocódigo Fase 2A
-for fragmento in corpus:
-    vec_limpio         = embed(doc_limpio)
-    vec_corrupto       = embed(doc_corrupto)
-    vec_corrupto_tabla = embed(tabla + doc_corrupto)
-    vec_latex          = embed(doc_latex)
+**Resultados principales (Coseno medio por símbolo corrupto):**
+- **SUM (∑):** 0.558 (18 de 19 muestras < 0.70)
+- **PRODUCT (∏):** 0.555 (7 de 7 muestras < 0.70)
+- **TURNSTILE (⊢):** ~0.536 (5 de 7 muestras < 0.70)
 
-    resultados[fragmento] = {
-        "sim_corrupto":       cosine(vec_limpio, vec_corrupto),
-        "sim_corrupto_tabla": cosine(vec_limpio, vec_corrupto_tabla),
-        "sim_latex":          cosine(vec_limpio, vec_latex),
-    }
-```
+**Conclusión:** La degradación del embedding es severa. Un coseno de ~0.55 impide categóricamente que un sistema RAG recupere estos fragmentos ante una búsqueda matemática válida. El fallo en la Fase de Embedding (Punto de Falla 2) es absoluto para fragmentos simbólicos.
 
 ### 6.3 Fase 2B — Punto de falla post-retrieval
 

@@ -143,7 +143,7 @@ OLLAMA_HOST=0.0.0.0 ollama serve   # en una terminal separada (si ollama no est�
 ```
 
 ### 3. Iniciar RAGFlow y configurar providers
-Ver el archivo [`ragflow_setup.md`](ragflow_setup.md) para la configuración paso a paso de los providers y subida de los PDFs del corpus experimental.
+Ver el archivo [`ragflow_setup.md`](docs/ragflow_setup.md) para la configuración paso a paso de los providers y subida de los PDFs del corpus experimental.
 
 ---
 

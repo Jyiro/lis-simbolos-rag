@@ -10,15 +10,15 @@ modality, as logical necessity (J. Symb. Logic, 1946) [ 1]. We place it within
 the modern framework of quantiﬁed modal logic with variable domains.
 We prove the completeness theorem using a property of a kind o f normal
 form, and the fact that in the canonical frame, the relation o n all maximal
-consistent sets, R = {⟨Γ,∆⟩: ∀A(✷⊢⊢⊢A ∈ Γ =⇒ A ∈ ∆)}, is a universal rela-
+consistent sets, R = {⟨Γ, ∆⟩: ∀A(✷⊢⊢⊢A ∈ Γ =⇒ A ∈ ∆)}, is a universal rela-
 tion (both are unprovable in known quantiﬁed modal logics). The strength
 of the ✷⊢⊢⊢ operator is a proper extension of modal logic S5. Using complete-
 ness, we prove that satisﬁability in a model of ✷⊢⊢⊢A under arbitrary valua-
 tion implies that A is a thesis of formulated logic. So we can syntactically
 deﬁne logical entailment and consistency. Our semantics di ﬀer from S.
-Kripke’s standard one [3] in syntax, semantics, and interpretation of the
+Kripke’s standard one [ 3] in syntax, semantics, and interpretation of the
 necessity operator. We also have free variables, contrary t o Kripke’s and
-Carnap’s approaches, but our notion of substitution is non-standard (vari-
+Carnap’s approaches, but our notion of substitution is non- standard (vari-
 ables inside modalities are not free). All ✷⊢⊢⊢-free ﬁrst-order theses are prov-
 able, as well as the Barcan formula and its converse. Our spec iﬁc theses are
 ✷⊢⊢⊢ A → ∀ xA, ¬ ✷⊢⊢⊢ (x = y), ¬ ✷⊢⊢⊢ ¬(x = y), ¬ ✷⊢⊢⊢ P (x), ¬ ✷⊢⊢⊢ ¬P (x). We also
@@ -28,7 +28,7 @@ Key words : R. Carnap, being a thesis operator; proper extension of S5
 1 Introduction
 In 1946, R. Carnap formulated the modal functional calculus (MFC), which is
 a version of quantiﬁed modal logic with an operator intended to express logical
-necessity [1]. Carnap’s logic is not a typical modal quantiﬁed logic. It does not
+necessity [1]. Carnap’s logic is not a typical modal quantiﬁed logic. It d oes not
 contain free variables, is stronger than S5 (formulas like ¬✷∃xF x are provable),
 and identity holds only between the same variables or consta nts, although iden-
 tical objects are necessarily identical. In short, MFC is far from contemporary
@@ -39,9 +39,9 @@ important results on Carnap’s logic have been published. M. Cresswell proved
 1
 
 [PAGE 2]
-the completeness of a variant of Carnap’s axiomatization, keeping Carnap’s orig-
+the completeness of a variant of Carnap’s axiomatization, k eeping Carnap’s orig-
 inal semantics almost untouched [ 2]. M. Madows formulated modern non-modal
-semantics for Carnap’s logic, together with a corresponding tableau system [ 5].
+semantics for Carnap’s logic, together with a correspondin g tableau system [ 5].
 Madows interpreted logical necessity in a ﬁrst-order struc tures as a quantiﬁca-
 tion over all (parametrically deﬁnable) subsets of the doma in of the structure.
 We believe that his approach can be considered a faithful mod ern representa-
@@ -147,7 +147,7 @@ tion rule for universal quantiﬁer A ∈ FOL✷⊢⊢⊢ =⇒ ∀xA ∈ FOL✷�
 (RG) and ( mix). ( !) with ( RG) guarantee that ✷⊢⊢⊢ A ∈ FOL✷⊢⊢⊢ or ¬ ✷⊢⊢⊢ A ∈ FOL✷⊢⊢⊢ , for
 any modality-free formula A, but as we show later it is a case of any formula A.
 An occurrence of a variable x in a formula A is ∀✷⊢⊢⊢ -bound if x is in the scope
-of quantiﬁer orx occur in the formula A in range of ✷⊢⊢⊢ operator. Otherwise, the
+of quantiﬁer or x occur in the formula A in range of ✷⊢⊢⊢ operator. Otherwise, the
 occurrence is ∀✷⊢⊢⊢ -free.
 A variable x is ∀✷⊢⊢⊢-free in the formula A if it has at least one ∀✷⊢⊢⊢-free occurrence.
 A ∀✷⊢⊢⊢ -free substitution A(y/x) is the simultaneous replacement of every ∀✷⊢⊢⊢ -free
@@ -176,7 +176,7 @@ for some A ∈ UC, v, and w from the domain of A. Now, by satisfaction we
 have A, v, w |= A for every v, w in A, and so A |= A. Thus, since A is ✷⊢⊢⊢ -free,
 condition ( UC) guarantee that in any structure B ∈ C we have B |= A. Given
 A /∈ FOL and the completeness of FOL, we know that there exists an ordinary
-ﬁrst-order structureF and a valuation v such that A is not satisﬁed inF under
+ﬁrst-order structure F and a valuation v such that A is not satisﬁed in F under
 v. Thus, there is a structure B ∈ C (e.g., analogous to F and v with one possible
 world w) such that B, v, w ⁄|= A, which gives a contradiction.
 Now we prove the completeness of FOL✷⊢⊢⊢ .
@@ -184,7 +184,7 @@ The deﬁnitions of (FOL✷⊢⊢⊢ -)consistency and (FOL✷⊢⊢⊢ -)maxima
 are standard. A set Γ of formulas is ∃-saturated if for any formula ¬∀xxxA ∈ Γ,
 there exists a variable yyy and a ∀✷⊢⊢⊢ -free substitution such that ¬A(yyy/xxx) ∈ Γ.
 In a standard way, we can prove the following lemma
-Lemma 1. For any FOL✷⊢⊢⊢ -consistent set Σ, there exists a set Γsuch that Σ⊆ Γ
+Lemma 1. For any FOL✷⊢⊢⊢ -consistent set Σ, there exists a set Γsuch that Σ ⊆ Γ
 and Γis ∃-saturated maximal FOL✷⊢⊢⊢ -consistent with the usual properties :
 FOL✷⊢⊢⊢ ⊆ Γ, (Γ⊢)
 A ∈ Γ⇐ ⇒ ¬A ⁄∈Γ, (Γ¬)
@@ -193,15 +193,15 @@ Since ✷⊢⊢⊢ is a normal modality we also know that
 Lemma 2. If Γis a FOL✷⊢⊢⊢ -consistent set and ✸⊢⊢⊢A ∈ Γ, then {B: ✷⊢⊢⊢ B ∈ Γ} ∪ {A}
 is also a FOL✷⊢⊢⊢ -consistent set.
 Now we introduce a kind of normal form of formulas:
-D is an elementary disjunction iﬀD := A ∨ ✸⊢⊢⊢B ∨ ✷⊢⊢⊢ C1 ∨ . . . ∨ ✷⊢⊢⊢ Cn,
+D is an elementary disjunction iﬀ D := A ∨ ✸⊢⊢⊢B ∨ ✷⊢⊢⊢ C1 ∨ . . . ∨ ✷⊢⊢⊢ Cn,
 for some ✷⊢⊢⊢ -free formulas A, B, C1, . . . Cn;
-F is a conjunctive form iﬀF is a conjunction of elementary disjunctions .
+F is a conjunctive form iﬀ F is a conjunction of elementary disjunctions .
 Let MC be the family of all ∃-saturated maximal FOL✷⊢⊢⊢ -consistent sets.
-Lemma 3. For any maximal FOL✷⊢⊢⊢ -consistent sets Γ, ∆∈ MC , ✷⊢⊢⊢ -free formula
+Lemma 3. For any maximal FOL✷⊢⊢⊢ -consistent sets Γ, ∆ ∈ MC , ✷⊢⊢⊢ -free formula
 A, and any elementary disjunction D:
-∀Γ, ∆∈MC(✷⊢⊢⊢ A ∈ Γ⇐ ⇒✷⊢⊢⊢ A ∈ ∆); ( i)
-∀Γ, ∆∈MC(✸⊢⊢⊢A ∈ Γ⇐ ⇒✸⊢⊢⊢A ∈ ∆); ( ii)
-∀Γ, ∆∈MC(✷⊢⊢⊢ D ∈ Γ⇐ ⇒✷⊢⊢⊢ D ∈ ∆). (iii)
+∀Γ,∆∈MC(✷⊢⊢⊢ A ∈ Γ⇐ ⇒✷⊢⊢⊢ A ∈ ∆); ( i)
+∀Γ,∆∈MC(✸⊢⊢⊢A ∈ Γ⇐ ⇒✸⊢⊢⊢A ∈ ∆); ( ii)
+∀Γ,∆∈MC(✷⊢⊢⊢ D ∈ Γ⇐ ⇒✷⊢⊢⊢ D ∈ ∆). (iii)
 5
 
 [PAGE 6]
@@ -214,8 +214,8 @@ A /∈ FOL✷⊢⊢⊢ , since A /∈ ∆0. The latter applying axiom ( !) gives
 since A is ✷⊢⊢⊢ -free. Having ¬✷⊢⊢⊢ A ∈ FOL✷⊢⊢⊢ we apply again ( Γ⊢) but this time to Γ
 and obtain ¬ ✷⊢⊢⊢ A ∈ Γ which gives a contradiction with the ﬁrst assumption.
 For (ii) we just use ( i) with A/¬A and apply Γ⊢ of Lemma 1.
-For (iii) we assume indirectly that ✷⊢⊢⊢ D ∈ Γ, and✷⊢⊢⊢ D /∈ ∆, for some Γ, ∆∈ MC .
-✷⊢⊢⊢ D /∈ ∆ gives✸⊢⊢⊢¬D ∈ ∆ by (Γ¬) so applying Lemma 2 there is a maximal con-
+For (iii) we assume indirectly that ✷⊢⊢⊢ D ∈ Γ, and✷⊢⊢⊢ D /∈ ∆, for some Γ, ∆ ∈ MC .
+✷⊢⊢⊢ D /∈ ∆ gives ✸⊢⊢⊢¬D ∈ ∆ by ( Γ¬) so applying Lemma 2 there is a maximal con-
 sistent set ∆0 ∈ MC such that D /∈ ∆0. Let D := A∨✸⊢⊢⊢B∨✷⊢⊢⊢ C1 ∨. . .∨✷⊢⊢⊢ Cn, since
 D is an elementary disjunction. We have A /∈ ∆0 and ¬✸⊢⊢⊢B, ¬✷⊢⊢⊢ C1, . . . ,¬✷⊢⊢⊢ Cn ∈
 ∆0, by maximal consistency of ∆ 0 and classical logic. This using ( i) and ( ii) of
@@ -227,9 +227,9 @@ The latter entails ✷⊢⊢⊢ A ∨ ✸⊢⊢⊢B ∨ ✷⊢⊢⊢ C1 ∨ . . 
 (✷⊢⊢⊢ (A ∨ ✷⊢⊢⊢ B) ↔ (✷⊢⊢⊢ A ∨ ✷⊢⊢⊢ B)) and maximal consistency of Γ. Thus using ( ⋆) we
 obtain ✷⊢⊢⊢ A ∈ Γ. Having✷⊢⊢⊢ A ∈ Γ we obtain ✷⊢⊢⊢ A ∈ ∆0 with the use of ( i) from
 Lemma 3, because A is ✷⊢⊢⊢ -free formula. However, ✷⊢⊢⊢ A ∈ ∆0 with earlier obtained
-A /∈ ∆0 implies that ∆0 is not consistent set.
+A /∈ ∆0 implies that ∆ 0 is not consistent set.
 To prove that every L(∀, ✷⊢⊢⊢ ) formula has equivalent conjunctive form we use
-the fact that ✷⊢⊢⊢ has properties of modal logic S5, and some speciﬁcFOL✷⊢⊢⊢ theses.
+the fact that ✷⊢⊢⊢ has properties of modal logic S5, and some speciﬁc FOL✷⊢⊢⊢ theses.
 Lemma 4. The following formulas are provable in FOL✷⊢⊢⊢ :
 ✷⊢⊢⊢ (A ∨ ✷⊢⊢⊢ B) ↔ (✷⊢⊢⊢ A ∨ ✷⊢⊢⊢ B); ( 1a)
 ∃x✷⊢⊢⊢ A ↔ ∀x✷⊢⊢⊢ A ↔ ✷⊢⊢⊢ A; ( 1b)
@@ -250,10 +250,10 @@ elementary disjunction, thus A has an equivalent conjunctive form.
 6
 
 [PAGE 7]
-Let R = {⟨Γ, ∆⟩: ∀A∈L(∀, ✷⊢⊢⊢ )(✷⊢⊢⊢ A ∈ Γ =⇒ A ∈ ∆)} be accessibility relation in MC.
+Let R = {⟨Γ, ∆⟩: ∀A∈L(∀,✷⊢⊢⊢ )(✷⊢⊢⊢ A ∈ Γ =⇒ A ∈ ∆)} be accessibility relation in MC.
 Theorem 2. (MC, R) is a modal frame with a universal relation.
 Proof. We assume indirectly that R is not universal. Let ✷⊢⊢⊢ A ∈ Γ andA /∈ ∆
-for some Γ, ∆∈ MC . According to Lemma 5, we know that A has an equivalent
+for some Γ, ∆ ∈ MC . According to Lemma 5, we know that A has an equivalent
 conjunctive form consisting of elementary disjunctions, d enoted as D1 ∧. . .∧Dn.
 Since ✷⊢⊢⊢ is a normal modality, ✷⊢⊢⊢ A ∈ Γ gives✷⊢⊢⊢ D1 ∧ . . . ∧ ✷⊢⊢⊢ Dn ∈ Γ. From the
 second assumption, we have ¬D1 ∨. . .∨¬Dn ∈ ∆. Therefore, by Lemma 1, there
@@ -261,14 +261,14 @@ is an elementary disjunction Di such that Di /∈ ∆. We already have ✷⊢⊢
 Using ( iii) of Lemma 3, we conclude that ∀ζ∈MC ✷⊢⊢⊢ Di ∈ ζ, since Di is an
 elementary disjunction. Thus, ✷⊢⊢⊢ Di ∈ ∆ and consequently Di ∈ ∆, which means
 that ∆ is not consistent, since Di /∈ ∆.
-We did not ﬁnd quantiﬁer modal logics where an analog of the above lemma
+We did not ﬁnd quantiﬁer modal logics where an analog of the ab ove lemma
 would hold.
 As an immediate consequence of the above lemma, we obtain tha t
-Lemma 6. For any A ∈ L(∀, ✷⊢⊢⊢ ), and Γ, ∆∈ MC : ✷⊢⊢⊢ A ∈ Γ⇐ ⇒✷⊢⊢⊢ A ∈ ∆.
+Lemma 6. For any A ∈ L(∀, ✷⊢⊢⊢ ), and Γ, ∆ ∈ MC : ✷⊢⊢⊢ A ∈ Γ⇐ ⇒✷⊢⊢⊢ A ∈ ∆.
 Now, for any Γ ∈ MC , we deﬁne the relation ∼Γ= {⟨x, y⟩: x = y ∈ Γ}, which is
 equivalence relation by axioms for identity and construct t he canonical structure
 AMC = ⟨MC, {DΓ}Γ∈MC, IMC⟩as usual, i.e., DΓ= {[x]∼Γ: x ∈ V ar}, and next
-I MC, and vMC on AMC are deﬁned respectively. So canonical valuationvMC in
+I MC, and vMC on AMC are deﬁned respectively. So canonical valuation vMC in
 any possible world do not depend on choice of representatives for the equivalence
 classes.
 Now, in non trivial case A = ✷⊢⊢⊢ B we use axiom ( mix), and inductively prove
@@ -285,7 +285,7 @@ Proof. We assume indirectly that there is a formula A, a structure A ∈ UC, a
 valuation v, and a world w from the domain of possible worlds of A such that
 A, v, w |= ✷⊢⊢⊢ A, and that A /∈ FOL✷⊢⊢⊢ . Using the second assumption and the com-
 pleteness of FOL✷⊢⊢⊢ from Theorem 3 we have that there is a maximal consistent
-set ∆ ∈ MC such that A /∈ ∆. We deﬁne a set Γ ={B ∈ L(∀, ✷⊢⊢⊢ ): A, v, w |= B}
+set ∆ ∈ MC such that A /∈ ∆. We deﬁne a set Γ = {B ∈ L(∀, ✷⊢⊢⊢ ): A, v, w |= B}
 that is maximal consistent, i.e., Γ ∈ MC . The deﬁned maximal consistent set,
 with the ﬁrst assumption, gives ✷⊢⊢⊢ A ∈ Γ. However,✷⊢⊢⊢ A ∈ Γ andA /∈ ∆ cannot
 both be true because of Theorem 2 on Krpike frame from MC.
@@ -293,17 +293,17 @@ both be true because of Theorem 2 on Krpike frame from MC.
 
 [PAGE 8]
 References
-[1] Carnap, R., (1946) “Modalities and Quantiﬁcation”,The Journal of Sym-
+[1] Carnap, R., (1946) “Modalities and Quantiﬁcation”, The Journal of Sym-
 bolic Logic, 11(2): 33-64
-[2] Cresswell, M., (2014) “The Completeness of Carnap’s Predicate Logic”,Aus-
+[2] Cresswell, M., (2014) “The Completeness of Carnap’s Pre dicate Logic”, Aus-
 tralasian Journal of Logic , 11(1): 46-61
-[3] Kripke, S., (1963) “Semantical Considerations on Modal Logic”,Acta Philo-
+[3] Kripke, S., (1963) “Semantical Considerations on Modal Logic”, Acta Philo-
 sophica Fennica 16:83-94
 [4] Leitgeb, H., Carus, A., (2020) “Rudolf Carnap” (Supplem ent F. Se-
 mantics), The Stanford Encyclopedia of Philosophy , E. Zalta (ed.)
 https://plato.stanford.edu/entries/carnap/semantics.html#InteSema
-[5] Meadows, T., (2012) “Revising Carnap’s Semantic Conception of Modality”,
+[5] Meadows, T., (2012) “Revising Carnap’s Semantic Concep tion of Modality”,
 Studia Logica, 100(3): 497–515
-[6] Scroggs, S. J., (1951) “Extensions of the Lewis System S5 ”,The Journal of
+[6] Scroggs, S. J., (1951) “Extensions of the Lewis System S5 ”, The Journal of
 Symbolic Logic, 16(2): 112–120
 8

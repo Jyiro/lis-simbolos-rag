@@ -15,7 +15,8 @@
         "line_no": 674,
         "snippet": "xi 1p−i = xp +\n∑\n0<i<p"
       }
-    ]
+    ],
+    "pymupdf4llm": []
   },
   "PRODUCT": {
     "pdfplumber": [],
@@ -33,50 +34,40 @@
         "line_no": 735,
         "snippet": "g =\n∏\ng∈G"
       }
-    ]
+    ],
+    "pymupdf4llm": []
   },
-  "SQRT": {
+  "PARTIAL": {
     "pdfplumber": [
       {
-        "line_no": 319,
-        "snippet": "divisors and if p>1.\n1.1.3 Propo √ sition: A positive integer n is prime if and only if it is not divisible by any of the integers\nd with 1<d≤ n."
+        "line_no": 3465,
+        "snippet": "(cid:7) (cid:8)\n∂ i\nf (x) = f(x)/i!"
       },
       {
-        "line_no": 325,
-        "snippet": "e d\n√\ngives d2 ≤n, so d≤ n. ///"
-      },
-      {
-        "line_no": 327,
-        "snippet": "gives d2 ≤n, so d≤ n. ///\n1.1.4 Remark: The previous proposition suggests t√hat to test an integer n for primality we attempt\nto divide n by all integers d = 2,3,... in the range d ≤ n. If no such d divides n, then n is prime. This"
+        "line_no": 3468,
+        "snippet": "i\n∂x\n3.5 Show that a local ring R (that is, a ring having a unique maximal proper ideal) has no idempotent"
       }
     ],
     "pymupdf": [
       {
-        "line_no": 590,
-        "snippet": "1.1.3 Proposition: A positive integer n is prime if and only if it is not divisible by any of the integers\nd with 1 < d ≤√n.\nProof: Suppose that n has a proper factorization n = d · e, where d ≤e. Then"
+        "line_no": 3551,
+        "snippet": "fi(x) =\n\u0007 ∂\n∂x"
       },
       {
-        "line_no": 595,
-        "snippet": "d\ngives d2 ≤n, so d ≤√n.\n///"
-      },
-      {
-        "line_no": 598,
-        "snippet": "1.1.4 Remark: The previous proposition suggests that to test an integer n for primality we attempt\nto divide n by all integers d = 2, 3, . . . in the range d ≤√n. If no such d divides n, then n is prime. This\nprocedure is trial division."
+        "line_no": 3552,
+        "snippet": "\u0007 ∂\n∂x\n\bi"
       }
     ],
     "pypdf": [
       {
-        "line_no": 299,
-        "snippet": "1.1.3 Proposition: A positive integer n is prime if and only if it is not divisible by any of the integers\nd with 1 <d ≤ √\nn."
+        "line_no": 2858,
+        "snippet": "fi(x)=\n(∂\n∂x"
       },
       {
-        "line_no": 305,
-        "snippet": "d\ngives d2 ≤ n,s o d ≤ √\nn. ///"
-      },
-      {
-        "line_no": 308,
-        "snippet": "1.1.4 Remark: The previous proposition suggests that to test an integer n for primality we attempt\nto divide n by all integers d =2 , 3,... in the range d ≤ √\nn.I f n o s u c hd divides n,t h e nn is prime. This"
+        "line_no": 2859,
+        "snippet": "(∂\n∂x\n)i"
       }
-    ]
+    ],
+    "pymupdf4llm": []
   }
 }

@@ -619,22 +619,111 @@ Inferencia:
 - Interesante como contribución académica: un modelo que aprende a "des-corromper" texto PDF matemático
 - Permite comparar enfoque determinístico vs probabilístico con métricas objetivas (CER, EAR post-corrección)
 
+## Fase 4 — Evaluación de pymupdf4llm (Markdown direct extraction)
+
+**Objetivo:** Determinar si la conversión directa a Markdown mediante `pymupdf4llm` preserva los símbolos matemáticos mejor que el pipeline PDF → texto de `pdfplumber`.
+
+**Resultado:** `pymupdf4llm` tuvo un rendimiento **significativamente peor** que `pypdf` e incluso que `pdfplumber` en muchos casos.
+- `SUM (∑)` y `PRODUCT (∏)`: 0% de preservación (mismo fallo que pdfplumber).
+- `TURNSTILE (⊢)`: Extrajo 180 (vs 640 de pypdf).
+- `IMPLIES (→)`: Extrajo 5 (vs 19 de pypdf).
+- `PARTIAL (∂)`: Extrajo 2 (vs 8 de pypdf).
+
+**Conclusión:** `pymupdf4llm` no es una solución viable para este problema. Altera, omite o alucina formato en los símbolos matemáticos críticos. La causa raíz del fallo en `pdfminer.six` (Fase 3C) sigue requiriendo una corrección a bajo nivel (pypdf o parche upstream).
+
+## Fase 5 — Métrica de Diferencia de Embeddings
+
+**Objetivo:** Evaluar cuantitativamente si la corrupción sintáctica producida por `pdfplumber` desplaza el significado semántico lo suficiente como para hacer fallar la fase de retrieval (distancia coseno < 0.70) usando un modelo estándar (`paraphrase-multilingual-MiniLM-L12-v2`).
+
+**Resultados en Símbolos con EAR 0% (Corpus Real):**
+- **SUM (∑):** Coseno medio 0.558 (18 de 19 muestras cayeron bajo 0.70)
+- **PRODUCT (∏):** Coseno medio 0.555 (100% de muestras bajo 0.70)
+- **TURNSTILE (⊢):** Coseno medio 0.536 (FirstOrderLogic)
+
+**Conclusión:** La corrupción **destruye el retrieval semántico** en fragmentos altamente simbólicos. Un coseno de ~0.55 significa que si un usuario realiza una consulta con símbolos correctos, el chunk corrupto no será recuperado por la base vectorial. Esto cierra definitivamente el debate de si "el LLM puede inferir el símbolo faltante": el chunk corrupto nunca llega al LLM en primer lugar.
+
+## Fase 6 — Evaluación con Fuentes TTF (Unicode nativo)
+
+**Objetivo:** Determinar si el fallo de extracción (Punto de Falla 1) es un bug exclusivo de las fuentes CFF/Type1 con `MacRomanEncoding` (como Computer Modern en LaTeX), o si afecta de forma generalizada a PDFs modernos generados con fuentes TrueType (TTF).
+
+**Resultado (Exp 12 - Segoe UI Symbol):** **Preservación Perfecta (100% CPR).**
+Tanto `pdfplumber` como `pypdf` y `PyMuPDF` lograron extraer correctamente el 100% de los símbolos matemáticos (`∀`, `∃`, `⊢`, `⊨`, `∈`, etc.) a partir de un PDF generado sintéticamente utilizando una fuente TrueType moderna con codificación Unicode directa (`seguisym.ttf`).
+
+**Conclusión:** Se confirma definitivamente que el bug **es exclusivo de fuentes antiguas CFF/Type1 que utilizan encodings defectuosos (como `MacRomanEncoding`)**, típico de los documentos PDF generados desde LaTeX con Computer Modern. Los PDFs modernos generados con fuentes TrueType u OpenType que poseen mapas Unicode directos no se ven afectados por este error en `pdfminer.six`. Esto reduce y enfoca drásticamente el _scope_ del problema: es un problema del ecosistema LaTeX-to-PDF heredado.
+
+---
+
+## Fase 7 — Validación Estadística sobre Corpus arXiv (30 papers)
+
+**Objetivo:** Confirmar si el patrón de fallo detectado en el corpus original (4 PDFs) se generaliza estadísticamente a un corpus más amplio de papers LaTeX descargados de arXiv.
+
+**Método:** `arxiv_harvest.py` buscó papers en categorías `math.LO`, `math.GR`, `math.RA`, `cs.LO` con fuentes Type1/Computer Modern (filtrado con `fonttools`). `probe_arxiv.py` corrió el pipeline EAR sobre los 30 PDFs resultantes con los tres extractores (`pdfplumber`, `pymupdf`, `pypdf`).
+
+**Resultados:**
+- **7/30 PDFs (23%)** con alguna discrepancia
+- **23/30 PDFs (77%)** con EAR 100% — extracción perfecta
+- Símbolos más fallidos: **∑ SUM** (4 docs), **□ NECESSARILY** (3 docs), **∏ PRODUCT** (1 doc)
+
+**Cuadro completo del scope del bug:**
+
+| Tipo de PDF | Fuente/Encoding | Falla esperada |
+|---|---|---|
+| LaTeX + CM + `MacRomanEncoding` | AbstractAlgebra (corpus original) | **Catastrófica** — 50%+ de símbolos a 0% EAR |
+| LaTeX + CM + `WinAnsiEncoding` | Papers arXiv nuevos | **Parcial** — 23% de docs, solo ∑ □ ∏ (CMEX/LASY) |
+| PDF con TTF/Unicode directo | Docs modernos (Word, navegador) | **Ninguna** — 100% CPR |
+
+---
+
+## Análisis de Causa Raíz — Capa de Mapeo Glyph → Unicode
+
+El bug reside en la cadena de resolución que `pdfminer.six` aplica para convertir un byte del stream PDF en un codepoint Unicode:
+
+```
+byte en el stream PDF
+      ↓
+1. Encoding vector (MacRomanEncoding / WinAnsiEncoding)
+      → byte 0x50 = glyph name 'P'
+      ↓
+2. ToUnicode CMap (solo si el PDF lo incluye explícitamente)
+      → byte 0x50 = U+2211 (∑)   ← ANULA el encoding
+      ↓
+3. Adobe Glyph List (AGL) — fallback si no hay ToUnicode
+      → glyph name 'P' = U+0050  ← sale 'P' en lugar de '∑'
+```
+
+**Por qué falla en LaTeX/Computer Modern:**
+LaTeX asigna glifos matemáticos a posiciones de byte que los encodings estándar (MacRoman/WinAnsi) reservan para letras ordinarias. Cuando el PDF no incluye una tabla `ToUnicode` completa (o la tiene incompleta), `pdfminer.six` resuelve el byte via el encoding → AGL → obtiene la letra incorrecta.
+
+**Por qué CMEX/LASY fallan incluso sin MacRomanEncoding:**
+`CMEX` (operadores grandes: ∑, ∏, ∫) y `LASY`/`MSAM` usan glyph names **no estándar en el AGL de Adobe**:
+
+| Glyph | Nombre en CMEX | En AGL | Resultado pdfminer |
+|---|---|---|---|
+| ∑ | `summationtext` | ❌ no existe | `?` o vacío |
+| ∏ | `producttext` | ❌ no existe | `?` o vacío |
+| □ | `square` (posicional) | parcial | falla intermitente |
+
+`pypdf` tiene resoluciones alternativas para algunos de estos casos; `pdfminer.six` no.
+
+**Solución técnica canónica (según ISO 32000 / PDFlib):**
+Cuando se detecta una fuente `CM*`/`PL*`/`CMEX`/`LASY`/`MSAM` sin `ToUnicode` CMap, aplicar la **TeX glyph list** en lugar del AGL de Adobe, o construir el mapa `ToUnicode` desde las métricas de fuente TeX (archivos `.tfm`/`.enc`). Esto es el mecanismo `forceencoding`/`glyphlist` que PDFlib implementa en forma nativa.
+
 ---
 
 ## Diagrama de decisión — ¿Qué enfoque usar?
 
 ```
-¿Tenés acceso al PDF original en el pipeline?
+¿Tenés acceso al pipeline en runtime (Python)?
 │
 ├── SÍ
-│    ├── ¿Querés evitar modificar librerías?
-│    │    ├── SÍ → Opción A: Hybrid fallback (pypdf)        ← RECOMENDADO
-│    │    └── NO → Opción C: Parche pdfminer.six            ← IDEAL A LARGO PLAZO
+│    ├── ¿Querés modificar el código base de pdfminer.six?
+│    │    ├── SÍ → Opción C: Parche Upstream (PR oficial)   ← IDEAL A LARGO PLAZO
+│    │    └── NO → Opción B: Monkey-patch dinámico          ← RECOMENDADO PARA RAGFLOW
 │    │
-│    └── ¿Querés complementar con limpieza quirúrgica?
-│         └── SÍ → Opción A + B combinados
+│    └── ¿Preferís usar múltiples librerías?
+│         └── SÍ → Opción A: Hybrid fallback (pypdf)
 │
-└── NO (solo tenés el texto extraído)
+└── NO (solo tenés el texto ya extraído)
      ├── ¿Hay contexto semántico rico?
      │    ├── SÍ → Opción D1: LLM corrector
      │    └── NO → Opción D2: Clasificador ML

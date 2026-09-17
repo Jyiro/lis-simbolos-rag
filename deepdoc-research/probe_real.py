@@ -14,7 +14,7 @@ REAL_CORPUS = [
     ("ModalLogicalNeuralNetworks", "ModalLogicalNeuralNetworks_complete.pdf"),
 ]
 
-EXTRACTORS = ["pdfplumber", "pymupdf", "pypdf"]
+EXTRACTORS = ["pdfplumber", "pymupdf", "pypdf", "pymupdf4llm"]
 
 ALL_SYMBOLS = [
     ("∀", "FOR_ALL", "U+2200"),
@@ -115,10 +115,24 @@ def extract_with_pypdf(pdf_path: Path) -> str:
         print(f"  [ERROR pypdf] {e}")
     return "\n\n".join(pages)
 
+def extract_with_pymupdf4llm(pdf_path: Path) -> str:
+    try:
+        import pymupdf4llm
+    except ImportError:
+        print("  [SKIP pymupdf4llm] pymupdf4llm no instalado")
+        return ""
+    try:
+        text = pymupdf4llm.to_markdown(str(pdf_path))
+    except Exception as e:
+        print(f"  [ERROR pymupdf4llm] {e}")
+        text = ""
+    return text
+
 EXTRACTOR_FUNCS = {
-    "pdfplumber": extract_with_pdfplumber,
-    "pymupdf":    extract_with_pymupdf,
-    "pypdf":      extract_with_pypdf,
+    "pdfplumber":  extract_with_pdfplumber,
+    "pymupdf":     extract_with_pymupdf,
+    "pypdf":       extract_with_pypdf,
+    "pymupdf4llm": extract_with_pymupdf4llm,
 }
 
 def compute_ear(doc_id: str, texts: dict) -> dict:
@@ -233,10 +247,10 @@ def generate_real_report(all_results: dict) -> str:
     for doc_id, res in all_results.items():
         if res["discrepancies"]:
             md.extend([f"### {doc_id}", ""])
-            md.extend(["| Símbolo | Nombre | pdfplumber | PyMuPDF | pypdf | EAR |", "|---|---|---|---|---|---|"])
+            md.extend(["| Símbolo | Nombre | pdfplumber | PyMuPDF | pypdf | pymupdf4llm | EAR |", "|---|---|---|---|---|---|---|"])
             for disc in res["discrepancies"]:
                 c = disc["counts"]
-                md.append(f"| {disc['char']} | {disc['name']} | {c['pdfplumber']} | {c['pymupdf']} | {c['pypdf']} | **{disc['ear']}%** |")
+                md.append(f"| {disc['char']} | {disc['name']} | {c['pdfplumber']} | {c['pymupdf']} | {c['pypdf']} | {c.get('pymupdf4llm', 0)} | **{disc['ear']}%** |")
             md.append("")
             
     return "\n".join(md)

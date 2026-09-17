@@ -12,14 +12,14 @@ gebraic representation theorems. We begin with complete la ttices L equipped wit
 an antitone operation ¬ sending 1 to 0, a completely multiplicative operation ✷,
 and a completely additive operation ✸. Such lattice expansions can be represented
 by means of a set X together with binary relations ⊳, R, and Q, satisfying some
-ﬁrst-order conditions, used to represent ( L,¬ ), ✷, and ✸, respectively. Indeed, any
-lattice L equipped with such a ¬ , a multiplicative ✷, and an additive ✸ embeds into
-the lattice of propositions of a frame ( X,⊳, R, Q). Building on our recent study of
-fundamental logic, we focus on the case where ¬ is dually self-adjoint ( a ≤ ¬ b implies
-b ≤ ¬ a) and ✸¬ a ≤ ¬ ✷a. In this case, the representations can be constrained so tha t
-R = Q, i.e., we need only add a single relation to ( X,⊳) to represent both ✷ and ✸.
+ﬁrst-order conditions, used to represent ( L, ¬), ✷, and ✸, respectively. Indeed, any
+lattice L equipped with such a ¬, a multiplicative ✷, and an additive ✸ embeds into
+the lattice of propositions of a frame ( X, ⊳, R, Q). Building on our recent study of
+fundamental logic, we focus on the case where ¬ is dually self-adjoint ( a ≤ ¬b implies
+b ≤ ¬a) and ✸¬a ≤ ¬✷a. In this case, the representations can be constrained so tha t
+R = Q, i.e., we need only add a single relation to ( X, ⊳) to represent both ✷ and ✸.
 Using these results, we prove that a system of fundamental mo dal logic is sound and
-complete with respect to an elementary class of bi-relation al structures ( X,⊳, R).
+complete with respect to an elementary class of bi-relation al structures ( X, ⊳, R).
 Keywords: non-classical modal logic, orthologic, intuitionistic lo gic, fundamental
 logic, lattices, weak pseudocomplementation, necessity, possibility, representation
 1 Introduction
@@ -140,7 +140,7 @@ the premises of arguments with certain metaphysical assumptions .
 Proposition 2.4 For any ϕ,ψ ∈ L, the following are equivalent:
 (i) ϕ ⊢Cψ;
 (ii) ⋁
-δ∈sd(Prop(ϕ )∪Prop(ψ ))
+δ∈sd(Prop(ϕ)∪Prop(ψ))
 (δ ∧ϕ) ⊢Fψ.
 We will prove Proposition 2.4 using the relational semantics in § 2.3.
 2.2 Algebraic semantics
@@ -207,10 +207,10 @@ x,z ∈ X, say that z pre-reﬁnes x if for all w ⊳ z, we have w ⊳ x. It fol
 that for all c⊳-ﬁxpoints A, if x ∈A, then z ∈A [42, Lemma 4.12].
 Proposition 2.10 ([42], Proposition 4.14.1-2) For any relational frame
 (X, ⊳), in each of the following pairs, (a) and (b) are equivalent:
-(i) (a) for all c⊳-ﬁxpoints A, we have A ∩ ¬⊳A = 0;
+(i) (a) for all c⊳-ﬁxpointsA, we have A ∩ ¬⊳A = 0;
 (b) pseudo-reﬂexivity : for all non-absurd x ∈ X, there is a z ⊳ x that
 pre-reﬁnesx.
-(ii) (a) for all c⊳-ﬁxpoints A, we have A ⊆ ¬ ⊳¬⊳A;
+(ii) (a) for all c⊳-ﬁxpointsA, we have A ⊆ ¬ ⊳¬⊳A;
 (b) pseudo-symmetry : for all x ∈ X and y ⊳ x, there is a z ⊳ y that
 pre-reﬁnesx.
 The facts above yield the soundness of fundamental logic with resp ect to
@@ -226,14 +226,14 @@ For completeness, we use the following representation theorem.
 Theorem 2.11 ([42], Theorems 4.24 and 4.30) Any bounded (resp. com-
 plete) lattice L equipped with an antitone operation ¬ sending 1 to 0 embeds
 into (resp. is isomorphic to ) ( L(X, ⊳), ¬⊳) for some relational frame (X, ⊳).
-Moreover, if ¬ satisﬁes a ≤ ¬¬a (resp.a∧¬a = 0) for all a ∈L, then ⊳ may
+Moreover, if ¬ satisﬁesa ≤ ¬¬a (resp.a∧¬a = 0) for all a ∈L, then ⊳ may
 be taken to be pseudo-symmetric (resp. pseudo-reﬂexive—in fact, reﬂexive ).
 Theorem 2.12 ([42]) Fundamental logic is sound and complete with respect
 to the class of relational frames that are pseudo-reﬂexive a nd pseudo-symmetric.
 As an example application of Theorem 2.12, let us prove Proposition 2.4 .
 Proof. From 2 to 1, ϕ ⊢C
 ⋁
-δ∈sd(Prop(ϕ )∪Prop(ψ ))
+δ∈sd(Prop(ϕ)∪Prop(ψ))
 (δ ∧ϕ) ⊢Fψ and hence ϕ ⊢Cψ.
 Now suppose 2 does not hold. Then there is δ ∈ sd(Prop(ϕ) ∪ Prop(ψ))
 such that δ ∧ϕ ⊬ F ψ, for otherwise 2 holds using Deﬁnition 2.1.10. Then by
@@ -274,14 +274,14 @@ semantics,ϕ ⊬ C ψ, so we are done. ✷
 To add modalities to our story, let us recall the following standard de ﬁnitions.
 Deﬁnition 3.1 A unary operation f on a lattice L is monotone ifa ≤b implies
 f (a) ≤f (b). We say that f is multiplicative (resp. completely multiplicative) if
-for any ﬁnite (resp. arbitrary) subset S of elements of L (such that ⋀ S exists),
+for any ﬁnite (resp. arbitrary) subset S of elements of L (such that ⋀S exists),
 f (
 ⋀
 S) =
 ⋀
 {f (a) |a ∈S}.
 Dually,f is additive (resp. completely additive) if for any ﬁnite (resp. arbitrary)
-subset S of elements of L (such that ⋁ S exists),
+subset S of elements of L (such that ⋁S exists),
 f (
 ⋁
 S) =
@@ -380,12 +380,12 @@ z
 Fig. 3. Illustration of the additivity condition in Deﬁniti on 3.5.
 Proposition 3.6 If (X, ⊳,R,Q ) is an additive modal frame, then the opera-
 tion ✸Q is completely additive.
-Proof. Suppose w ∈ ✸ ⋁ {Ai | i ∈ I}. Toward showing w ∈ ⋁ {✸Ai | i ∈ I},
-consider some x ⊳w. Then since w ∈ ✸ ⋁ {Ai |i ∈I}, there are y,u such that
-xQy ⊳u ∈ ⋁ {Ai |i ∈I}. Since u ∈ ⋁ {Ai |i ∈I} and y ⊳u, it follows that
+Proof. Suppose w ∈ ✸ ⋁{Ai | i ∈ I}. Toward showing w ∈ ⋁{✸Ai | i ∈ I},
+consider some x ⊳w. Then since w ∈ ✸ ⋁{Ai |i ∈I}, there are y,u such that
+xQy ⊳u ∈ ⋁{Ai |i ∈I}. Since u ∈ ⋁{Ai |i ∈I} and y ⊳u, it follows that
 there is some z ⊲ y such that z ∈ Ai for some i ∈ I. Then picking x′ as in
 Deﬁnition 3.5, we have x′ ∈ ✸Ai. Thus, for every x ⊳ w, there is an x′ ⊲ x
-and i ∈I such that x′ ∈ ✸Ai, which shows that w ∈ ⋁ {✸Ai |i ∈I}. ✷
+and i ∈I such that x′ ∈ ✸Ai, which shows that w ∈ ⋁{✸Ai |i ∈I}. ✷
 In summary, for ✷R we impose an interaction condition on R and ⊳ to
 ensure that ✷R send c⊳-ﬁxpoints to c⊳-ﬁxpoints, but no interaction condition
 is required for ✷R to be completely multiplicative. By contrast, for ✸Q no
@@ -739,7 +739,7 @@ Let us now identify frame conditions suﬃcient for the principle ( ✸¬), whic
 seems unobjectionable (when the same ﬂavor of modality is involved o n both
 sides), and ( ¬✸), which is typically assumed in intuitionistic modal logic.
 Proposition 4.7 Let (X, ⊳,R,Q ) be a modal frame in which Q ⊆ R. Then
-for every c⊳-ﬁxpoint A,
+for every c⊳-ﬁxpointA,
 ✸¬A ⊆ ¬✷A.
 Proof. Suppose x ∈ ✸¬A. Toward a contradiction, suppose x ⁄∈ ¬✷A, so
 there is a y ⊳ x such that y ∈ ✷A. Since y ⊳ x and x ∈ ✸¬A, there is a
@@ -759,7 +759,7 @@ z
 ∀
 Fig. 4. Illustration of the negativity condition in Deﬁniti on 4.8.
 Proposition 4.9 If (X, ⊳,R,Q ) is a negative modal frame, then for every
-c⊳-ﬁxpoint A,
+c⊳-ﬁxpointA,
 ¬✸A ⊆ ✷¬A.
 Proof. Supposex ⁄∈✷¬A, so there is a y ∈X withxRy andz ⊳y withz ∈A.
 Then where x′ is as in Deﬁnition 4.8, we have x′ ∈ ✸A, so x ⁄∈ ¬✸A. ✷
@@ -796,7 +796,7 @@ Proof. Given any x ∈X, let
 {b |x0 ≤ ✷b}).
 Then observe the following:
 (a) We have xRτ (x). For x0 ≤ ✷c implies τ (x)0 ≤ c; and if c ⁄≤τ (x)1, then
-c ⁄≤⋁ {b | ✸b ≤x1} and hence ✸c ⁄≤x1.
+c ⁄≤⋁{b | ✸b ≤x1} and hence ✸c ⁄≤x1.
 (b) If x0 ⁄≤✷a, then τ (x)0 ⁄≤a, by the same reasoning as in the proof of
 Theorem 3.7.
 (c) If ✸a ⁄≤x1, then a ⁄≤τ (x)1. Contrapositively,

@@ -1,4 +1,62 @@
 {
+  "IMPLIES": {
+    "pdfplumber": [
+      {
+        "line_no": 28,
+        "snippet": "able,aswellastheBarcanformulaanditsconverse.Ourspecificthesesare\n✷⊢⊢⊢A → ∀xA, ¬✷⊢⊢⊢ (x = y), ¬✷⊢⊢⊢ ¬(x = y), ¬✷⊢⊢⊢ P(x), ¬✷⊢⊢⊢ ¬P(x). We also\nhave ✸⊢⊢⊢∃xA(x) → ✸⊢⊢⊢A(y/x), and ∀x✷⊢⊢⊢ A(x) → ✷⊢⊢⊢A(y/x), if A is a ✷⊢⊢⊢-free"
+      },
+      {
+        "line_no": 29,
+        "snippet": "✷⊢⊢⊢A → ∀xA, ¬✷⊢⊢⊢ (x = y), ¬✷⊢⊢⊢ ¬(x = y), ¬✷⊢⊢⊢ P(x), ¬✷⊢⊢⊢ ¬P(x). We also\nhave ✸⊢⊢⊢∃xA(x) → ✸⊢⊢⊢A(y/x), and ∀x✷⊢⊢⊢ A(x) → ✷⊢⊢⊢A(y/x), if A is a ✷⊢⊢⊢-free\nformula."
+      },
+      {
+        "line_no": 54,
+        "snippet": "the necessities from the two cited works, actually does not express being a\nfirst-order thesis. For example, formulas like ✷A → ∀xA, ¬✷∃xy(x 6= y), and\n¬✷∃xy(x=y)shouldbe provableifweweretothink of✷asalogicalnecessity."
+      }
+    ],
+    "pymupdf": [
+      {
+        "line_no": 30,
+        "snippet": "✷\n⊢A →∀xA, ¬ ✷\n⊢(x = y), ¬ ✷"
+      },
+      {
+        "line_no": 36,
+        "snippet": "have ✸\n⊢∃xA(x) →✸\n⊢A(y/x), and ∀x ✷"
+      },
+      {
+        "line_no": 38,
+        "snippet": "⊢A(y/x), and ∀x ✷\n⊢A(x) →✷\n⊢A(y/x), if A is a ✷"
+      }
+    ],
+    "pypdf": [
+      {
+        "line_no": 24,
+        "snippet": "able, as well as the Barcan formula and its converse. Our spec iﬁc theses are\n✷⊢⊢⊢ A → ∀ xA, ¬ ✷⊢⊢⊢ (x = y), ¬ ✷⊢⊢⊢ ¬(x = y), ¬ ✷⊢⊢⊢ P (x), ¬ ✷⊢⊢⊢ ¬P (x). We also\nhave ✸⊢⊢⊢∃xA(x) → ✸⊢⊢⊢A(y/x), and ∀x ✷⊢⊢⊢ A(x) → ✷⊢⊢⊢ A(y/x), if A is a ✷⊢⊢⊢-free"
+      },
+      {
+        "line_no": 25,
+        "snippet": "✷⊢⊢⊢ A → ∀ xA, ¬ ✷⊢⊢⊢ (x = y), ¬ ✷⊢⊢⊢ ¬(x = y), ¬ ✷⊢⊢⊢ P (x), ¬ ✷⊢⊢⊢ ¬P (x). We also\nhave ✸⊢⊢⊢∃xA(x) → ✸⊢⊢⊢A(y/x), and ∀x ✷⊢⊢⊢ A(x) → ✷⊢⊢⊢ A(y/x), if A is a ✷⊢⊢⊢-free\nformula."
+      },
+      {
+        "line_no": 50,
+        "snippet": "the necessities from the two cited works, actually does not e xpress being a\nﬁrst-order thesis. For example, formulas like ✷A → ∀ xA, ¬✷∃xy(x ⁄= y), and\n¬✷∃xy(x = y) should be provable if we were to think of ✷ as a logical necessity."
+      }
+    ],
+    "pymupdf4llm": [
+      {
+        "line_no": 7,
+        "snippet": "We introduce syntactic modal operator ✷ **_⊢_** for _being a thesis_ into firstorder logic. This logic is a modern realization of R. Carnap’s old ideas on modality, as logical necessity (J. Symb. Logic, 1946) [1]. We place it within the modern framework of quantified modal logic with variable domains. We prove the completeness theorem using a property of a kind of normal form, and the fact that in the canonical frame, the relation on all maximal consistent sets, _R_ = _{⟨_ Γ _,_ ∆ _⟩_ : _∀A_ (✷ **_⊢_** _A ∈_ Γ = _⇒ A ∈_ ∆) _}_ , is a universal relation (both are unprovable in known quantified modal logics). The strength of the ✷ **_⊢_** operator is a proper extension of modal logic S5. Using completeness, we prove that satisfiability in a model of ✷ **_⊢_** _A_ under arbitrary valuation implies that _A_ is a thesis of formulated logic. So we can syntactically define logical entailment and consistency. Our semantics differ from S. Kripke’s standard one [3] in syntax, semantics, and interpretation of the necessity operator. We also have free variables, contrary to Kripke’s and Carnap’s approaches, but our notion of substitution is non-standard (variables inside modalities are not free). All ✷ **_⊢_** -free first-order theses are provable, as well as the Barcan formula and its converse. Our specific theses are ✷ **_⊢_** _A →∀xA_ , _¬_ ✷ **_⊢_** ( _x_ = _y_ ), _¬_ ✷ **_⊢_** _¬_ ( _x_ = _y_ ), _¬_ ✷ **_⊢_** _P_ ( _x_ ), _¬_ ✷ **_⊢_** _¬P_ ( _x_ ). We also have ✸ **_⊢_** _∃xA_ ( _x_ ) _→_ ✸ **_⊢_** _A_ (<sup>_y_</sup> _/x_ ), and _∀x_ ✷ **_⊢_** _A_ ( _x_ ) _→_ ✷ **_⊢_** _A_ (<sup>_y_</sup> _/x_ ), if _A_ is a ✷ **_⊢_** -free formula. **Key words** : R. Carnap, being a thesis operator; proper extension of S5"
+      },
+      {
+        "line_no": 15,
+        "snippet": "the completeness of a variant of Carnap’s axiomatization, keeping Carnap’s original semantics almost untouched [2]. M. Madows formulated modern non-modal semantics for Carnap’s logic, together with a corresponding tableau system [5]. Madows interpreted logical necessity in a first-order structures as a quantification over all (parametrically definable) subsets of the domain of the structure. We believe that his approach can be considered a faithful modern representation of Carnap’s approach to logical necessity. Carnap’s necessity, as well as the necessities from the two cited works, actually does not express being a first-order thesis. For example, formulas like ✷ _A →∀xA_ , _¬_ ✷ _∃xy_ ( _x_ = _y_ ), and _¬_ ✷ _∃xy_ ( _x_ = _y_ ) should be provable if we were to think of ✷ as a logical necessity. As far as we know, there is no formalized version of Carnap’s ideas in the literature where logical necessity explicitly expresses being a first-order thesis. We aim to build a first-order modal logic with an operator expressing first-order theses and interpret it in a variant of variable domain semantics. For simplicity, we do not introduce function symbols and constants. To show that our modality ✷ **_⊢_** is factually correct, we prove that the satisfiability of any formula ✷ **_⊢_** _A_ in any model implies its logical validity and being a thesis, as we prove the completeness theorem."
+      },
+      {
+        "line_no": 43,
+        "snippet": "- _A, v, w |_ = _A → B ⇐⇒A, v, w |_ = _A_ or _A, v, w |_ = _B_ ;"
+      }
+    ]
+  },
   "TURNSTILE": {
     "pdfplumber": [
       {
@@ -35,11 +93,79 @@
       },
       {
         "line_no": 13,
-        "snippet": "form, and the fact that in the canonical frame, the relation o n all maximal\nconsistent sets, R = {⟨Γ,∆⟩: ∀A(✷⊢⊢⊢A ∈ Γ =⇒ A ∈ ∆)}, is a universal rela-\ntion (both are unprovable in known quantiﬁed modal logics). The strength"
+        "snippet": "form, and the fact that in the canonical frame, the relation o n all maximal\nconsistent sets, R = {⟨Γ, ∆⟩: ∀A(✷⊢⊢⊢A ∈ Γ =⇒ A ∈ ∆)}, is a universal rela-\ntion (both are unprovable in known quantiﬁed modal logics). The strength"
       },
       {
         "line_no": 15,
         "snippet": "tion (both are unprovable in known quantiﬁed modal logics). The strength\nof the ✷⊢⊢⊢ operator is a proper extension of modal logic S5. Using complete-\nness, we prove that satisﬁability in a model of ✷⊢⊢⊢A under arbitrary valua-"
+      }
+    ],
+    "pymupdf4llm": [
+      {
+        "line_no": 7,
+        "snippet": "We introduce syntactic modal operator ✷ **_⊢_** for _being a thesis_ into firstorder logic. This logic is a modern realization of R. Carnap’s old ideas on modality, as logical necessity (J. Symb. Logic, 1946) [1]. We place it within the modern framework of quantified modal logic with variable domains. We prove the completeness theorem using a property of a kind of normal form, and the fact that in the canonical frame, the relation on all maximal consistent sets, _R_ = _{⟨_ Γ _,_ ∆ _⟩_ : _∀A_ (✷ **_⊢_** _A ∈_ Γ = _⇒ A ∈_ ∆) _}_ , is a universal relation (both are unprovable in known quantified modal logics). The strength of the ✷ **_⊢_** operator is a proper extension of modal logic S5. Using completeness, we prove that satisfiability in a model of ✷ **_⊢_** _A_ under arbitrary valuation implies that _A_ is a thesis of formulated logic. So we can syntactically define logical entailment and consistency. Our semantics differ from S. Kripke’s standard one [3] in syntax, semantics, and interpretation of the necessity operator. We also have free variables, contrary to Kripke’s and Carnap’s approaches, but our notion of substitution is non-standard (variables inside modalities are not free). All ✷ **_⊢_** -free first-order theses are provable, as well as the Barcan formula and its converse. Our specific theses are ✷ **_⊢_** _A →∀xA_ , _¬_ ✷ **_⊢_** ( _x_ = _y_ ), _¬_ ✷ **_⊢_** _¬_ ( _x_ = _y_ ), _¬_ ✷ **_⊢_** _P_ ( _x_ ), _¬_ ✷ **_⊢_** _¬P_ ( _x_ ). We also have ✸ **_⊢_** _∃xA_ ( _x_ ) _→_ ✸ **_⊢_** _A_ (<sup>_y_</sup> _/x_ ), and _∀x_ ✷ **_⊢_** _A_ ( _x_ ) _→_ ✷ **_⊢_** _A_ (<sup>_y_</sup> _/x_ ), if _A_ is a ✷ **_⊢_** -free formula. **Key words** : R. Carnap, being a thesis operator; proper extension of S5"
+      },
+      {
+        "line_no": 15,
+        "snippet": "the completeness of a variant of Carnap’s axiomatization, keeping Carnap’s original semantics almost untouched [2]. M. Madows formulated modern non-modal semantics for Carnap’s logic, together with a corresponding tableau system [5]. Madows interpreted logical necessity in a first-order structures as a quantification over all (parametrically definable) subsets of the domain of the structure. We believe that his approach can be considered a faithful modern representation of Carnap’s approach to logical necessity. Carnap’s necessity, as well as the necessities from the two cited works, actually does not express being a first-order thesis. For example, formulas like ✷ _A →∀xA_ , _¬_ ✷ _∃xy_ ( _x_ = _y_ ), and _¬_ ✷ _∃xy_ ( _x_ = _y_ ) should be provable if we were to think of ✷ as a logical necessity. As far as we know, there is no formalized version of Carnap’s ideas in the literature where logical necessity explicitly expresses being a first-order thesis. We aim to build a first-order modal logic with an operator expressing first-order theses and interpret it in a variant of variable domain semantics. For simplicity, we do not introduce function symbols and constants. To show that our modality ✷ **_⊢_** is factually correct, we prove that the satisfiability of any formula ✷ **_⊢_** _A_ in any model implies its logical validity and being a thesis, as we prove the completeness theorem."
+      },
+      {
+        "line_no": 19,
+        "snippet": "Let _L_ ( _∀,_ ✷ **_⊢_** ) be a first-order language with identity and the modal operator ✷ **_⊢_** , built with a set of predicates _Pred_ = _{Pj_<sup>_i}i∈I,j∈J_,andasetofvariables</sup><sup>_V ar_,</sup> with _x_ ranging over them. The language _L_ ( _∀,_ ✷ **_⊢_** ) allows arbitrary iterations and is an ordinary language of quantified modal logic. The difference is that the operator ✷ **_⊢_** is read as _is a thesis_ (or eventually _is logically necessary_ ). Other logical symbols are defined in the usual way, and the dual operator ✸ **_⊢_** =: _¬_ ✷ **_⊢_** _¬_ is read as _is consistent_ (or eventually _is logically possible_ )."
+      }
+    ]
+  },
+  "IFF": {
+    "pdfplumber": [
+      {
+        "line_no": 294,
+        "snippet": "The latter entails ✷ ⊢⊢⊢A∨✸ ⊢⊢⊢B∨✷ ⊢⊢⊢C 1 ∨...∨✷ ⊢⊢⊢C n ∈Γ because a S5 property of ✷ ⊢⊢⊢\n(✷ ⊢⊢⊢(A∨✷ ⊢⊢⊢B) ↔ (✷ ⊢⊢⊢A∨✷ ⊢⊢⊢B)) and maximal consistency of Γ. Thus using (⋆) we\nobtain ✷ ⊢⊢⊢A ∈ Γ. Having ✷ ⊢⊢⊢A ∈ Γ we obtain ✷ ⊢⊢⊢A ∈ ∆"
+      },
+      {
+        "line_no": 306,
+        "snippet": "Lemma 4. The following formulas are provable in FOL✷ ⊢⊢⊢:\n✷ ⊢⊢⊢(A∨✷ ⊢⊢⊢B)↔(✷ ⊢⊢⊢A∨✷ ⊢⊢⊢B); (1a)\n∃x✷ ⊢⊢⊢A↔∀x✷ ⊢⊢⊢A↔✷ ⊢⊢⊢A; (1b)"
+      },
+      {
+        "line_no": 307,
+        "snippet": "✷ ⊢⊢⊢(A∨✷ ⊢⊢⊢B)↔(✷ ⊢⊢⊢A∨✷ ⊢⊢⊢B); (1a)\n∃x✷ ⊢⊢⊢A↔∀x✷ ⊢⊢⊢A↔✷ ⊢⊢⊢A; (1b)\n∃x✸ ⊢⊢⊢A↔∀x✸ ⊢⊢⊢A↔✸ ⊢⊢⊢A; (1c)"
+      }
+    ],
+    "pymupdf": [
+      {
+        "line_no": 417,
+        "snippet": "⊢(A ∨✷\n⊢B) ↔(✷\n⊢A ∨✷"
+      },
+      {
+        "line_no": 437,
+        "snippet": "⊢(A ∨✷\n⊢B) ↔(✷\n⊢A ∨✷"
+      },
+      {
+        "line_no": 442,
+        "snippet": "∃x✷\n⊢A ↔∀x✷\n⊢A ↔✷"
+      }
+    ],
+    "pypdf": [
+      {
+        "line_no": 227,
+        "snippet": "The latter entails ✷⊢⊢⊢ A ∨ ✸⊢⊢⊢B ∨ ✷⊢⊢⊢ C1 ∨ . . . ∨ ✷⊢⊢⊢ Cn ∈ Γ because a S5 property of ✷⊢⊢⊢\n(✷⊢⊢⊢ (A ∨ ✷⊢⊢⊢ B) ↔ (✷⊢⊢⊢ A ∨ ✷⊢⊢⊢ B)) and maximal consistency of Γ. Thus using ( ⋆) we\nobtain ✷⊢⊢⊢ A ∈ Γ. Having✷⊢⊢⊢ A ∈ Γ we obtain ✷⊢⊢⊢ A ∈ ∆0 with the use of ( i) from"
+      },
+      {
+        "line_no": 234,
+        "snippet": "Lemma 4. The following formulas are provable in FOL✷⊢⊢⊢ :\n✷⊢⊢⊢ (A ∨ ✷⊢⊢⊢ B) ↔ (✷⊢⊢⊢ A ∨ ✷⊢⊢⊢ B); ( 1a)\n∃x✷⊢⊢⊢ A ↔ ∀x✷⊢⊢⊢ A ↔ ✷⊢⊢⊢ A; ( 1b)"
+      },
+      {
+        "line_no": 235,
+        "snippet": "✷⊢⊢⊢ (A ∨ ✷⊢⊢⊢ B) ↔ (✷⊢⊢⊢ A ∨ ✷⊢⊢⊢ B); ( 1a)\n∃x✷⊢⊢⊢ A ↔ ∀x✷⊢⊢⊢ A ↔ ✷⊢⊢⊢ A; ( 1b)\n∃x✸⊢⊢⊢ A ↔ ∀x✸⊢⊢⊢ A ↔ ✸⊢⊢⊢A; ( 1c)"
+      }
+    ],
+    "pymupdf4llm": [
+      {
+        "line_no": 135,
+        "snippet": "For ( _iii_ ) we assume indirectly that ✷ **_⊢_** _D ∈_ Γ, and ✷ **_⊢_** _D ∈/_ ∆, for some Γ _,_ ∆ _∈MC_ . ✷ **_⊢_** _D ∈/_ ∆gives ✸ **_⊢_** _¬D ∈_ ∆by (Γ _¬_ ) so applying Lemma 2 there is a maximal consistent set ∆0 _∈MC_ such that _D ∈/_ ∆0. Let _D_ := _A∨_ ✸ **_⊢_** _B∨_ ✷ **_⊢_** _C_ 1 _∨. . .∨_ ✷ **_⊢_** _Cn_ , since _D_ is an elementary disjunction. We have _A ∈/_ ∆0 and _¬_ ✸ **_⊢_** _B, ¬_ ✷ **_⊢_** _C_ 1 _, . . . , ¬_ ✷ **_⊢_** _Cn ∈_ ∆0, by maximal consistency of ∆0 and classical logic. This using ( _i_ ) and ( _ii_ ) of Lemma 3 _¬_ ✸ **_⊢_** _B, ¬_ ✷ **_⊢_** _C_ 1 _, . . . , ¬_ ✷ **_⊢_** _Cn ∈_ ∆0 implies ( _⋆_ ): _∀ζ∈MC_ ( _¬_ ✸ **_⊢_** _B, ¬_ ✷ **_⊢_** _C_ 1 _, . . . , ¬_ ✷ **_⊢_** _Cn ∈ ζ_ ), since _B, Cj≥n_ is ✷ **_⊢_** -free formula. The first assumption ✷ **_⊢_** _D ∈_ Γ, using _D_ := _A ∨_ ✸ **_⊢_** _B ∨_ ✷ **_⊢_** _C_ 1 _∨ . . . ∨_ ✷ **_⊢_** _Cn_ , gives us ✷ **_⊢_** ( _A ∨_ ✸ **_⊢_** _B ∨_ ✷ **_⊢_** _C_ 1 _∨ . . . ∨_ ✷ **_⊢_** _Cn_ ) _∈_ Γ. The latter entails ✷ **_⊢_** _A ∨_ ✸ **_⊢_** _B ∨_ ✷ **_⊢_** _C_ 1 _∨ . . . ∨_ ✷ **_⊢_** _Cn ∈_ Γ because a S5 property of ✷ **_⊢_** (✷ **_⊢_** ( _A ∨_ ✷ **_⊢_** _B_ ) _↔_ (✷ **_⊢_** _A ∨_ ✷ **_⊢_** _B_ )) and maximal consistency of Γ. Thus using ( _⋆_ ) we obtain ✷ **_⊢_** _A ∈_ Γ. Having ✷ **_⊢_** _A ∈_ Γ we obtain ✷ **_⊢_** _A ∈_ ∆0 with the use of ( _i_ ) from Lemma 3, because _A_ is ✷ **_⊢_** -free formula. However, ✷ **_⊢_** _A ∈_ ∆0 with earlier obtained _A ∈/_ ∆0 implies that ∆0 is not consistent set."
+      },
+      {
+        "line_no": 145,
+        "snippet": "_Proof._ Proof by induction on _A_ . The boolean steps are standard. Let _A_ = ✷ **_⊢_** _B_ and _B_<sup>_′_</sup> = _B_ 1 _∧ . . . ∧ Bn_ be conjunctive form of _B_ . ✷ **_⊢_** is a normal modality thus _A ↔_ ✷ **_⊢_** _B_ 1 _∧ . . . ∧_ ✷ **_⊢_** _Bn_ and (1a) guarantees that every ✷ **_⊢_** _Bi_ have equivalent elementary disjunction, thus _A_ has an equivalent conjunctive form. Let _A_ = _∀xB_ and _B_<sup>_′_</sup> = _B_ 1 _∧ . . . ∧ Bn_ be a conjunctive form of _B_ . We have _A ↔∀xB_ 1 _∧ . . . ∧∀xBn_ and (1d) guarantees that every _∀xBi_ have equivalent elementary disjunction, thus _A_ has an equivalent conjunctive form."
       }
     ]
   }
