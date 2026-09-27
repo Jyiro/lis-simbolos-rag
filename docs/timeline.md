@@ -376,3 +376,25 @@ El diagnóstico está completamente cerrado. El método de reparación está cla
 ### Líneas abiertas
 - **Línea A — Fix upstream:** PR a pdfminer.six y RAGFlow con EAR como evidencia técnica
 - **Línea C — SLM Seq2Seq:** T5/BART fine-tuneado sobre pares (pdfplumber corrupto, pypdf limpio)
+
+---
+
+## Exp 14 — Análisis de Estrategia de Implementación
+
+**Octubre 2026**
+
+### Objetivo
+Determinar la forma más pragmática y sostenible de aplicar el fix de TeX Glyph List al pipeline real de RAGFlow, sin esperar a un PR aceptado por los mantenedores de pdfminer.six.
+
+### Hallazgos
+- No existe fork mantenido de pdfminer.six con soporte explícito para TeX/CMEX glyph names.
+- **Fuente canónica identificada:** Apache PDFBox [`additional.txt`](https://apache.googlesource.com/pdfbox/+/refs/tags/2.0.14/pdfbox/src/main/resources/org/apache/pdfbox/resources/glyphlist/additional.txt) contiene exactamente los mapeos faltantes: `summationtext → 2211`, `producttext → 220F`, `integraldisplay → 222B`, etc. No hace falta inventar la tabla desde cero.
+- pdfminer.six tiene actividad upstream reciente en el área (PR #1213 sobre CMap types 6/10/12), lo que hace el PR eventual más viable.
+- DeepDoc/RAGFlow ya detecta `(cid:X)` artifacts con `_CID_PATTERN`, pero **no detecta la corrupción silenciosa** (Unicode válido pero incorrecto) que es el caso de CMEX/LASY.
+- Acceso SSH al servidor RAGFlow real disponible (`ubuntu@128.201.239.161 -p 2022`).
+
+### Decisión de ruta
+1. **PASO 1:** Monkey-patch local (`tex_glyph_patch.py`) para validar que la tabla PDFBox efectivamente corrige los 7 papers del corpus arXiv con discrepancias.
+2. **PASO 2:** Fork formal de pdfminer.six con el parche incorporado a `glyphlist.py`.
+3. **PASO 3:** Redirigir la dependencia en el servidor RAGFlow al fork.
+4. **PASO 4 (opcional):** PR upstream con benchmark EAR y tests de regresión.

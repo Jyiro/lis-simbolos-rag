@@ -74,6 +74,21 @@ Ambos mecanismos de fallo coexisten según el PDF:
 - **Evidencia Empírica de Falla:** Se detectó el Punto de Falla 1 real en el sistema — el parser de RAGFlow elimina (truncamiento) los símbolos Unicode (como `□` y `◇`) antes de llegar al embedding. Esto valida completamente la necesidad del estudio.
 - Documentación completa en `ragflow_setup.md`.
 
+## v3.0 — 2026-10-09
+
+### Contexto
+Inicio de la fase de implementación del fix. Estrategia definida post-búsqueda de forks existentes.
+
+### [INVESTIGACIÓN] Búsqueda de implementaciones previas
+- No se encontró fork mantenido de `pdfminer.six` con soporte para TeX/CMEX glyph names.
+- `pdfminer.six` upstream tiene actividad reciente (PR #1213: CMap types 6/10/12, aceptado). El área de CMap/encoding es receptiva a fixes.
+- DeepDoc ya tiene `_CID_PATTERN` para detectar `(cid:X)` pero no detecta la corrupción silenciosa de CMEX/LASY (Unicode válido pero incorrecto).
+
+### [DECISIÓN] Ruta de implementación
+- **Fuente de la tabla TeX Glyph List:** Apache PDFBox `additional.txt` (canónica, verificada, incluye `summationtext`, `producttext`, `logicalanddisplay`, etc.).
+- **Ruta:** Monkey-patch local (validación) → Fork pdfminer.six → Redirigir dependencia en RAGFlow server → PR upstream opcional.
+- Acceso SSH directo al servidor RAGFlow disponible para aplicar el parche cuando esté validado.
+
 ## v2.9 — 2026-09-17
 
 ### Contexto

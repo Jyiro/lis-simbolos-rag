@@ -18,13 +18,15 @@ Formato: `[ ]` pendiente · `[/]` en progreso · `[x]` completado
 
 ## Implementación — Solución Técnica (Línea A)
 
-- [x] **Parche dinámico (Monkey-Patch) a pdfminer.six** — Implementar `deepdoc-research/tex_glyph_patch.py` inyectando la TeX Glyph List (CMEX/LASY) en `pdfminer.glyphlist` en tiempo de ejecución.
-- [x] **Validación automatizada del parche** — Script `probe_patched.py` ejecutado validando que el EAR subió a 100% exitosamente frente a pypdf.
-- [ ] **Probar el arreglo con la librería de RAGFlow** — Validar cómo se comporta la inyección del parche interactuando directamente con el código base de RAGFlow / DeepDoc en un entorno local.
-- [ ] **Averiguar alternativas sin modificar RAGFlow** — Investigar si existe alguna configuración, variable de entorno o método de inyección externo que permita pasarle el parche a la instancia de RAGFlow sin alterar su código fuente nativo.
-- [ ] **Forkear dependencias** — Evaluar la viabilidad de hacer un fork de `pdfminer.six` (y/o `pdfplumber`), aplicar el parche del diccionario ahí mismo, y hacer que el entorno virtual apunte a este fork.
-- [ ] **PR upstream a pdfminer.six** — Enviar el arreglo canónico a la librería original para solucionarlo a nivel ecosistema Python (aunque sabemos que hay resistencia por parte de los mantenedores).
-- [ ] **Buscar PRs abiertas** — Investigar en los repositorios de `pdfminer.six`, `pdfplumber` y `ragflow` si ya existe algún Pull Request abierto intentando proponer esta misma solución para el bug de la Adobe Glyph List.
+**Ruta elegida:** Monkey-patch local para validar → Fork de `pdfminer.six` → Redirigir dependencia en RAGFlow → PR upstream opcional.
+**Fuente para la tabla:** Apache PDFBox `additional.txt` ya tiene los mapeos TeX necesarios (`summationtext`, `producttext`, `logicalanddisplay`, etc.).
+
+- [ ] **[PASO 1] Monkey-patch de validación** — Implementar `deepdoc-research/tex_glyph_patch.py` inyectando la TeX Glyph List (fuente: PDFBox `additional.txt`) en `pdfminer.glyphlist.glyphname2unicode` en tiempo de ejecución. Correr sobre los 7 papers arXiv con discrepancias: si EAR sube a 100%, el fix está validado.
+- [ ] **[PASO 2] Fork de `pdfminer.six`** — Forkear [`pdfminer/pdfminer.six`](https://github.com/pdfminer/pdfminer.six), agregar los mapeos TeX a `pdfminer/glyphlist.py` en una branch `fix-tex-glyph-list`.
+- [ ] **[PASO 3] Redirigir dependencia en RAGFlow** — En `requirements.txt` del entorno RAGFlow reemplazar `pdfminer.six==X.Y` por `pdfminer.six @ git+https://github.com/TuUser/pdfminer.six@fix-tex-glyph-list`. Aplicar en el servidor SSH disponible.
+- [ ] **[PASO 4] Validar en RAGFlow real** — Con el parche activo en el server, subir los PDFs del corpus con LaTeX y corroborar que los símbolos ∑ ∏ □ se preservan en el texto extraído por DeepDoc.
+- [ ] **[PASO 5] PR upstream a pdfminer.six** — Enviar el arreglo con tests y benchmark EAR como evidencia. Referenciable contra el trabajo de PR #1213 (CMap types 6/10/12, fusionado en release 20260107).
+- [ ] **Buscar PRs abiertas equivalentes** — Code search en GitHub: `"summationtext" "pdfminer"`, `"producttext" "glyphname2unicode"`. Si existe un PR previo, contribuir sobre él en vez de crear otro.
 
 ---
 
