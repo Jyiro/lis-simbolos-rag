@@ -398,3 +398,74 @@ Determinar la forma más pragmática y sostenible de aplicar el fix de TeX Glyph
 2. **PASO 2:** Fork formal de pdfminer.six con el parche incorporado a `glyphlist.py`.
 3. **PASO 3:** Redirigir la dependencia en el servidor RAGFlow al fork.
 4. **PASO 4 (opcional):** PR upstream con benchmark EAR y tests de regresión.
+
+---
+
+## Exp 15 — Implementación y Validación del Fix (Línea A)
+
+**Septiembre 2026** · `deepdoc-research/tex_glyph_patch.py` · `deepdoc-research/probe_arxiv_patched.py` · `deepdoc-research/pdfminer-fork/`
+
+### Objetivo
+Implementar, refactorizar y verificar el fix de TeX Glyph List en tres capas: (1) monkey-patch validado con métricas robustas, (2) fork formal de pdfminer.six con el parche integrado al source, (3) suite de tests que sirva como evidencia para el PR upstream.
+
+### Fase A — Monkey-patch (`tex_glyph_patch.py`)
+
+**Refactoring aplicado** (a partir del `code_review.md`):
+- Separación en dos tablas: `SAFE_MATH_OPERATORS` (62 entradas de CMEX/CMSY/LASY con Unicode no-ASCII) y `EXTENSIBLE_DELIMITERS` (alias de delimitadores que mapean a ASCII, excluidos por defecto).
+- `apply_patch(include_delimiters=False)` ahora retorna stats `{added, skipped_existing}` y es idempotente.
+- Auto-aplicación al importar; diseñado para correr a startup, no por-request.
+
+**Métrica refactorizada** (`probe_arxiv_patched.py`):
+- Abandonado el EAR bilateral (era inválido cuando pdfplumber con patch supera a los extractores de referencia).
+- Nueva clasificación por símbolo por documento: `resolved` / `still_failing` / `exclusive_detection` / `partial` / `absent`.
+- "exclusive_detection": pdfplumber encuentra el símbolo pero ni pymupdf ni pypdf lo hacen.
+
+### Hallazgos
+
+| Métrica | Sin patch (Exp 13) | Con patch |
+|---|---|---|
+| PDFs con algún fallo | 7/30 (23%) | **0/30 (0%)** |
+| PDFs con exclusivas a favor pdfplumber | — | 19/30 (63%) |
+
+**Investigación de exclusivas:** Las 3 ocurrencias de `∑` en `2609.15879v1` que pdfplumber detecta y los otros no son **verdaderos positivos** confirmados manualmente. Ejemplos: `∑ |XS| ≤ 2|S||S|! < ∞` y `|X/G| ≤ ∑ |XTj|` — expresiones matemáticas válidas que CMEX renderiza con `summationtext`.
+
+### Fase B — Fork de `pdfminer.six`
+
+- Clonado en `deepdoc-research/pdfminer-fork/`.
+- Las 62 entradas TeX integradas directamente en `pdfminer/glyphlist.py` al final del dict `glyphname2unicode`, con bloque de comentario que documenta fuentes (TUG TeX Glyph List, CMEX10 tfm, LASY10).
+- Tests en `tests/test_tex_glyphs.py`: **43 casos parametrizados** cubriendo presencia, round-trip por `name2unicode()`, idempotencia de entradas AGL previas, y exclusión de aliases ASCII.
+- Commit local: `db4ddff` — mensaje de commit autosuficiente con benchmark y descripción de grupos.
+
+### Estado al cierre de sesión
+
+| Componente | Estado |
+|---|---|
+| `tex_glyph_patch.py` | ✅ Refactorizado y validado |
+| `tests/test_tex_glyph_patch.py` | ✅ 9/9 tests pasando |
+| `probe_arxiv_patched.py` | ✅ Métrica nueva, 0/30 fallos |
+| `pdfminer-fork/pdfminer/glyphlist.py` | ✅ 62 entradas integradas |
+| `pdfminer-fork/tests/test_tex_glyphs.py` | ✅ 43/43 tests pasando |
+| Commit en fork local | ✅ `db4ddff` listo para push |
+| **Push al fork en GitHub** | ⏳ Pendiente (manual) |
+| **Paso 3: RAGFlow server** | ⏳ Pendiente |
+
+### Próximos pasos inmediatos
+
+1. **Push del fork** (5 min, manual):
+   - Hacer fork en https://github.com/pdfminer/pdfminer.six
+   - Desde `deepdoc-research/pdfminer-fork/`:
+     ```powershell
+     git remote add myfork https://github.com/<tu-usuario>/pdfminer.six.git
+     git push myfork master
+     ```
+
+2. **Aplicar en el servidor RAGFlow** (SSH):
+   ```bash
+   ssh -p 2022 ubuntu@128.201.239.161  # clave: IAutn2026
+   pip install git+https://github.com/<tu-usuario>/pdfminer.six@master
+   ```
+
+3. **Validar en RAGFlow real** — subir corpus LaTeX, verificar que ∑ ∏ □ aparecen en los chunks de DeepDoc.
+
+4. **(Opcional) Abrir PR upstream** a `pdfminer/pdfminer.six` con los 43 tests y el benchmark como evidencia.
+

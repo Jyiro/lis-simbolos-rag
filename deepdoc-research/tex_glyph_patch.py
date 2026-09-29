@@ -1,198 +1,169 @@
 """
-tex_glyph_patch.py
-==================
-Monkey-patch para pdfminer.six que agrega los nombres de glifo propios
-de las fuentes Computer Modern / LaTeX (CMEX, CMSY, CMMI, LASY).
-
-El Adobe Glyph List (AGL) que usa pdfminer no incluye los ~200 nombres
-TeX-específicos que estas fuentes usan en sus /Differences arrays.
-Este módulo inyecta esos nombres en el diccionario en-memoria de pdfminer
-antes de cualquier extracción.
-
-Uso:
-    from tex_glyph_patch import apply_patch
-    n = apply_patch()
-    # A partir de acá, pdfplumber resuelve correctamente ∑, ∏, □, etc.
-
-Referencias:
-    - TeX Glyph List (TUG): https://tug.org/tex-glyph-list/
-    - CMEX10 glyph table: https://ctan.org/pkg/cmex
-    - fontname mapping: https://tug.org/fontname/fontname.pdf
+Monkey-patch de validación: inyecta la TeX Glyph List en pdfminer.six en runtime.
+Fuente de la tabla: Apache PDFBox additional.txt
+https://apache.googlesource.com/pdfbox/+/refs/tags/2.0.14/pdfbox/src/main/resources/org/apache/pdfbox/resources/glyphlist/additional.txt
 """
+import pdfminer.glyphlist as _gl
 
-# TeX Glyph List — nombres de glifo TeX → carácter Unicode
-# Organizado por fuente de origen para facilitar auditoría
-TEX_EXTRA_GLYPHS: dict[str, str] = {
+# 1. Mapeos seguros: operadores matemáticos con Unicode no-ASCII propio
+SAFE_MATH_OPERATORS = {
+    # Operadores grandes (CMEX)
+    "summationtext":        0x2211,  # ∑
+    "summationdisplay":     0x2211,  # ∑
+    "producttext":          0x220F,  # ∏
+    "productdisplay":       0x220F,  # ∏
+    "coproducttext":        0x2210,  # ∐
+    "coproductdisplay":     0x2210,  # ∐
+    "integraltext":         0x222B,  # ∫
+    "integraldisplay":      0x222B,  # ∫
+    "uniontext":            0x222A,  # ∪
+    "uniondisplay":         0x222A,  # ∪
+    "intersectiontext":     0x2229,  # ∩
+    "intersectiondisplay":  0x2229,  # ∩
+    "unionmultitext":       0x228E,  # ⊎
+    "unionmultidisplay":    0x228E,  # ⊎
+    "logicalandtext":       0x2227,  # ∧
+    "logicalanddisplay":    0x2227,  # ∧
+    "logicalortext":        0x2228,  # ∨
+    "logicalordisplay":     0x2228,  # ∨
+    "contintegraltext":     0x222E,  # ∮
+    "contintegraldisplay":  0x222E,  # ∮
+    "circledottext":        0x2299,  # ⊙
+    "circledotdisplay":     0x2299,  # ⊙
+    "circleplustext":       0x2295,  # ⊕
+    "circleplusdisplay":    0x2295,  # ⊕
+    "circlemultiplytext":   0x2297,  # ⊗
+    "circlemultiplydisplay":0x2297,  # ⊗
+    "hatwidest":            0x0302,  # combining circumflex
+    "tildewidest":          0x0303,  # combining tilde
+    # LASY / MSAM / MSBM — lógica modal y conjuntos
+    "square":               0x25A1,  # □
+    "squaresolid":          0x25A0,  # ■
+    "diamond":              0x25C7,  # ◇
+    "diamondsolid":         0x25C6,  # ◆
+    "triangle":             0x25B3,  # △
+    "trianglesolid":        0x25B2,  # ▲
+    "triangleinv":          0x25BD,  # ▽
+    "triangleinvsolid":     0x25BC,  # ▼
+    "lozenge":              0x25CA,  # ◊
+    "blacklozenge":         0x29EB,  # ⧫
+    "smwhtcircle":          0x25E6,  # ◦
+    "smblkcircle":          0x2022,  # •
+    "circlesolid":          0x25CF,  # ●
+    "circle":               0x25CB,  # ○
+    "bullet":               0x2022,  # •
+    # Flechas adicionales (CMSY)
+    "arrowdblright":        0x21D2,  # ⇒
+    "arrowdblboth":         0x21D4,  # ⇔
+    "arrowdblup":           0x21D1,  # ⇑
+    "arrowdbldown":         0x21D3,  # ⇓
+    # Relaciones extra (CMSY)
+    "approxequal":          0x2248,  # ≈
+    "lessmuch":             0x226A,  # ≪
+    "greatermuch":          0x226B,  # ≫
+    "precedes":             0x227A,  # ≺
+    "follows":              0x227B,  # ≻
+    "precedesequal":        0x2AAF,  # ⪯
+    "followsequal":         0x2AB0,  # ⪰
+    "similarleftarrow":     0x2243,  # ≃
+    "propersubset":         0x2282,  # ⊂
+    "propersuperset":       0x2283,  # ⊃
+    "reflexsubset":         0x2286,  # ⊆
+    "reflexsuperset":       0x2287,  # ⊇
+    "dotequal":             0x2250,  # ≐
+    "doteq":                0x2250,
+    "coloncolon":           0x2237,  # ∷
+    "bardbl":               0x2016,  # ‖
+    "arrowbothv":           0x2195,  # ↕
+    "arrowboth":            0x2194,  # ↔
+    "turnstileleft":        0x22A2,  # ⊢
+    "turnstileright":       0x22A3,  # ⊣
+    "forcesextra":          0x22A8,  # ⊨
+    "forces":               0x22A8,
+    "satisfies":            0x22A8,
+    "truthvalue":           0x22A4,  # ⊤
+    "perpendicular":        0x22A5,  # ⊥
+    "angle":                0x2220,  # ∠
+    "angbracketleft":       0x27E8,  # ⟨
+    "angbracketright":      0x27E9,  # ⟩
+    "triangleright":        0x22B3,  # ⊳
+    "triangleleft":         0x22B2,  # ⊲
+    "trianglerighteq":      0x22B5,  # ⊵
+    "trianglelefteq":       0x22B4,  # ⊴
+}
 
-    # ── CMEX10 (símbolos matemáticos de tamaño variable) ──────────────────
-    "summationdisplay":      "\u2211",  # ∑  (display size)
-    "summationtext":         "\u2211",  # ∑  (text/inline size)
-    "productdisplay":        "\u220f",  # ∏  (display size)
-    "producttext":           "\u220f",  # ∏  (text/inline size)
-    "coproductdisplay":      "\u2210",  # ∐
-    "coproducttext":         "\u2210",  # ∐
-    "integraldisplay":       "\u222b",  # ∫
-    "integraltext":          "\u222b",  # ∫
-    "contintegraldisplay":   "\u222e",  # ∮
-    "contintegraltext":      "\u222e",  # ∮
-    "uniondisplay":          "\u22c3",  # ⋃
-    "uniontext":             "\u22c3",  # ⋃
-    "intersectiondisplay":   "\u22c2",  # ⋂
-    "intersectiontext":      "\u22c2",  # ⋂
-    "unionmultidisplay":     "\u228e",  # ⊎
-    "unionmultitext":        "\u228e",  # ⊎
-    "logicalanddisplay":     "\u2227",  # ∧
-    "logicalandtext":        "\u2227",  # ∧
-    "logicalordisplay":      "\u2228",  # ∨
-    "logicalortext":         "\u2228",  # ∨
-    "circledotdisplay":      "\u2299",  # ⊙
-    "circledottext":         "\u2299",  # ⊙
-    "circleplusdisplay":     "\u2295",  # ⊕
-    "circleplustext":        "\u2295",  # ⊕
-    "circlemultiplydisplay": "\u2297",  # ⊗
-    "circlemultiplytext":    "\u2297",  # ⊗
-
-    # Delimitadores grandes (CMEX)
-    "parenleftbig":          "(",       # (
-    "parenrightbig":         ")",       # )
-    "parenleftBig":          "(",
-    "parenrightBig":         ")",
-    "parenleftbigg":         "(",
-    "parenrightbigg":        ")",
-    "parenleftBigg":         "(",
-    "parenrightBigg":        ")",
-    "bracketleftbig":        "[",
-    "bracketrightbig":       "]",
-    "bracketleftBig":        "[",
-    "bracketrightBig":       "]",
-    "bracketleftbigg":       "[",
-    "bracketrightbigg":      "]",
-    "bracketleftBigg":       "[",
-    "bracketrightBigg":      "]",
-    "braceleftbig":          "{",
-    "bracerightbig":         "}",
-    "braceleftBig":          "{",
-    "bracerightBig":         "}",
-    "braceleftbigg":         "{",
-    "bracerightbigg":        "}",
-    "braceleftBigg":         "{",
-    "bracerightBigg":        "}",
-    "floorleftbig":          "\u230a",  # ⌊
-    "floorrightbig":         "\u230b",  # ⌋
-    "ceilingleftbig":        "\u2308",  # ⌈
-    "ceilingrightbig":       "\u2309",  # ⌉
-    "angbracketleftbig":     "\u27e8",  # ⟨
-    "angbracketrightbig":    "\u27e9",  # ⟩
-    "vextendsingle":         "|",
-    "vextenddouble":         "\u2016",  # ‖
-    "braceex":               "|",
-    "arrowvertex":           "|",
-
-    # ── CMSY10 (símbolos matemáticos) ─────────────────────────────────────
-    "square":                "\u25a1",  # □  (modal NECESSARILY)
-    "squaresolid":           "\u25a0",  # ■
-    "diamond":               "\u22c4",  # ⋄  (sobreescribe ♦ del AGL)
-    "diamondsolid":          "\u25c6",  # ◆
-    "triangle":              "\u25b3",  # △
-    "trianglesolid":         "\u25b2",  # ▲
-    "triangledown":          "\u25bd",  # ▽
-    "triangledownsolid":     "\u25bc",  # ▼
-    "circlesolid":           "\u25cf",  # ●
-    "circle":                "\u25cb",  # ○
-    "bulletmath":            "\u2219",  # ∙
-    "bardbl":                "\u2016",  # ‖
-    "backslashmath":         "\u29f5",  # ⧵
-    "dagger":                "\u2020",  # †
-    "daggerdbl":             "\u2021",  # ‡
-    "paragraph":             "\u00b6",  # ¶
-    "section":               "\u00a7",  # §
-    "club":                  "\u2663",  # ♣
-    "heart":                 "\u2665",  # ♥
-    "spade":                 "\u2660",  # ♠
-    "diamondsuit":           "\u2666",  # ♦
-    "flat":                  "\u266d",  # ♭
-    "natural":               "\u266e",  # ♮
-    "sharp":                 "\u266f",  # ♯
-
-    # Relaciones (CMSY)
-    "lessequivorelnt":       "\u2272",  # ≲
-    "greaterequivorelnt":    "\u2273",  # ≳
-    "precedesequivlnt":      "\u227e",  # ≾
-    "followsequivlnt":       "\u227f",  # ≿
-    "similarequal":          "\u2243",  # ≃
-    "arrowleftright":        "\u2194",  # ↔
-    "arrowdblleftright":     "\u21d4",  # ⇔
-    "arrowdblup":            "\u21d1",  # ⇑
-    "arrowdbldown":          "\u21d3",  # ⇓
-    "nearrow":               "\u2197",  # ↗
-    "searrow":               "\u2198",  # ↘
-    "swarrow":               "\u2199",  # ↙
-    "nwarrow":               "\u2196",  # ↖
-    "proportional":          "\u221d",  # ∝
-    "infinity":              "\u221e",  # ∞
-    "angle":                 "\u2220",  # ∠
-    "aleph":                 "\u2135",  # ℵ
-    "hbar":                  "\u210f",  # ℏ
-    "emptyset":              "\u2205",  # ∅
-    "nabla":                 "\u2207",  # ∇
-    "surd":                  "\u221a",  # √
-    "top":                   "\u22a4",  # ⊤
-    "bot":                   "\u22a5",  # ⊥
-    "mho":                   "\u2127",  # ℧
-    "dotplus":               "\u2214",  # ∔
-    "backprime":             "\u2035",  # ‵
-    "varnothing":            "\u2205",  # ∅
-    
-    # Turnstiles y lógica extra (amsfonts / mathabx)
-    "satisfies":             "\u22a8",  # ⊨
-    "forces":                "\u22a9",  # ⊩
-    "notforces":             "\u22ae",  # ⊮
-    "notturnstile":          "\u22ac",  # ⊬
-    "turnstileleft":         "\u22a3",  # ⊣
-    "latticetop":            "\u22a4",  # ⊤
-
-    # ── LASY10 (LaTeX symbols font) ───────────────────────────────────────
-    "squaredot":             "\u22a1",  # ⊡
-    "squaresmallsolid":      "\u25aa",  # ▪
-    "squaretopblack":        "\u2b12",  # ⬒
-    "triangleleft":          "\u25c3",  # ◃
-    "triangleright":         "\u25b9",  # ▹
-    "boxdot":                "\u22a1",  # ⊡
-    "boxplus":               "\u229e",  # ⊞
-    "boxtimes":              "\u22a0",  # ⊠
-    "boxminus":              "\u229f",  # ⊟
-    "leadsto":               "\u219d",  # ↝
-    "Join":                  "\u2a1d",  # ⨝
-
-    # ── CMMI10 (math italic — letras con encoding especial) ──────────────
-    # (la mayoría están en el AGL estándar; solo los que faltan)
-    "arrowleftbothalf":      "\u21bd",  # ↽
-    "arrowlefttophalf":      "\u21bc",  # ↼
-    "arrowrightbothalf":     "\u21c1",  # ⇁
-    "arrowrighttophalf":     "\u21c0",  # ⇀
-    "imath":                 "\u0131",  # ı (i sin punto)
-    "jmath":                 "\u0237",  # ȷ (j sin punto)
+# 2. Delimitadores extensibles: mapean a ASCII/caracteres comunes
+# Por defecto NO se aplican; son opcionales via apply_patch(include_delimiters=True)
+EXTENSIBLE_DELIMITERS = {
+    "parenleftbig":         0x0028,  # (
+    "parenrightbig":        0x0029,  # )
+    "bracketleftbig":       0x005B,  # [
+    "bracketrightbig":      0x005D,  # ]
+    "braceleftbig":         0x007B,  # {
+    "bracerightbig":        0x007D,  # }
+    "parenleftbigg":        0x0028,
+    "parenrightbigg":       0x0029,
+    "bracketleftbigg":      0x005B,
+    "bracketrightbigg":     0x005D,
+    "braceleftbigg":        0x007B,
+    "bracerightbigg":       0x007D,
+    "parenleftBig":         0x0028,
+    "parenrightBig":        0x0029,
+    "parenleftBigg":        0x0028,
+    "parenrightBigg":       0x0029,
+    "floorleftbig":         0x230A,  # ⌊
+    "floorrightbig":        0x230B,  # ⌋
+    "ceilingleftbig":       0x2308,  # ⌈
+    "ceilingrightbig":      0x2309,  # ⌉
+    "radicalBig":           0x221A,  # √
+    "radicalbigg":          0x221A,
+    "radicalbig":           0x221A,
+    "radicalBigg":          0x221A,
+    "radicalbt":            0x221A,
+    "radicaltp":            0x221A,
+    "backslashBig":         0x005C,
+    "backslashbigg":        0x005C,
+    "slashBig":             0x002F,
+    "slashbigg":            0x002F,
+    "slashBigg":            0x002F,
+    "backslashBigg":        0x005C,
+    "arrowhorizex":         0x2015,  # ―
+    "arrowvertex":          0x23D0,  # ⏐
 }
 
 
-def apply_patch() -> int:
+def apply_patch(include_delimiters: bool = False) -> dict:
     """
     Inyecta la TeX Glyph List en pdfminer.glyphlist.glyphname2unicode.
-
-    Debe llamarse UNA VEZ antes de cualquier extracción con pdfplumber/pdfminer.
-    Es idempotente: llamarla múltiples veces no causa problemas.
-
+    
+    IMPORTANTE: Debe llamarse al inicio del proceso (startup),
+    no en el handler de cada request.
+    
+    Args:
+        include_delimiters: Si True, también inyecta los delimitadores 
+                            extensibles (parenleftbig, etc.). Por defecto 
+                            False porque mapean a ASCII y pueden inflacionar 
+                            conteos en texto plano.
     Returns:
-        int: número de entradas añadidas al diccionario.
+        dict con stats: {'added': int, 'skipped_existing': int}
     """
-    from pdfminer.glyphlist import glyphname2unicode
-    before = len(glyphname2unicode)
-    glyphname2unicode.update(TEX_EXTRA_GLYPHS)
-    added = len(glyphname2unicode) - before
-    return added
+    to_add = dict(SAFE_MATH_OPERATORS)
+    if include_delimiters:
+        to_add.update(EXTENSIBLE_DELIMITERS)
+    
+    added = 0
+    skipped = 0
+    for name, codepoint in to_add.items():
+        if name not in _gl.glyphname2unicode:
+            _gl.glyphname2unicode[name] = chr(codepoint)
+            added += 1
+        else:
+            skipped += 1
+            
+    print(f"[tex_glyph_patch] Aplicado: +{added} entradas, {skipped} salteadas "
+          f"(total en glyphname2unicode: {len(_gl.glyphname2unicode)})")
+          
+    return {"added": added, "skipped_existing": skipped}
 
-
-def is_patched() -> bool:
-    """Verifica si el patch ya fue aplicado."""
-    from pdfminer.glyphlist import glyphname2unicode
-    return "summationdisplay" in glyphname2unicode
+# Auto-aplicar al importar (por defecto solo los matemáticos seguros)
+apply_patch(include_delimiters=False)

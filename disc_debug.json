@@ -1,0 +1,32 @@
+[
+  {
+    "name": "SUM",
+    "char": "\u2211",
+    "ear": 0.0,
+    "counts": {
+      "pdfplumber": 3,
+      "pymupdf": 0,
+      "pypdf": 0
+    }
+  },
+  {
+    "name": "UNION",
+    "char": "\u222a",
+    "ear": 91.2,
+    "counts": {
+      "pdfplumber": 57,
+      "pymupdf": 52,
+      "pypdf": 52
+    }
+  },
+  {
+    "name": "INTERSECT",
+    "char": "\u2229",
+    "ear": 98.2,
+    "counts": {
+      "pdfplumber": 57,
+      "pymupdf": 56,
+      "pypdf": 56
+    }
+  }
+]

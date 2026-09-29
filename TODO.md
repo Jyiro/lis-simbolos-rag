@@ -21,12 +21,22 @@ Formato: `[ ]` pendiente · `[/]` en progreso · `[x]` completado
 **Ruta elegida:** Monkey-patch local para validar → Fork de `pdfminer.six` → Redirigir dependencia en RAGFlow → PR upstream opcional.
 **Fuente para la tabla:** Apache PDFBox `additional.txt` ya tiene los mapeos TeX necesarios (`summationtext`, `producttext`, `logicalanddisplay`, etc.).
 
-- [ ] **[PASO 1] Monkey-patch de validación** — Implementar `deepdoc-research/tex_glyph_patch.py` inyectando la TeX Glyph List (fuente: PDFBox `additional.txt`) en `pdfminer.glyphlist.glyphname2unicode` en tiempo de ejecución. Correr sobre los 7 papers arXiv con discrepancias: si EAR sube a 100%, el fix está validado.
-- [ ] **[PASO 2] Fork de `pdfminer.six`** — Forkear [`pdfminer/pdfminer.six`](https://github.com/pdfminer/pdfminer.six), agregar los mapeos TeX a `pdfminer/glyphlist.py` en una branch `fix-tex-glyph-list`.
-- [ ] **[PASO 3] Redirigir dependencia en RAGFlow** — En `requirements.txt` del entorno RAGFlow reemplazar `pdfminer.six==X.Y` por `pdfminer.six @ git+https://github.com/TuUser/pdfminer.six@fix-tex-glyph-list`. Aplicar en el servidor SSH disponible.
+- [x] **[PASO 1] Monkey-patch de validación** — `deepdoc-research/tex_glyph_patch.py` implementado y validado. Corpus arXiv: **0/30 fallos** (era 7/30). 19/30 papers con pdfplumber superando a pymupdf/pypdf (exclusivas confirmadas como verdaderos positivos). Refactorizado con `SAFE_MATH_OPERATORS` / `EXTENSIBLE_DELIMITERS`. Suite de 9 tests en `deepdoc-research/tests/test_tex_glyph_patch.py` — todos pasan.
+- [/] **[PASO 2] Fork de `pdfminer.six`** — Fork clonado localmente en `deepdoc-research/pdfminer-fork/`. Parche integrado directamente en `pdfminer/glyphlist.py` (62 entradas TeX, con comentario de fuentes). Tests del fork en `tests/test_tex_glyphs.py` — **43/43 pasan**. Commit local listo (`db4ddff`).
+  - **⏳ PENDIENTE (hacer vos):**
+    1. Ir a https://github.com/pdfminer/pdfminer.six → click **Fork** → seleccionar tu cuenta
+    2. Desde PowerShell en `deepdoc-research/pdfminer-fork/`:
+       ```powershell
+       git remote add myfork https://github.com/<tu-usuario>/pdfminer.six.git
+       git push myfork master
+       ```
+- [ ] **[PASO 3] Redirigir dependencia en RAGFlow** — En el servidor SSH (`ubuntu@128.201.239.161 -p 2022`, clave `IAutn2026`) reemplazar `pdfminer.six` del entorno de DeepDoc por:
+  ```bash
+  pip install git+https://github.com/<tu-usuario>/pdfminer.six@master
+  ```
+  Verificar que los tests del fork pasen en el server.
 - [ ] **[PASO 4] Validar en RAGFlow real** — Con el parche activo en el server, subir los PDFs del corpus con LaTeX y corroborar que los símbolos ∑ ∏ □ se preservan en el texto extraído por DeepDoc.
-- [ ] **[PASO 5] PR upstream a pdfminer.six** — Enviar el arreglo con tests y benchmark EAR como evidencia. Referenciable contra el trabajo de PR #1213 (CMap types 6/10/12, fusionado en release 20260107).
-- [ ] **Buscar PRs abiertas equivalentes** — Code search en GitHub: `"summationtext" "pdfminer"`, `"producttext" "glyphname2unicode"`. Si existe un PR previo, contribuir sobre él en vez de crear otro.
+- [ ] **[PASO 5 — opcional] PR upstream a pdfminer.six** — Enviar el arreglo con los 43 tests y el benchmark EAR (0/30 fallos) como evidencia. Referenciable contra PR #1213 (CMap types 6/10/12, fusionado en release 20260107).
 
 ---
 
