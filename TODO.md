@@ -22,20 +22,35 @@ Formato: `[ ]` pendiente · `[/]` en progreso · `[x]` completado
 **Fuente para la tabla:** Apache PDFBox `additional.txt` ya tiene los mapeos TeX necesarios (`summationtext`, `producttext`, `logicalanddisplay`, etc.).
 
 - [x] **[PASO 1] Monkey-patch de validación** — `deepdoc-research/tex_glyph_patch.py` implementado y validado. Corpus arXiv: **0/30 fallos** (era 7/30). 19/30 papers con pdfplumber superando a pymupdf/pypdf (exclusivas confirmadas como verdaderos positivos). Refactorizado con `SAFE_MATH_OPERATORS` / `EXTENSIBLE_DELIMITERS`. Suite de 9 tests en `deepdoc-research/tests/test_tex_glyph_patch.py` — todos pasan.
-- [/] **[PASO 2] Fork de `pdfminer.six`** — Fork clonado localmente en `deepdoc-research/pdfminer-fork/`. Parche integrado directamente en `pdfminer/glyphlist.py` (62 entradas TeX, con comentario de fuentes). Tests del fork en `tests/test_tex_glyphs.py` — **43/43 pasan**. Commit local listo (`db4ddff`).
-  - **⏳ PENDIENTE (hacer vos):**
-    1. Ir a https://github.com/pdfminer/pdfminer.six → click **Fork** → seleccionar tu cuenta
-    2. Desde PowerShell en `deepdoc-research/pdfminer-fork/`:
-       ```powershell
-       git remote add myfork https://github.com/<tu-usuario>/pdfminer.six.git
-       git push myfork master
-       ```
-- [ ] **[PASO 3] Redirigir dependencia en RAGFlow** — En el servidor SSH (`ubuntu@128.201.239.161 -p 2022`, clave `IAutn2026`) reemplazar `pdfminer.six` del entorno de DeepDoc por:
+- [x] **[PASO 2] Fork de `pdfminer.six`** — Fork publicado en [`Jyiro/pdfminer-lis`](https://github.com/Jyiro/pdfminer-lis). Parche integrado en `pdfminer/glyphlist.py` (62 entradas TeX). Tests: **43/43 pasan**. Commit: [`db4ddff`](https://github.com/Jyiro/pdfminer-lis/commit/db4ddff32b228e31562c3fe530dc7b0d55a01d56).
+- [/] **[PASO 3] Redirigir dependencia en RAGFlow** — **BLOQUEADO** por problema de infraestructura en el servidor.
+
+  **Diagnóstico del servidor (`ubuntu@128.201.239.161 -p 2022`):**
+  - RAGFlow corre como contenedor Docker: `docker-ragflow-cpu-1` (imagen `infiniflow/ragflow:v0.26.0`)
+  - El contenedor lleva semanas en **crashloop**: `exec ./entrypoint.sh: exec format error`
+  - Causa: **incompatibilidad de arquitectura** — la imagen oficial fue compilada para `amd64` pero el servidor probablemente corre `arm64`
+  - El parche de pdfminer **no puede aplicarse** mientras el contenedor no arranque
+
+  **Cómo desbloquear (requiere coordinación con el equipo del servidor):**
+  1. Confirmar arquitectura del server: `uname -m`
+  2. Si es `arm64`: reconstruir la imagen desde el source en `~/ragflow` o usar `--platform linux/amd64` con emulación QEMU
+  3. Alternativa: levantar RAGFlow localmente en tu máquina (arquitectura conocida, más control)
+
+  **Una vez que el contenedor esté corriendo**, aplicar el parche es un comando:
   ```bash
-  pip install git+https://github.com/<tu-usuario>/pdfminer.six@master
+  sudo docker exec -it docker-ragflow-cpu-1 \
+    pip install git+https://github.com/Jyiro/pdfminer-lis@master
+  sudo docker restart docker-ragflow-cpu-1
   ```
-  Verificar que los tests del fork pasen en el server.
-- [ ] **[PASO 4] Validar en RAGFlow real** — Con el parche activo en el server, subir los PDFs del corpus con LaTeX y corroborar que los símbolos ∑ ∏ □ se preservan en el texto extraído por DeepDoc.
+
+  > ⚠️ **Posible punto de fallo — compatibilidad de versiones**
+  >
+  > El fork está basado en la versión más reciente del upstream (`20260108`).
+  > Si el contenedor tiene una versión muy anterior, pip puede traer dependencias
+  > incompatibles. Fallback: copiar `tex_glyph_patch.py` al contenedor e importarlo
+  > en `deepdoc/__init__.py` sin cambiar la versión instalada de pdfminer.six.
+
+- [ ] **[PASO 4] Validar en RAGFlow real** — **BLOQUEADO** (depende del Paso 3). Una vez activo el parche, subir los PDFs del corpus LaTeX y verificar que ∑ ∏ □ aparecen en los chunks de DeepDoc.
 - [ ] **[PASO 5 — opcional] PR upstream a pdfminer.six** — Enviar el arreglo con los 43 tests y el benchmark EAR (0/30 fallos) como evidencia. Referenciable contra PR #1213 (CMap types 6/10/12, fusionado en release 20260107).
 
 ---

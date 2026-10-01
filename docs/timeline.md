@@ -445,27 +445,32 @@ Implementar, refactorizar y verificar el fix de TeX Glyph List en tres capas: (1
 | `probe_arxiv_patched.py` | ✅ Métrica nueva, 0/30 fallos |
 | `pdfminer-fork/pdfminer/glyphlist.py` | ✅ 62 entradas integradas |
 | `pdfminer-fork/tests/test_tex_glyphs.py` | ✅ 43/43 tests pasando |
-| Commit en fork local | ✅ `db4ddff` listo para push |
-| **Push al fork en GitHub** | ⏳ Pendiente (manual) |
-| **Paso 3: RAGFlow server** | ⏳ Pendiente |
+| Fork publicado en GitHub | ✅ [`Jyiro/pdfminer-lis`](https://github.com/Jyiro/pdfminer-lis) @ `db4ddff` |
+| **Aplicar en servidor RAGFlow** | 🔴 BLOQUEADO |
+| **Validar end-to-end** | 🔴 BLOQUEADO |
 
-### Próximos pasos inmediatos
+### Diagnóstico del servidor RAGFlow (`server-02-utn-ia`)
 
-1. **Push del fork** (5 min, manual):
-   - Hacer fork en https://github.com/pdfminer/pdfminer.six
-   - Desde `deepdoc-research/pdfminer-fork/`:
-     ```powershell
-     git remote add myfork https://github.com/<tu-usuario>/pdfminer.six.git
-     git push myfork master
-     ```
+Se intentó aplicar el parche en producción. Hallazgos:
 
-2. **Aplicar en el servidor RAGFlow** (SSH):
-   ```bash
-   ssh -p 2022 ubuntu@128.201.239.161  # clave: IAutn2026
-   pip install git+https://github.com/<tu-usuario>/pdfminer.six@master
-   ```
+| Servicio | Estado |
+|---|---|
+| MySQL, Elasticsearch, MinIO, Redis | ✅ Corriendo (healthy) |
+| `docker-ragflow-cpu-1` (`infiniflow/ragflow:v0.26.0`) | 🔴 Crashloop desde hace semanas |
 
-3. **Validar en RAGFlow real** — subir corpus LaTeX, verificar que ∑ ∏ □ aparecen en los chunks de DeepDoc.
+**Causa del crashloop:** `exec ./entrypoint.sh: exec format error` — incompatibilidad de arquitectura. La imagen oficial de Docker Hub fue compilada para `amd64` pero el servidor corre en `arm64` (pendiente confirmar con `uname -m`).
 
-4. **(Opcional) Abrir PR upstream** a `pdfminer/pdfminer.six` con los 43 tests y el benchmark como evidencia.
+**El parche de pdfminer no puede aplicarse** mientras el contenedor no arranque.
 
+### Opciones para desbloquear (requiere coordinación con el equipo del servidor)
+
+1. **Confirmar arquitectura:** `uname -m` en el servidor
+2. **Si es `arm64`:** reconstruir la imagen desde el source disponible en `~/ragflow/` (ya está el repo clonado)
+3. **Alternativa inmediata:** levantar RAGFlow localmente en una máquina con arquitectura conocida (`docker compose up` desde `~/ragflow/docker/`)
+
+**Una vez que el contenedor esté corriendo**, el parche se aplica con:
+```bash
+sudo docker exec -it docker-ragflow-cpu-1 \
+  pip install git+https://github.com/Jyiro/pdfminer-lis@master
+sudo docker restart docker-ragflow-cpu-1
+```
