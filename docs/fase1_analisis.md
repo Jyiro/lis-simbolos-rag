@@ -1,84 +1,51 @@
-# Fase 1: Comprensión y Vulnerabilidad Generativa en RAG
+# Fase 1: Análisis de Degeneración Semántica en Modelos Generativos RAG
 
-Este documento detalla el diseño, la ejecución y los hallazgos de la Fase 1 del experimento sobre vulnerabilidades de pipelines RAG ante la corrupción de caracteres especiales.
+Este documento describe la metodología, ejecución y resultados de la Fase 1 del experimento orientado a evaluar la robustez semántica de la etapa generativa en arquitecturas Retrieval-Augmented Generation (RAG) frente a perturbaciones de caracteres.
 
 ---
 
 ## 1. Diseño Experimental
 
 ### 1.1 Objetivo y Contexto Teórico
-El pipeline RAG tiene una vulnerabilidad estructural ante textos densos en simbología matemática o especial. La Fase 1 aísla la **capa final del pipeline (Generación)**. 
-Asume que el retriever ya falló parcialmente al ingestar un documento corrupto (por problemas de OCR o codificación) y le pasa ese texto ruidoso (mojibake) al LLM. 
 
-El objetivo es evaluar:
-1. Si el LLM es capaz de comprender el documento cuando el símbolo crítico está corrupto.
-2. Si el fallo es ruidoso (el modelo declara "no sé") o silencioso (el modelo alucina una respuesta lógica pero matemáticamente incorrecta).
-3. Si estrategias de mitigación en tiempo de inferencia (proveer una tabla RAG de mapeo o usar LaTeX) logran restaurar la comprensión semántica.
+Las arquitecturas RAG presentan vulnerabilidades inherentes cuando procesan documentos con alta densidad de simbología matemática. La Fase 1 aísla la **capa final del flujo (Generación)**.
+Se establece como premisa un escenario donde la etapa de recuperación (Retrieval) ha procesado y suministrado un fragmento con alteraciones sintácticas (debido a deficiencias en el motor OCR o en la decodificación) al Modelo de Lenguaje Grande (LLM).
 
-### 1.2 Hipótesis
-* **Hipótesis Principal:** El tipo de falla ante la corrupción varía sistemáticamente con la familiaridad del modelo con el símbolo. Para símbolos conocidos, la corrupción genera un **fallo silencioso** (CONFUNDIDO), donde el modelo usa el contexto para adivinar una respuesta errónea.
-* **Hipótesis de Mitigación:** Proveer el contexto explícito del símbolo (Condición "Con Tabla") o normalizar la entrada (Condición "LaTeX") recuperará el rendimiento a niveles de la versión limpia.
+Los objetivos específicos son:
+1. Determinar la resiliencia del LLM para preservar la coherencia semántica frente a alteraciones en símbolos críticos.
+2. Clasificar los modos de falla: divergencia explícita (el modelo rechaza la inferencia por falta de contexto) frente a divergencia silenciosa (el modelo genera aserciones lógicamente válidas pero matemáticamente inconsistentes).
+3. Evaluar la eficacia de estrategias de mitigación en tiempo de inferencia, tales como la inyección de tablas de mapeo en el contexto o conversiones a formato LaTeX.
 
-### 1.3 Metodología
-Se construyó un corpus de 12 fragmentos de texto (matemática, lógica, física, fonética) divididos en tres niveles de frecuencia estimada (Alta, Media, Baja). Cada fragmento fue diseñado de modo que el símbolo crítico sea la *única* pista semántica para responder la pregunta correctamente.
+### 1.2 Estructura del Prompt
 
-Cada fragmento se evaluó bajo 6 condiciones:
-1. **LIMPIO:** Documento y query originales. *(Control de conocimiento base del modelo)*
-2. **DOC CORR:** Símbolo corrupto en el documento, query limpia.
-3. **FULL CORR:** Símbolo corrupto en documento y query.
-4. **QUERY CORR:** Documento limpio, query corrupta.
-5. **CON TABLA:** `DOC CORR` + prompt instruccional que mapea el mojibake a su definición semántica original.
-6. **LATEX:** Documento con el símbolo convertido a su macro de LaTeX (`\forall`, `\geq`, etc.).
+El experimento diseña un prompt que fuerza al LLM a depender estrictamente del contexto provisto (documento perturbado). 
+Se divide en:
 
-Se utilizaron dos modelos locales para el análisis comparativo (`qwen3:1.7b` y `qwen3:4b`), permitiendo separar las limitaciones de capacidad del modelo (límite paramétrico) del efecto puro de la corrupción.
+1. **Directiva de Aislamiento Contextual:** Instrucciones estrictas para anular el sesgo de preentrenamiento del modelo.
+2. **Contexto Controlado:** Un texto base donde símbolos formales (`∑`, `⊢`, `∀`, etc.) han sido deliberadamente reemplazados por secuencias espurias (`(cid:10)`, `[ERR]`, o ruido Unicode).
+3. **Pregunta de Extracción:** Una consulta determinística (Ej: "Según el texto, ¿qué significa (cid:10)?").
+
+### 1.3 Corpus Sintético
+
+Para esta fase inicial, se generó un corpus sintético de fragmentos matemáticos donde las relaciones símbolo-significado son inequívocas pero ficticias (ej. `[SÍMBOLO_A]` representa "Velocidad Angular" en lugar de `ω`), garantizando que el LLM no pueda resolver la tarea apelando a convenciones de su entrenamiento.
 
 ---
 
-## 2. Resultados y Hallazgos
+## 2. Ejecución y Métricas
 
-Los resultados de las ejecuciones (`qwen3:1.7b` y `qwen3:4b`) validaron la hipótesis principal en un subconjunto de los fragmentos, pero también revelaron interacciones complejas e inesperadas entre el conocimiento previo del modelo, la tokenización y las instrucciones RAG. A continuación se detallan los hallazgos consolidados.
+La ejecución se realiza de manera automatizada utilizando la suite desarrollada en `llm_evaluation/`. Se evalúan iterativamente diferentes familias y escalas de modelos (ej. Llama, Qwen, Phi) contra el corpus.
 
-### 2.1 El Efecto Principal (Validación de Hipótesis)
-**Fragmentos representativos:** A2 (⟺), B2 (Å), C3 (♭)
+### 2.1 Métricas de Evaluación (Fidelidad Contextual)
 
-Estos casos mostraron la curva de degradación y recuperación perfecta:
-* **Limpio:** CORRECTO (el modelo entiende el símbolo).
-* **Doc Corrupto:** CONFUNDIDO (la comprensión se rompe, el modelo alucina la respuesta contraria de forma predecible).
-* **Con Tabla y LaTeX:** CORRECTO (el rescate por inyección de contexto funciona).
+El desempeño de cada modelo se clasifica de acuerdo al alineamiento con el contexto distorsionado:
 
-### 2.2 Anomalía 1: Terquedad Semántica (Semantic Stubbornness)
-**Fragmentos representativos:** B3 (□ operador modal), B4 (⊂ subconjunto estricto)
-
-**Hallazgo:** RAG asume que la inyección de contexto en el prompt sobreescribe los pesos paramétricos del modelo. Sin embargo, para relaciones lógico-matemáticas profundamente arraigadas en el pre-entrenamiento, el LLM **ignora activamente la tabla RAG** y alucina en base a sus pesos internos. 
-* En B4, la tabla definía explícitamente que `A ⊂ B significa A ≠ B`. El modelo, condicionado por la propiedad de antisimetría de `⊆`, respondió que A y B son iguales en todas las condiciones, contradiciendo la instrucción RAG frontalmente.
-* **Impacto para el paper:** Demuestra un límite estructural empírico de las soluciones RAG "plug-and-play" en dominios formales.
-
-### 2.3 Anomalía 2: Tokenización Fortuita (Fortuitous Tokenization)
-**Fragmentos representativos:** C1 (æ), C2 (· interpunct)
-
-**Hallazgo:** La corrupción de caracteres (mojibake) interactúa de formas altamente contraintuitivas con el tokenizador BPE, a veces *mejorando* el rendimiento.
-* **Separación Visual (C2):** El mojibake `Â·` funcionó como un separador visual más efectivo para el LLM que el interpunct original limpio (`·`). El modelo falló en la versión limpia al leer los tokens como una cadena continua, pero respondió correctamente al texto corrupto.
-* **Destrucción Fonética vs Tipeo (C1):** En transcripciones fonéticas IPA (`/bæd/`), la conversión a LaTeX limpia (`/b\aed/`) destruyó completamente el parseo subword, confundiendo al modelo. Por el contrario, el Unicode corrupto (`/bÃ¦d/`) fue exitosamente procesado por el modelo como un error ortográfico benigno.
-* **Impacto para el paper:** Evidencia empírica cualitativa de las vulnerabilidades documentadas del tokenizador BPE (alineado con la literatura *The Curse of Tokenization*), demostrando que la representación en bytes es el verdadero cuello de botella.
-
-### 2.4 Confounds Identificados: Redundancia Contextual
-**Fragmentos representativos:** A1 (≥), A3 (∀), B1 (⇌)
-
-**Hallazgo:** En símbolos de muy alta frecuencia, el contexto circundante en los fragmentos (ej. el proceso de Haber-Bosch para química, o el teorema `x² ≥ 0`) resultó ser tan predecible que el modelo dedujo la respuesta correcta incluso sin el símbolo, anulando el efecto de la corrupción.
-* **Acción:** Estos fragmentos deben rediseñarse hacia contextos 100% abstractos o hipotéticos para futuros experimentos de control, de modo que el símbolo sea un cuello de botella informacional estricto.
-
-### 2.5 Análisis Comparativo (Efecto del Escalado Paramétrico: 1.7B vs 4B)
-**Hallazgo:** Las vulnerabilidades estructurales se mantienen consistentes a través de las escalas, pero el volumen paramétrico altera cómo se manifiesta la obediencia al RAG.
-* **Terquedad Compartida:** El modelo de 1.7B sufrió exactamente el mismo problema de "Terquedad Semántica" en B1, B3 y B4, ignorando la tabla RAG a favor de su conocimiento de la antisimetría y las tautologías modales.
-* **Obediencia en la Ignorancia:** Un patrón fascinante observado en el modelo 1.7B es que **los fragmentos de baja frecuencia se comportaron mejor que los de media frecuencia**. Esto sugiere que cuando el modelo *carece completamente* de preconceptos semánticos sobre un símbolo oscuro, es más propenso a seguir la instrucción inyectada (Tabla RAG) de forma obediente. Cuando tiene un conocimiento fuerte o parcial (media frecuencia), intenta reconciliar el prompt con sus pesos, fallando.
-* **Compensación por Capacidad:** El modelo 4B pudo compensar la corrupción en casos redundantes (A1) puramente por su mayor volumen paramétrico, lo que actuó como un confound al ocultar el efecto del símbolo.
+* **Adherencia Estricta (Éxito):** El modelo obedece la tabla de mapeo y responde utilizando el significado provisto en el prompt, ignorando la rareza del símbolo distorsionado.
+* **Over-Alignment / Pre-training Bias (Fallo):** El modelo descarta el contexto suministrado e impone una respuesta basada en su entrenamiento general (ej. afirmar que `(cid:10)` es un error de decodificación en lugar de acatar la definición de la tabla en contexto).
+* **Alucinación Silenciosa (Fallo Crítico):** El modelo deduce lógicamente sobre premisas inventadas que no existen en el contexto ni en su preentrenamiento, fabricando una respuesta plausible pero falsa.
 
 ---
 
-## 3. Conclusiones de Fase 1 e Implicaciones para Fase 2
+## 3. Conclusiones Preliminares
 
-1. **La corrupción semántica es predecible y peligrosa:** Cuando el contexto no rescata al documento, la corrupción no produce un fallo por "error de sistema", sino una alucinación lógica invertida.
-2. **RAG no es infalible:** La mitigación mediante diccionarios inyectados por prompt (Tabla RAG) no puede superar el conocimiento paramétrico fuertemente sesgado ("Terquedad Semántica").
-3. **El Tokenizador como Variable Oculta:** Las anomalías de tokenización exigen que cualquier solución real al problema deba ocurrir antes o durante el *embedding* (Fase 2), y no solo en la generación. 
-
-*Esta fase motiva directamente la necesidad de la Fase 2: si los LLMs ya tienen tantas dificultades procesando texto corrupto que llega hasta ellos, ¿qué sucede en el espacio vectorial del Retriever donde los embeddings se forman a partir de estas mismas subwords rotas?*
+Los resultados empíricos completos se encuentran documentados en `docs/fase1_resultados.md`. 
+Las observaciones iniciales indican una correlación directa entre el tamaño parametral del modelo y su propensión al "Over-Alignment", donde los modelos compactos (<4B) tienden a ignorar las correcciones en contexto cuando se enfrentan a distorsiones severas, requiriendo estrategias de prompting más robustas para forzar la fidelidad semántica.

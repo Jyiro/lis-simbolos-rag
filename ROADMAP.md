@@ -4,7 +4,7 @@ Formato: `[ ]` pendiente · `[/]` en progreso · `[x]` completado
 
 ---
 
-## deepdoc-research — Próximos experimentos
+## parser_analysis — Próximos experimentos
 
 - [ ] **pymupdf4llm** — Evaluar si la salida Markdown de `pymupdf4llm` (PyMuPDF → Markdown estructurado para LLMs) preserva mejor los símbolos matemáticos que pdfplumber. Comparar EAR sobre el corpus real.
 
@@ -21,7 +21,7 @@ Formato: `[ ]` pendiente · `[/]` en progreso · `[x]` completado
 **Ruta elegida:** Monkey-patch local para validar → Fork de `pdfminer.six` → Redirigir dependencia en RAGFlow → PR upstream opcional.
 **Fuente para la tabla:** Apache PDFBox `additional.txt` ya tiene los mapeos TeX necesarios (`summationtext`, `producttext`, `logicalanddisplay`, etc.).
 
-- [x] **[PASO 1] Monkey-patch de validación** — `deepdoc-research/tex_glyph_patch.py` implementado y validado. Corpus arXiv: **0/30 fallos** (era 7/30). 19/30 papers con pdfplumber superando a pymupdf/pypdf (exclusivas confirmadas como verdaderos positivos). Refactorizado con `SAFE_MATH_OPERATORS` / `EXTENSIBLE_DELIMITERS`. Suite de 9 tests en `deepdoc-research/tests/test_tex_glyph_patch.py` — todos pasan.
+- [x] **[PASO 1] Monkey-patch de validación** — `parser_analysis/tex_glyph_patch.py` implementado y validado. Corpus arXiv: **0/30 fallos** (era 7/30). 19/30 papers con pdfplumber superando a pymupdf/pypdf (exclusivas confirmadas como verdaderos positivos). Refactorizado con `SAFE_MATH_OPERATORS` / `EXTENSIBLE_DELIMITERS`. Suite de 9 tests en `parser_analysis/tests/test_tex_glyph_patch.py` — todos pasan.
 - [x] **[PASO 2] Fork de `pdfminer.six`** — Fork publicado en [`Jyiro/pdfminer-lis`](https://github.com/Jyiro/pdfminer-lis). Parche integrado en `pdfminer/glyphlist.py` (62 entradas TeX). Tests: **43/43 pasan**. Commit: [`db4ddff`](https://github.com/Jyiro/pdfminer-lis/commit/db4ddff32b228e31562c3fe530dc7b0d55a01d56).
 - [/] **[PASO 3] Redirigir dependencia en RAGFlow** — **BLOQUEADO** por problema de infraestructura en el servidor.
 

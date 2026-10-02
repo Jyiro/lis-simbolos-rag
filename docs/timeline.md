@@ -204,7 +204,7 @@ RAGFlow     →  Docker local   →  Interfaz web
 
 ## Exp 7 — DeepDoc Research Fase 1: PDFs Sintéticos (Baseline CPR)
 
-**Septiembre 2026** · `deepdoc-research/probe.py` · [`deepdoc-research/summary_report.md`](../deepdoc-research/summary_report.md)
+**Septiembre 2026** · `parser_analysis/probe.py` · [`parser_analysis/summary_report.md`](../parser_analysis/summary_report.md)
 
 ### Objetivo
 Establecer un baseline: ¿funcionan perfectamente los extractores en condiciones ideales? Si sí, el bug que encontramos es específico a cómo LaTeX codifica las fuentes en PDFs académicos.
@@ -216,7 +216,7 @@ CPR 100% en todos los extractores (`pdfplumber`, `PyMuPDF`, `pypdf`) sobre 6 PDF
 
 ## Exp 8 — DeepDoc Research Fase 2: PDFs Reales (Métrica EAR)
 
-**Septiembre 2026** · `deepdoc-research/probe_real.py` · [`deepdoc-research/real_report.md`](../deepdoc-research/real_report.md) · [`deepdoc-research/evidencias.md`](../deepdoc-research/evidencias.md)
+**Septiembre 2026** · `parser_analysis/probe_real.py` · [`parser_analysis/real_report.md`](../parser_analysis/real_report.md) · [`parser_analysis/evidencias.md`](../parser_analysis/evidencias.md)
 
 ### Objetivo
 Cuantificar el fallo sobre corpus real sin necesitar ground truth manual, usando el **consenso entre extractores** como proxy de verdad.
@@ -277,11 +277,11 @@ La corrupción opera en **capas acumulativas e independientes**.
 | **PR a pdfminer.six** (fix upstream) | Media | Máximo |
 
 ### Documentos relacionados
-- [`deepdoc-research/evidencias.md`](../deepdoc-research/evidencias.md) — consolidación completa
+- [`parser_analysis/evidencias.md`](../parser_analysis/evidencias.md) — consolidación completa
 
 ## Exp 10 — DeepDoc Research Fase 4: Evaluación de pymupdf4llm
 
-**Septiembre 2026** · `deepdoc-research/probe_real.py` · [`deepdoc-research/real_report.md`](../deepdoc-research/real_report.md)
+**Septiembre 2026** · `parser_analysis/probe_real.py` · [`parser_analysis/real_report.md`](../parser_analysis/real_report.md)
 
 ### Objetivo
 Evaluar si la conversión directa de PDF a Markdown estructurado mediante `pymupdf4llm` lograba eludir el fallo de preservación simbólica, constituyéndose en una posible alternativa de bajo coste de implementación.
@@ -299,7 +299,7 @@ Descartar la alternativa Markdown. Queda ratificado que se requiere un fix de ba
 
 ## Exp 11 — DeepDoc Research Fase 5: Métrica de Embeddings
 
-**Septiembre 2026** · `deepdoc-research/embedding_diff.py` · [`deepdoc-research/embedding_diff_report.md`](../deepdoc-research/embedding_diff_report.md)
+**Septiembre 2026** · `parser_analysis/embedding_diff.py` · [`parser_analysis/embedding_diff_report.md`](../parser_analysis/embedding_diff_report.md)
 
 ### Objetivo
 Evaluar cuantitativamente si la corrupción sintáctica producida por `pdfplumber` desplaza el significado semántico lo suficiente como para hacer fallar la fase de retrieval (distancia coseno < 0.70) usando un modelo estándar (`paraphrase-multilingual-MiniLM-L12-v2`).
@@ -317,7 +317,7 @@ Cierra definitivamente el debate de si el LLM "puede inferir" el símbolo faltan
 
 ## Exp 12 — DeepDoc Research Fase 6: Evaluación de Fuentes TTF
 
-**Septiembre 2026** · `deepdoc-research/probe_ttf.py` · [`deepdoc-research/ttf_report.md`](../deepdoc-research/ttf_report.md)
+**Septiembre 2026** · `parser_analysis/probe_ttf.py` · [`parser_analysis/ttf_report.md`](../parser_analysis/ttf_report.md)
 
 ### Objetivo
 Determinar si el fallo de extracción (Punto de Falla 1) es exclusivo de las fuentes CFF/Type1 con `MacRomanEncoding` (típico de LaTeX/Computer Modern), o si afecta de forma generalizada a PDFs modernos generados con fuentes TrueType (TTF).
@@ -335,7 +335,7 @@ El hallazgo acota dramáticamente la criticidad del proyecto: el bug es estricta
 
 ## Exp 13 — Corpus arXiv Expandido + Análisis de Causa Raíz Glyph → Unicode
 
-**Septiembre 2026** · `deepdoc-research/arxiv_harvest.py` · `deepdoc-research/probe_arxiv.py` · [`deepdoc-research/arxiv_ear_report.md`](../deepdoc-research/arxiv_ear_report.md)
+**Septiembre 2026** · `parser_analysis/arxiv_harvest.py` · `parser_analysis/probe_arxiv.py` · [`parser_analysis/arxiv_ear_report.md`](../parser_analysis/arxiv_ear_report.md)
 
 ### Objetivo
 Validar estadísticamente si el fallo de `pdfplumber` en el corpus original (4/4 PDFs) se generaliza a un corpus más amplio de papers LaTeX de arXiv. Correlacionar los resultados con el análisis de la capa de mapeo Glyph → Unicode.
@@ -403,7 +403,7 @@ Determinar la forma más pragmática y sostenible de aplicar el fix de TeX Glyph
 
 ## Exp 15 — Implementación y Validación del Fix (Línea A)
 
-**Septiembre 2026** · `deepdoc-research/tex_glyph_patch.py` · `deepdoc-research/probe_arxiv_patched.py` · `deepdoc-research/pdfminer-fork/`
+**Septiembre 2026** · `parser_analysis/tex_glyph_patch.py` · `parser_analysis/probe_arxiv_patched.py` · `parser_analysis/pdfminer-fork/`
 
 ### Objetivo
 Implementar, refactorizar y verificar el fix de TeX Glyph List en tres capas: (1) monkey-patch validado con métricas robustas, (2) fork formal de pdfminer.six con el parche integrado al source, (3) suite de tests que sirva como evidencia para el PR upstream.
@@ -431,7 +431,7 @@ Implementar, refactorizar y verificar el fix de TeX Glyph List en tres capas: (1
 
 ### Fase B — Fork de `pdfminer.six`
 
-- Clonado en `deepdoc-research/pdfminer-fork/`.
+- Clonado en `parser_analysis/pdfminer-fork/`.
 - Las 62 entradas TeX integradas directamente en `pdfminer/glyphlist.py` al final del dict `glyphname2unicode`, con bloque de comentario que documenta fuentes (TUG TeX Glyph List, CMEX10 tfm, LASY10).
 - Tests en `tests/test_tex_glyphs.py`: **43 casos parametrizados** cubriendo presencia, round-trip por `name2unicode()`, idempotencia de entradas AGL previas, y exclusión de aliases ASCII.
 - Commit local: `db4ddff` — mensaje de commit autosuficiente con benchmark y descripción de grupos.
