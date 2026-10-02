@@ -49,6 +49,6 @@ pip install git+https://github.com/Jyiro/pdfminer-lis@master
 **Alternativa Conservadora (Monkey-Patching local):**
 Si detectas incompatibilidad de versiones, o no puedes actualizar la dependencia, puedes inyectar el diccionario de glifos en tiempo de ejecución sin modificar la versión instalada del paquete:
 
-1. Copia el script `deepdoc-research/tex_glyph_patch.py` provisto en este repositorio.
+1. Copia el script `parser_analysis/tex_glyph_patch.py` provisto en este repositorio.
 2. Inyéctalo en el código base de DeepDoc antes de que inicie la extracción.
 3. Importa el archivo para que el diccionario se extienda automáticamente.

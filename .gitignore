@@ -220,16 +220,16 @@ __marimo__/
 # Experimento RAG — resultados voluminosos
 # Los JSON de cada run pesan varios MB; solo se versiona el .txt de resumen
 results/fase*/**/*.json
-deepdoc-research/data/*.json
+parser_analysis/data/*.json
 
 # Datos con Copyright / PDFs
 dataset-ragflow/
-deepdoc-research/real_pdfs/
-deepdoc-research/per_document/
+parser_analysis/real_pdfs/
+parser_analysis/per_document/
 *.pdf
 
 # Fork de pdfminer (vive en repositorio propio: Jyiro/pdfminer-lis)
-deepdoc-research/pdfminer-fork/
+parser_analysis/pdfminer-fork/
 
 # Artefactos locales
 chars.json
